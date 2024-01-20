@@ -4,8 +4,77 @@ import { AntDesign } from '@expo/vector-icons';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {base_url} from "./Base_url"
+import { useToast } from "react-native-toast-notifications";
 const MyBalance = ({navigation}) => {
+    const [balance, setbalance] = useState()
+    const [data, setdata] = useState({})
+    const toast = useToast();
+
+    const getBalance = async()=>{
+       
+       try {
+           var myHeaders = new Headers();
+myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+
+var requestOptions = {
+ method: 'GET',
+ headers: myHeaders,
+ redirect: 'follow'
+};
+
+fetch(`${base_url}/getWallet`, requestOptions)
+ .then(response => response.json())
+ .then(result => {console.log(result)
+
+if (result.success == true ) {
+   setdata(result.data.wallet)
+}
+})
+ .catch(error => console.log('error', error));
+       } catch (error) {
+          console.log(error); 
+       }
+   }
+    const addBalance = async()=>{
+       
+        try {
+            var myHeaders = new Headers();
+myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+myHeaders.append("Content-Type", "application/json");
+
+var raw = JSON.stringify({
+  "balance": balance
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch(`${base_url}/addWallet`, requestOptions)
+  .then(response => response.json())
+  .then(result => {console.log(result)
+    if (result.success == true) {
+        
+        setbalance("")
+        getBalance()
+        toast.show(result?.message);
+    }
+})
+  .catch(error => console.log('error', error));
+        } catch (error) {
+           console.log(error); 
+        }
+    }
+  
+
+    useEffect(()=>{
+        getBalance()
+    },[])
     return (
         <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
             <View style={{ height: responsiveHeight(8), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
@@ -19,10 +88,10 @@ const MyBalance = ({navigation}) => {
             </View>
 
             <View style={{ height: responsiveHeight(20), width: responsiveWidth(90), backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 10, elevation: 10 }}>
-                <TextInput placeholder='₹0' style={{ alignSelf: 'center', marginTop: 25, color: '#8A8A8A', fontSize: 22, fontWeight: '500' }} />
+                <TextInput placeholder='₹0' value={balance} onChangeText={(e)=>{setbalance(e)}} style={{ alignSelf: 'center', marginTop: 25, color: '#8A8A8A', fontSize: 22, fontWeight: '500' }} inputMode={"numeric"}  />
 
                 <TouchableOpacity style={{ height: responsiveHeight(6), width: responsiveWidth(50), marginTop: '10%', backgroundColor: '#6A5AE0', borderRadius: 7, alignSelf: 'center', justifyContent: 'center' }}
-                    onPress={() => navigation.navigate('Home')} >
+                    onPress={() => {addBalance()}} >
                     <Text style={{ fontSize: 18, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Add Cash</Text>
                 </TouchableOpacity>
 
@@ -36,7 +105,7 @@ const MyBalance = ({navigation}) => {
                     <Image source={require('../images/i.png')} style={{ height: responsiveHeight(2.1), width: responsiveWidth(4.3), alignSelf: 'center', marginLeft: 5 }} />
 
                 </View>
-                <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹0</Text>
+                <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹ {data?.balance}</Text>
 
             </View>
 
@@ -49,7 +118,7 @@ const MyBalance = ({navigation}) => {
                     <Image source={require('../images/i.png')} style={{ height: responsiveHeight(2.1), width: responsiveWidth(4.3), alignSelf: 'center', marginLeft: 5 }} />
 
                 </View>
-                <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹0</Text>
+                <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹ {data?.winBalance}</Text>
 
             </View>
 
@@ -62,7 +131,7 @@ const MyBalance = ({navigation}) => {
                     <Image source={require('../images/i.png')} style={{ height: responsiveHeight(2.1), width: responsiveWidth(4.3), alignSelf: 'center', marginLeft: 5 }} />
 
                 </View>
-                <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹0</Text>
+                <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹ {data?.discount_bonus}</Text>
 
             </View>
 

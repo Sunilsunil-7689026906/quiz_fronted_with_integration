@@ -1,29 +1,48 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { } from 'react-native-gesture-handler';
+import { WebView } from 'react-native-webview';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {base_url} from "./Base_url"
 
 const AboutUs = ({ navigation }) => {
+  const [data, setdata] = useState()
+  const Api = async() =>{
+    try {
+      var myHeaders = new Headers();
+myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch(`${base_url}/about-us`, requestOptions)
+  .then(response => response.text())
+  .then(result => {console.log(result)
+  
+    setdata(result)
+  })
+  .catch(error => console.log('error', error));
+    } catch (error) {
+      console.log('====================================');
+      console.log(error);
+      console.log('====================================');
+    }
+  }
+
+  useEffect(()=>{
+    Api()
+  },[])
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
-
-      <View style={{ height: responsiveHeight(13), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ justifyContent: 'center', alignSelf: 'flex-start', marginTop: 30 }}>
-            <AntDesign name="arrowleft" size={24} color="white" />
-          </TouchableOpacity>
-
-          <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', alignSelf: 'center', marginTop: 30, marginLeft: '5%' }}>About Us</Text>
-        </View>
-      </View>
-
-      <Text style={{ marginHorizontal: 20 ,fontSize:13,fontWeight:'300' }}>
-        {'quizapp is the largest online hotels booking engine in India. quizapp is also the number one ranked mobile app under the travel category. Touch quizapp core value differentiator is delivery of the fastest and the most trusted user experiences, be it in terms of quickest search and booking, fastest payments, settlement and refund processes. 70% of hotel bookings take place on quizapp mobile app.We are a team of young and dynamic people aiming to provide you the best in hospitality! We help you to find hotel rooms for few hours. Starting off with just five cities,'}
-
-      </Text>
-
-    </View>
+    <WebView
+    style={{flex:1  }}
+    originWhitelist={['*']}
+    source={{ html: data }}
+  />
   )
 }
 
