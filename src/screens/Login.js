@@ -8,7 +8,6 @@ import { base_url } from './Base_url'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-
 const Login = ({ navigation }) => {
     const [isChecked, setChecked] = useState(false);
     const [hidepass, sethidepass] = useState(true);
@@ -79,7 +78,7 @@ const Login = ({ navigation }) => {
             <Text style={{ fontSize: 18, fontWeight: '500', marginTop: 30, marginHorizontal: 20 }}>Email</Text>
 
             <View style={{ borderWidth: 1, height: responsiveHeight(6), alignSelf: 'center', borderRadius: 10, borderColor: '#A0A0A0', width: responsiveWidth(90), marginTop: 5 }}>
-                <TextInput require placeholder='Your Email' value={email} onChangeText={(text)=>{setEmail(text)}} style={{ marginLeft: 15, fontWeight: '400', fontSize: 14, marginTop: 8 }} />
+                <TextInput require placeholder='Your Email'  value={email} onChangeText={(text)=>{setEmail(text)}} style={{ marginLeft: 15, fontWeight: '400', fontSize: 14, marginTop: 8 }} />
             </View>
 
             <Text style={{ fontSize: 18, fontWeight: '500', marginTop: 20, marginHorizontal: 20 }}>Password</Text>

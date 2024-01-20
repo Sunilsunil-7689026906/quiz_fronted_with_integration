@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-
 import Home from './src/screens/Home';
 import Sidebar from './src/screens/Sidebar';
 import Login from './src/screens/Login';
@@ -45,6 +44,7 @@ import Help from './src/screens/Help';
 import Introduction from './src/screens/Introduction';
 import AllQuestion from './src/screens/AllQuestion';
 import Analysis from './src/screens/Analysis';
+import Faq from './src/screens/Faq';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -92,6 +92,8 @@ function Stacks() {
       <Stack.Screen name='Introduction' component={Introduction} options={{ headerShown: false }} />
       <Stack.Screen name='AllQuestion' component={AllQuestion} options={{ headerShown: false }} />
       <Stack.Screen name='Analysis' component={Analysis} options={{ headerShown: false }} />
+      <Stack.Screen name='Faq' component={Faq} options={{ headerShown: false }} />
+
 
 
     </Stack.Navigator>

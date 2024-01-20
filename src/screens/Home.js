@@ -6,6 +6,8 @@ import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-vi
 import { base_url } from './Base_url';
 import { Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { formatTimestamp } from "./../utils/formatDate"
+
 
 
 const Home = ({ navigation }) => {
@@ -139,7 +141,7 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => navigation.navigate('Percentage')}>
-                        <Text style={{ color: '#C8C8C8', fontWeight: '400', fontSize: 15, alignSelf: 'flex-start' }}>Percentage</Text>
+                        <Text style={{ color: '#C8C8C8', fontWeight: '400', fontSize: 15, alignSelf: 'flex-start' }}>Correct%</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -225,6 +227,7 @@ const Home = ({ navigation }) => {
 
                         return (
                             <>
+                            <ScrollView>
                                 <View style={{ height: responsiveHeight(45), width: responsiveWidth(90), paddingHorizontal: 20, backgroundColor: '#fff', alignSelf: 'center', marginTop: 20, borderRadius: 5, elevation: 10 }}>
 
                                     <Text style={{ color: '#6A5ADF', fontWeight: '500', fontSize: 16, marginTop: 15 }}>{data.gameNameInEnglish}</Text>
@@ -237,7 +240,7 @@ const Home = ({ navigation }) => {
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10 }}>
                                         <Image source={require('../images/calender.png')} style={{ tintColor: '#6A5ADF', height: responsiveHeight(4), width: responsiveWidth(8) }} />
 
-                                        <Text style={{ alignSelf: 'center', marginLeft: 10, fontSize: 13 }}>{data.schedule}</Text>
+                                        <Text style={{ alignSelf: 'center', marginLeft: 10, fontSize: 13 }}>{formatTimestamp(data?.schedule)}</Text>
 
                                     </View>
 
@@ -264,6 +267,7 @@ const Home = ({ navigation }) => {
                                     </TouchableOpacity>
 
                                 </View>
+                                </ScrollView>
                             </>
                         )
                     })) :

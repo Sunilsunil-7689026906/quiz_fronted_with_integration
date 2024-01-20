@@ -55,7 +55,7 @@ const Sidebar = ({ navigation }) => {
                     <Text style={{ color: '#fff', fontWeight: '500', fontSize: 16, alignSelf: 'flex-start', marginLeft: 10 }}>Refer & Earn</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('ReferEarn')} style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 30 }}
+                <TouchableOpacity onPress={() => navigation.navigate('Faq')} style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 30 }}
                 >
                     <Image source={require('../images/qf.png')} style={{ height: responsiveHeight(2.5), tintColor: '#fff', width: responsiveWidth(4.8), alignSelf: 'center', borderRadius: 100 }} />
 
