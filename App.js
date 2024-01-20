@@ -44,13 +44,13 @@ import Help from './src/screens/Help';
 import Introduction from './src/screens/Introduction';
 import AllQuestion from './src/screens/AllQuestion';
 import Analysis from './src/screens/Analysis';
-import Faq from './src/screens/Faq';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function Stacks() {
   return (
+    <ToastProvider>
     <Stack.Navigator initialRouteName='IntroSlider' >
       <Stack.Screen name='kkk' component={kkk} options={{ headerShown: false }} />
       <Stack.Screen name='IntroSlider' component={IntroSlider} options={{ headerShown: false }} />
@@ -97,6 +97,7 @@ function Stacks() {
 
 
     </Stack.Navigator>
+    </ToastProvider>
   );
 }
 
