@@ -2,6 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { ToastProvider } from 'react-native-toast-message';
+
 
 import Home from './src/screens/Home';
 import Sidebar from './src/screens/Sidebar';
@@ -44,6 +46,7 @@ import Help from './src/screens/Help';
 import Introduction from './src/screens/Introduction';
 import AllQuestion from './src/screens/AllQuestion';
 import Analysis from './src/screens/Analysis';
+import Faq from './src/screens/Faq';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -51,52 +54,52 @@ const Drawer = createDrawerNavigator();
 function Stacks() {
   return (
     <ToastProvider>
-    <Stack.Navigator initialRouteName='IntroSlider' >
-      <Stack.Screen name='kkk' component={kkk} options={{ headerShown: false }} />
-      <Stack.Screen name='IntroSlider' component={IntroSlider} options={{ headerShown: false }} />
-      <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
-      <Stack.Screen name='Home' component={MyDrawer} options={{ headerShown: false }} />
-      <Stack.Screen name='Sidebar' component={Sidebar} options={{ headerShown: false }} />
-      <Stack.Screen name='Notification' component={Notification} options={{ headerShown: false }} />
-      <Stack.Screen name='Register' component={Register} options={{ headerShown: false }} />
-      <Stack.Screen name='ForgotPass' component={ForgotPass} options={{ headerShown: false }} />
-      <Stack.Screen name='NewPass' component={NewPass} options={{ headerShown: false }} />
-      <Stack.Screen name='QuizType' component={QuizType} options={{ headerShown: false }} />
-      <Stack.Screen name='MyExam' component={MyExam} options={{ headerShown: false }} />
-      <Stack.Screen name='Instruction' component={Instruction} options={{ headerShown: false }} />
-      <Stack.Screen name='MyLeaderBoard' component={MyLeaderBoard} options={{ headerShown: false }} />
-      <Stack.Screen name='Winner' component={Winner} options={{ headerShown: false }} />
-      <Stack.Screen name='WinnerDetail' component={WinnerDetail} options={{ headerShown: false }} />
-      <Stack.Screen name='LeaderboardRank' component={LeaderboardRank} options={{ headerShown: false }} />
-      <Stack.Screen name='ExamLeaderboard' component={ExamLeaderboard} options={{ headerShown: false }} />
-      <Stack.Screen name='Dummy' component={Dummy} options={{ headerShown: false }} />
-      <Stack.Screen name='sc1' component={sc1} options={{ headerShown: false }} />
-      <Stack.Screen name='Scc' component={Scc} options={{ headerShown: false }} />
-      <Stack.Screen name='Percentage' component={Percentage} options={{ headerShown: false }} />
-      <Stack.Screen name='AllLeaderRank' component={AllLeaderRank} options={{ headerShown: false }} />
-      <Stack.Screen name='AllLeaderboard' component={AllLeaderboard} options={{ headerShown: false }} />
-      <Stack.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
-      <Stack.Screen name='UploadKyc' component={UploadKyc} options={{ headerShown: false }} />
-      <Stack.Screen name='Upload' component={Upload} options={{ headerShown: false }} />
-      <Stack.Screen name='MyBalance' component={MyBalance} options={{ headerShown: false }} />
-      <Stack.Screen name='MyTransaction' component={MyTransaction} options={{ headerShown: false }} />
-      <Stack.Screen name='ReferEarn' component={ReferEarn} options={{ headerShown: false }} />
-      <Stack.Screen name='HowtoPlay' component={HowtoPlay} options={{ headerShown: false }} />
-      <Stack.Screen name='More' component={More} options={{ headerShown: false }} />
-      <Stack.Screen name='AboutUs' component={AboutUs} options={{ headerShown: false }} />
-      <Stack.Screen name='Policy' component={Policy} options={{ headerShown: false }} />
-      <Stack.Screen name='TermCondition' component={TermCondition} options={{ headerShown: false }} />
-      <Stack.Screen name='Refund' component={Refund} options={{ headerShown: false }} />
-      <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }} />
-      <Stack.Screen name='Help' component={Help} options={{ headerShown: false }} />
-      <Stack.Screen name='Introduction' component={Introduction} options={{ headerShown: false }} />
-      <Stack.Screen name='AllQuestion' component={AllQuestion} options={{ headerShown: false }} />
-      <Stack.Screen name='Analysis' component={Analysis} options={{ headerShown: false }} />
-      <Stack.Screen name='Faq' component={Faq} options={{ headerShown: false }} />
+      <Stack.Navigator initialRouteName='IntroSlider' >
+        <Stack.Screen name='kkk' component={kkk} options={{ headerShown: false }} />
+        <Stack.Screen name='IntroSlider' component={IntroSlider} options={{ headerShown: false }} />
+        <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name='Home' component={MyDrawer} options={{ headerShown: false }} />
+        <Stack.Screen name='Sidebar' component={Sidebar} options={{ headerShown: false }} />
+        <Stack.Screen name='Notification' component={Notification} options={{ headerShown: false }} />
+        <Stack.Screen name='Register' component={Register} options={{ headerShown: false }} />
+        <Stack.Screen name='ForgotPass' component={ForgotPass} options={{ headerShown: false }} />
+        <Stack.Screen name='NewPass' component={NewPass} options={{ headerShown: false }} />
+        <Stack.Screen name='QuizType' component={QuizType} options={{ headerShown: false }} />
+        <Stack.Screen name='MyExam' component={MyExam} options={{ headerShown: false }} />
+        <Stack.Screen name='Instruction' component={Instruction} options={{ headerShown: false }} />
+        <Stack.Screen name='MyLeaderBoard' component={MyLeaderBoard} options={{ headerShown: false }} />
+        <Stack.Screen name='Winner' component={Winner} options={{ headerShown: false }} />
+        <Stack.Screen name='WinnerDetail' component={WinnerDetail} options={{ headerShown: false }} />
+        <Stack.Screen name='LeaderboardRank' component={LeaderboardRank} options={{ headerShown: false }} />
+        <Stack.Screen name='ExamLeaderboard' component={ExamLeaderboard} options={{ headerShown: false }} />
+        <Stack.Screen name='Dummy' component={Dummy} options={{ headerShown: false }} />
+        <Stack.Screen name='sc1' component={sc1} options={{ headerShown: false }} />
+        <Stack.Screen name='Scc' component={Scc} options={{ headerShown: false }} />
+        <Stack.Screen name='Percentage' component={Percentage} options={{ headerShown: false }} />
+        <Stack.Screen name='AllLeaderRank' component={AllLeaderRank} options={{ headerShown: false }} />
+        <Stack.Screen name='AllLeaderboard' component={AllLeaderboard} options={{ headerShown: false }} />
+        <Stack.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
+        <Stack.Screen name='UploadKyc' component={UploadKyc} options={{ headerShown: false }} />
+        <Stack.Screen name='Upload' component={Upload} options={{ headerShown: false }} />
+        <Stack.Screen name='MyBalance' component={MyBalance} options={{ headerShown: false }} />
+        <Stack.Screen name='MyTransaction' component={MyTransaction} options={{ headerShown: false }} />
+        <Stack.Screen name='ReferEarn' component={ReferEarn} options={{ headerShown: false }} />
+        <Stack.Screen name='HowtoPlay' component={HowtoPlay} options={{ headerShown: false }} />
+        <Stack.Screen name='More' component={More} options={{ headerShown: false }} />
+        <Stack.Screen name='AboutUs' component={AboutUs} options={{ headerShown: false }} />
+        <Stack.Screen name='Policy' component={Policy} options={{ headerShown: false }} />
+        <Stack.Screen name='TermCondition' component={TermCondition} options={{ headerShown: false }} />
+        <Stack.Screen name='Refund' component={Refund} options={{ headerShown: false }} />
+        <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }} />
+        <Stack.Screen name='Help' component={Help} options={{ headerShown: false }} />
+        <Stack.Screen name='Introduction' component={Introduction} options={{ headerShown: false }} />
+        <Stack.Screen name='AllQuestion' component={AllQuestion} options={{ headerShown: false }} />
+        <Stack.Screen name='Analysis' component={Analysis} options={{ headerShown: false }} />
+        <Stack.Screen name='Faq' component={Faq} options={{ headerShown: false }} />
 
 
 
-    </Stack.Navigator>
+      </Stack.Navigator>
     </ToastProvider>
   );
 }
