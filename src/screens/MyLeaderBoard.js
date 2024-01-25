@@ -21,7 +21,7 @@ const MyLeaderBoard = ({ navigation }) => {
   const [correct, setCorrect] = useState("");
   const [save, setSave] = useState(false);
 
-  const [final, ] = useState('')
+  const [final,] = useState('')
 
   const [mysocket, setMySocket] = useState(null);
 
@@ -35,14 +35,58 @@ const MyLeaderBoard = ({ navigation }) => {
   const socket = useSocket();
 
   // console.log(socket, "myleaderboardsocket");
-  
+
   const [left, setleft] = useState(0)
   const [question, setQuestion] = useState("");
   const [option, setoption] = useState([]);
   const [noOfQuestion, setnoOfQuestion] = useState()
   const [mainValuerl, setmainValuerl] = useState(5.5)
-
-  
+  const [correctvalue, setcorrectvalue] = useState(5.5)
+  const [sumdata, setsumdata] = useState(0)
+  const [sumdata2, setsumdata2] = useState(0)
+  const [allData, setallData] = useState()
+  const arr = [
+    {
+      id: 0,
+      value: 0,
+    },
+    {
+      id: 1,
+      value: 1,
+    },
+    {
+      id: 2,
+      value: 2,
+    },
+    {
+      id: 3,
+      value: 3,
+    },
+    {
+      id: 4,
+      value: 4,
+    },
+    {
+      id: 5,
+      value: 5,
+    },
+    {
+      id: 6,
+      value: 6,
+    },
+    {
+      id: 7,
+      value: 7,
+    },
+    {
+      id: 8,
+      value: 8,
+    },
+    {
+      id: 9,
+      value: 9,
+    },
+  ]
 
   useEffect(() => {
     const socket = io('http://3.111.23.56:5059');
@@ -140,14 +184,58 @@ const MyLeaderBoard = ({ navigation }) => {
     return () => clearInterval(interval);
   }, [seconds, isTimerRunning]);
 
-  const handleStopTimer = () => {
+
+
+  const calculation = (a, b) => {
+    // alert(a)
+    let a1 = parseFloat(a);
+    let a2 = parseFloat(b);
+
+    let sum = parseFloat(a1 + a2).toFixed(2);
+    console.log(sum);
+    let string = sum.toLocaleString()
+    console.log("olll", string);
+    let string2 = string.slice(0, 2)
+    let arr = string.split(".")
+    let tostr = arr[0].toString()
+    let sum2 = 0;
+    for (let i = 0; i < tostr.length; i++) {
+      sum2 += parseInt(tostr[i])
+
+    }
+    setsumdata(parseFloat(`${sum2}.${arr[1]}`) + initialSeconds)
+    // console.log(`${sum2}.${arr[1]}`)
+    setsumdata2(`${sum2}.${arr[1]}`)
+
+  }
+
+  const savebtn = () => {
+    alert(parseFloat(sumdata2))
+    // alert(parseFloat(parseFloat(initialSeconds)))
+
+    let sum = parseFloat(parseFloat(sumdata2) + parseFloat(initialSeconds)).toFixed(2);
+    console.log(sum);
+    let string = sum.toLocaleString()
+    console.log("olll", string);
+    let string2 = string.slice(0, 2)
+    let arr = string.split(".")
+    let tostr = arr[0].toString()
+    let sum2 = 0;
+    for (let i = 0; i < tostr.length; i++) {
+      sum2 += parseInt(tostr[i])
+
+    }
+    setallData(parseFloat(`${sum2}.${arr[1]}`).toFixed(1))
+
+  }
+  const handleStopTimer = async () => {
     setTimerRunning(false);
     setActiveanalysis(true)
     // Store the remaining timer value in a variable
-    setInitialSeconds(seconds);
-    
-  };
+    await setInitialSeconds(seconds);
 
+
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView>
@@ -411,7 +499,9 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(0)}
+              onPress={() => { setCorrect(0), setcorrectvalue(0), calculation(mainValuerl, 0) }}
+            // onPress={() => { setChecked("second"); setmainValuerl(3.5) }}
+
             >
               <Text
                 style={{
@@ -428,13 +518,13 @@ const MyLeaderBoard = ({ navigation }) => {
             <TouchableOpacity
               style={{
                 height: responsiveHeight(3),
-                justifyContent: "center",
+                justifyContent: "setCorrectcenter",
                 backgroundColor: correct == 1 ? "#000" : "#fff",
                 width: responsiveWidth(6),
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(1)}
+              onPress={() => { setCorrect(1), calculation(mainValuerl, 1) }}
             >
               <Text
                 style={{
@@ -457,7 +547,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(2)}
+              onPress={() => { setCorrect(2), calculation(mainValuerl, 2) }}
             >
               <Text
                 style={{
@@ -480,7 +570,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(3)}
+              onPress={() => { setCorrect(3), calculation(mainValuerl, 3) }}
             >
               <Text
                 style={{
@@ -503,7 +593,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(4)}
+              onPress={() => { setCorrect(4), calculation(mainValuerl, 4) }}
             >
               <Text
                 style={{
@@ -534,7 +624,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(5)}
+              onPress={() => { setCorrect(5), calculation(mainValuerl, 5) }}
             >
               <Text
                 style={{
@@ -557,7 +647,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(6)}
+              onPress={() => { setCorrect(6), calculation(mainValuerl, 6) }}
             >
               <Text
                 style={{
@@ -580,7 +670,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(7)}
+              onPress={() => { setCorrect(7), calculation(mainValuerl, 7) }}
             >
               <Text
                 style={{
@@ -603,7 +693,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(8)}
+              onPress={() => { setCorrect(8), calculation(mainValuerl, 8) }}
             >
               <Text
                 style={{
@@ -626,7 +716,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => setCorrect(9)}
+              onPress={() => { setCorrect(9), calculation(mainValuerl, 9) }}
             >
               <Text
                 style={{
@@ -1022,10 +1112,13 @@ const MyLeaderBoard = ({ navigation }) => {
               <Text
                 style={{ alignSelf: "center", fontWeight: "600", fontSize: 15 }}
               >
-                
-                {parseFloat(mainValuerl)+parseFloat(initialSeconds)}
 
-                
+                {/* {parseFloat(mainValuerl)+parseFloat(initialSeconds)} */}
+
+                {/* {mainValuerl}+{initialSeconds} */}
+
+                {allData}
+
 
               </Text>
             </TouchableOpacity>
@@ -1128,7 +1221,7 @@ const MyLeaderBoard = ({ navigation }) => {
                   backgroundColor: "#6A5AE0",
                 }}
                 // onPress={() =>  setSave(true)}
-                onPress={handleStopTimer}
+                onPress={() => { handleStopTimer(), savebtn() }}
 
               >
                 <Text

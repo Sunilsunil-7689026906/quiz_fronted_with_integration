@@ -22,6 +22,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { formatTimestamp } from "./../utils/formatDate";
 import { formattedTime } from "./../utils/FormateTime";
 // import { FormatDateTime, } from './../utils/FormateTime';
+// import { formatTimestamp } from "./../utils/formatDate";
 
 const MyExam = ({ navigation }) => {
   const [live, setLive] = useState(0);
@@ -273,9 +274,10 @@ const MyExam = ({ navigation }) => {
             backgroundColor: live == 1 ? "#6A5AE0" : "#fff",
             alignSelf: "flex-start",
           }}
-          onPress={() => {
-            setLive(1), setHit("COMPLETED");
-          }}
+          onPress={() => 
+            setLive(1)
+            // , setHit("COMPLETED");
+          }
         >
           <Text
             style={{
@@ -640,7 +642,7 @@ const MyExam = ({ navigation }) => {
                             fontSize: 13,
                           }}
                         >
-                          {formattedTime(item?.schedule)}
+                          {formatTimestamp(item?.schedule)}
                         </Text>
                       </View>
 
