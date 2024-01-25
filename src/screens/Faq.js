@@ -1,14 +1,45 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { } from 'react-native-gesture-handler';
+import { base_url } from './Base_url';
 
 const Faq = ({ navigation }) => {
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
     const [open3, setOpen3] = useState(false);
 
+    const [mydata, setMydata] = useState([{}])
+
+    const faqApi = () => {
+        try {
+
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+
+            fetch(`${base_url}/faq`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success == true) {
+                        console.log(result.data.data)
+                        setMydata(result.data.data)
+                    }
+                })
+                .catch(error => console.log('error', error));
+
+        } catch (error) {
+
+        }
+    }
+
+    useEffect(() => {
+        faqApi();
+    }, [])
+
+    console.log(mydata, 'mydata');
 
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -22,54 +53,44 @@ const Faq = ({ navigation }) => {
                 </View>
             </View>
 
-            <TouchableOpacity style={{ height: open == 0 ? responsiveHeight(9) : responsiveHeight(30), width: responsiveWidth(90), borderColor: '#6A5AE0', borderWidth: 1, borderRadius: 5, alignSelf: 'center', marginTop: 20 }}
-                onPress={() => setOpen(!open)}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginTop: '6%' }}>
-                    <Text style={{ alignSelf: 'center', fontWeight: '500' }}>How do I make my budget?</Text>
-                    <Image source={require('../images/plus.png')} style={{ height: responsiveHeight(3.5), width: responsiveWidth(7), tintColor: '#6A5AE0' }} />
+            
 
-                </View>
+            <ScrollView style={{marginBottom:20}}>
+
                 {
-                    open == 1 ? (<>
-                        <Text style={{ alignSelf: 'center', fontWeight: '500' }}>Budget is an estimate</Text>
+                    mydata?.length > 0 ? (mydata.map((data) => {
+                        console.log(data, 'datatata');
+                        return (
+                            <>
+                                <TouchableOpacity  style={{ height: open == 0 ? responsiveHeight(9) : responsiveHeight(30), width: responsiveWidth(90), borderColor: '#6A5AE0', borderWidth: 1, borderRadius: 5, alignSelf: 'center', marginTop: 20 }}
+                                    onPress={() => setOpen(!open)}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginTop: '6%' }}>
+                                        <Text style={{ alignSelf: 'center', fontWeight: '500' }}>{data?.question}</Text>
+                                        <Image source={require('../images/plus.png')} style={{ height: responsiveHeight(3.5), width: responsiveWidth(7), tintColor: '#6A5AE0' }} />
 
-                    </>)
-                        : (null)
+                                    </View>
+
+                                    <View style={{ borderBottomWidth:open==1 ? 1 :0, borderColor: '#6A5AE0',marginTop:'4%' }}></View>
+                                    {
+                                        open == 1 ? (<>
+                                            <Text style={{ alignSelf: 'center', fontWeight: '400', marginTop: 20 }}>{data?.answer}</Text>
+
+                                        </>)
+                                            : (null)
+                                    }
+                                </TouchableOpacity>
+                            </>
+                        )
+                    })) :
+                        (
+                            <Text style={{ textAlign: 'center', color: 'red', justifyContent: 'center', fontFamily: 'Jaldi-Regular', alignItems: 'center', borderColor: 'red', borderRadius: 10, marginVertical: 20, marginHorizontal: 20, paddingVertical: 20, fontSize: 18 }}>No data found</Text>
+
+                        )
+
                 }
-            </TouchableOpacity>
 
 
-            <TouchableOpacity style={{ height: open2 == 0 ? responsiveHeight(9) : responsiveHeight(30), width: responsiveWidth(90), borderColor: '#6A5AE0', borderWidth: 1, borderRadius: 5, alignSelf: 'center', marginTop: 20 }}
-                onPress={() => setOpen2(!open2)}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginTop: '6%' }}>
-                    <Text style={{ alignSelf: 'center', fontWeight: '500' }}>How do I make my budget?</Text>
-                    <Image source={require('../images/plus.png')} style={{ height: responsiveHeight(3.5), width: responsiveWidth(7), tintColor: '#6A5AE0' }} />
-
-                </View>
-                {
-                    open2 == 1 ? (<>
-                        <Text style={{ alignSelf: 'center', fontWeight: '500' }}>Budget is an estimate</Text>
-
-                    </>)
-                        : (null)
-                }
-            </TouchableOpacity>
-
-            <TouchableOpacity style={{ height: open3 == 0 ? responsiveHeight(9) : responsiveHeight(30), width: responsiveWidth(90), borderColor: '#6A5AE0', borderWidth: 1, borderRadius: 5, alignSelf: 'center', marginTop: 20 }}
-                onPress={() => setOpen3(!open3)}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginTop: '6%' }}>
-                    <Text style={{ alignSelf: 'center', fontWeight: '500' }}>How do I make my budget?</Text>
-                    <Image source={require('../images/plus.png')} style={{ height: responsiveHeight(3.5), width: responsiveWidth(7), tintColor: '#6A5AE0' }} />
-
-                </View>
-                {
-                    open3 == 1 ? (<>
-                        <Text style={{ alignSelf: 'center', fontWeight: '500' }}>Budget is an estimate</Text>
-
-                    </>)
-                        : (null)
-                }
-            </TouchableOpacity>
+            </ScrollView>
 
         </View>
     )

@@ -1,36 +1,26 @@
 import {
   View,
   Text,
-  StatusBar,
-  Image,
-  TextInput,
   TouchableOpacity,
+  Image,
+  ScrollView,
+  TextInput,
 } from "react-native";
 import React, { useState } from "react";
+import { AntDesign } from "@expo/vector-icons";
 import {
-  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from "react-native-responsive-dimensions";
-import { ScrollView } from "react-native-gesture-handler";
-import ScrollableTabView, {
-  DefaultTabBar,
-} from "react-native-scrollable-tab-view";
+import {} from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AntDesign } from "@expo/vector-icons";
 
-const AllLeaderRank = ({ navigation }) => {
+const InactiveLeaderBoard = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <StatusBar
-        translucent={true}
-        barStyle={"light-content"}
-        backgroundColor={"#6A5AE0"}
-      />
-
       <View
         style={{
-          height: responsiveHeight(7),
+          height: responsiveHeight(8),
           width: responsiveWidth(100),
           justifyContent: "center",
           backgroundColor: "#6A5AE0",
@@ -43,7 +33,7 @@ const AllLeaderRank = ({ navigation }) => {
             style={{
               justifyContent: "center",
               alignSelf: "flex-start",
-              marginTop: 4,
+              marginTop: "3%",
             }}
           >
             <AntDesign name="arrowleft" size={24} color="white" />
@@ -52,10 +42,11 @@ const AllLeaderRank = ({ navigation }) => {
           <Text
             style={{
               color: "#fff",
-              fontSize: 20,
-              fontWeight: "400",
+              fontSize: 18,
+              fontWeight: "500",
               alignSelf: "center",
-              marginLeft: "6%",
+              marginTop: "3%",
+              marginLeft: "5%",
             }}
           >
             Leaderboard Rank
@@ -105,7 +96,11 @@ const AllLeaderRank = ({ navigation }) => {
           </View>
 
           <View
-            style={{ flex: 0.8, justifyContent: "center", alignSelf: "center" }}
+            style={{
+              flex: 0.8,
+              justifyContent: "center",
+              alignSelf: "center",
+            }}
           >
             <TextInput
               require
@@ -357,4 +352,4 @@ const AllLeaderRank = ({ navigation }) => {
   );
 };
 
-export default AllLeaderRank;
+export default InactiveLeaderBoard;

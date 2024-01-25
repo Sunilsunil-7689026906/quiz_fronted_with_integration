@@ -3,9 +3,35 @@ import React, { useState, useEffect } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { base_url } from './Base_url'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const Sidebar = ({ navigation }) => {
+
+    const logoutApi =async () => {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            fetch(`${base_url}/log-out`, requestOptions)
+                .then(response => response.json())
+                .then(result =>{ console.log(result)
+                navigation.navigate('Login')
+                
+                })
+                .catch(error => console.log('error', error));
+
+        } catch (error) {
+console.log(error);
+        }
+    }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#6A5AE0' }}>
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
@@ -86,7 +112,7 @@ const Sidebar = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 30 }}
-                >
+                onPress={()=>{logoutApi()}}>
                     <Image source={require('../images/logout.png')} style={{ height: responsiveHeight(2.3), tintColor: '#fff', width: responsiveWidth(4.8), alignSelf: 'center', borderRadius: 100 }} />
 
                     <Text style={{ color: '#fff', fontWeight: '500', fontSize: 16, alignSelf: 'flex-start', marginLeft: 10 }}>Logout</Text>

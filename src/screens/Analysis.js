@@ -6,6 +6,8 @@ import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-vi
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
 import PieChart from 'react-native-pie-chart';
+import { BarChart } from 'react-native-chart-kit';
+
 
 
 const Analysis = ({ navigation }) => {
@@ -13,6 +15,15 @@ const Analysis = ({ navigation }) => {
     const widthAndHeight = 150;
     const series = [123, 321, 123, 789, 537];
     const sliceColor = ['#6A5AE0', '#ffb300', '#ff9100', '#ff6c00', '#ff3c00'];
+
+    const data = {
+        labels: ['A', 'B', 'C', 'D'],
+        datasets: [
+            {
+                data: [28, 45, 15, 35],
+            },
+        ],
+    };
 
    
 
@@ -32,15 +43,30 @@ const Analysis = ({ navigation }) => {
 
             <View style={{ height: responsiveHeight(40), flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'center', paddingHorizontal: 10, width: responsiveWidth(90), marginBottom: 10, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
 
-                <View style={{ marginTop: 30 }}>
-                    <PieChart
-                        widthAndHeight={widthAndHeight}
-                        series={series}
-                        sliceColor={sliceColor}
-                        coverRadius={0.45}
-                        coverFill={'#FFF'}
-                    />
-                </View>
+            <View style={{ alignSelf: 'center', marginTop: 30 }}>
+                        <BarChart
+                            data={data}
+                            width={300}
+                            height={200}
+                            color={'red'}
+                            yAxisLabel=""
+                            chartConfig={{
+                                backgroundColor: '#fff',
+                                backgroundGradientFrom: '#fff',
+                                backgroundGradientTo: '#fff',
+                                decimalPlaces: 0,
+                                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                style: {
+                                    borderRadius: 16,
+                                },
+                            }}
+                            style={{
+                                marginVertical: 8,
+                                borderRadius: 16,
+                            }}
+                        />
+                    </View>
 
             </View>
 

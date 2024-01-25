@@ -5,12 +5,28 @@ import { ScrollView } from 'react-native-gesture-handler'
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
+import PieChart from 'react-native-pie-chart';
+import { BarChart } from 'react-native-chart-kit';
+
 
 
 
 const AllLeaderboard = ({ navigation }) => {
     const [select, setSelect] = useState('')
     const [number, setNumber] = useState(1)
+
+    const widthAndHeight = 150;
+    const series = [70, 30];
+    const sliceColor = ['#6A5AE0', '#A8A8A8'];
+
+    const data = {
+        labels: ['A', 'B', 'C', 'D'],
+        datasets: [
+            {
+                data: [28, 45, 15, 35],
+            },
+        ],
+    };
 
 
     return (
@@ -162,8 +178,61 @@ const AllLeaderboard = ({ navigation }) => {
 
 
 
+                <View style={{ height: responsiveHeight(60), alignSelf: 'center', width: responsiveWidth(90), marginBottom: 10, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
+
+                    <View style={{ marginTop: 30, alignSelf: 'center' }}>
+                        <PieChart
+                            widthAndHeight={widthAndHeight}
+                            series={series}
+                            sliceColor={sliceColor}
+                            coverRadius={0.45}
+                            coverFill={'#FFF'}
+                        />
+
+                    </View>
 
 
+                    <View style={{ flexDirection: 'row', marginTop: '5%', justifyContent: 'space-evenly', }}>
+                        <View style={{ height: responsiveHeight(2), marginRight: -10, width: responsiveWidth(4), backgroundColor: '#6A5AE0' }}>
+
+                        </View>
+
+                        <Text style={{ fontSize: 13, marginRight: 10 }}>700 Attempted</Text>
+
+                        <View style={{ height: responsiveHeight(2), marginRight: -10, marginLeft: 10, width: responsiveWidth(4), backgroundColor: '#A8A8A8' }}>
+
+                        </View>
+
+                        <Text style={{ fontSize: 13 }}>300 Not Attempted</Text>
+
+                    </View>
+
+                    <View style={{ alignSelf: 'center', marginTop: 30 }}>
+                        <BarChart
+                            data={data}
+                            width={300}
+                            height={200}
+                            yAxisLabel=""
+                            chartConfig={{
+                                backgroundColor: '#fff',
+                                backgroundGradientFrom: '#fff',
+                                backgroundGradientTo: '#fff',
+                                decimalPlaces: 0,
+                                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                style: {
+                                    borderRadius: 16,
+                                },
+                            }}
+                            style={{
+                                marginVertical: 8,
+                                borderRadius: 16,
+                            }}
+                        />
+                    </View>
+
+
+                </View>
 
 
 

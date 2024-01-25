@@ -118,7 +118,7 @@ const Notification = ({ navigation }) => {
                         </>
                     )
                 })
-                : <Text style={{color:"red",textAline:"center"}} >Data Not Found</Text>
+                : <Text style={{color:"red",alignSelf:'center',marginTop:'10%',fontSize:16}} >Data Not Found</Text>
                
                 }
 

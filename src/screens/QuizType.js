@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { AntDesign } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { formatTimestamp } from '../utils/formatDate';
 
 
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
@@ -30,6 +31,9 @@ const QuizType = ({ navigation }) => {
             // console.log(myid, 'myid');
 
 
+            // console.log(`${await AsyncStorage.getItem('_id')}`,"iaiaiaa");
+
+
             var requestOptions = {
                 method: 'GET',
                 headers: myHeaders,
@@ -43,8 +47,8 @@ const QuizType = ({ navigation }) => {
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
-                        console.log(result, "myresult")
-                        console.log(result.data.joingGame, "datatata");
+                        // console.log(result, "myresult")
+                        // console.log(result.data.joingGame, "datatata");
                         setMydata(result.data.joingGame)
                     }
                     else {
@@ -85,7 +89,7 @@ const QuizType = ({ navigation }) => {
                 .then(response => response.json())
                 .then(result =>{
                     if(result.success==true){
-                        console.log(result,"resultt")
+                        // console.log(result,"resultt")
                         navigation.navigate('MyExam')
                     }
                     else{
@@ -99,7 +103,7 @@ const QuizType = ({ navigation }) => {
         }
     }
 
-    console.log(mydata, 'mydata');
+    // console.log(mydata, 'mydata');
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -140,14 +144,14 @@ const QuizType = ({ navigation }) => {
 
             {
                 mydata.length > 0 ? (mydata.map((item) => {
-                    console.log(item, "datainline");
+                    // console.log(item, "datainline");
 
                     return (
                         <>
                             <View>
                                 <View>
                                     <Text style={{ color: '#000', fontSize: 16, marginHorizontal: 20, marginTop: 10, color: '#8A8A8A' }}>Prize Pool</Text>
-                                    <Text style={{ color: '#000', marginHorizontal: 20 }}>{item.schedule / 1000 / 60}</Text>
+                                    <Text style={{ color: '#000', marginHorizontal: 20 }}>{formatTimestamp(item.schedule)}</Text>
 
 
                                     <Text style={{ color: '#000', fontSize: 20, marginHorizontal: 20, marginTop: 7, color: '#000', fontWeight: '500' }}>₹ {item.pricePool}</Text>
@@ -173,7 +177,7 @@ const QuizType = ({ navigation }) => {
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
 
-                                        <Text style={{ color: 'red', fontWeight: '500' }}>{item.noOfParticipation - item.UserGame.length} left</Text>
+                                        <Text style={{ color: 'red', fontWeight: '500' }}>{item.noOfParticipation - item.UserGame.length} Seat left</Text>
 
                                     </View>
 
