@@ -164,53 +164,30 @@ const AllLeaderRank = ({ navigation }) => {
           >
             Rank
           </Text>
+
           <Text
             style={{
               alignSelf: "center",
               color: "#000",
               fontWeight: "500",
-              marginLeft: 20,
+              marginLeft: 10,
+              marginRight:30
             }}
           >
             Name
           </Text>
+
           <Text
             style={{
               alignSelf: "center",
               color: "#000",
               fontWeight: "500",
-              marginLeft: 20,
+              marginRight: 10,
             }}
           >
-            Option
+            Id
           </Text>
-          <View>
-            <Text
-              style={{
-                alignSelf: "center",
-                color: "#000",
-                fontWeight: "500",
-                marginLeft: 10,
-              }}
-            >
-              Time
-            </Text>
-            <Text
-              style={{
-                alignSelf: "center",
-                color: "#000",
-                fontWeight: "500",
-                marginLeft: 10,
-              }}
-            >
-              taken
-            </Text>
-          </View>
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            %
-          </Text>
+          
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
@@ -219,7 +196,7 @@ const AllLeaderRank = ({ navigation }) => {
           </Text>
         </View>
 
-        <View
+        <TouchableOpacity
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
@@ -231,19 +208,19 @@ const AllLeaderRank = ({ navigation }) => {
             backgroundColor: "#EDEAFB",
             alignSelf: "center",
           }}
+          onPress={() => navigation.navigate("AllQuestion")}
         >
           <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
           <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
+          <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
+          
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
           >
             7.5
           </Text>
-        </View>
+        </TouchableOpacity>
 
         <View
           style={{
@@ -261,9 +238,8 @@ const AllLeaderRank = ({ navigation }) => {
         >
           <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
           <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
+          <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
+        
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
@@ -271,88 +247,12 @@ const AllLeaderRank = ({ navigation }) => {
             7.5
           </Text>
         </View>
+      
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            height: responsiveHeight(6),
-            width: responsiveWidth(90),
-            borderRadius: 2,
-            marginTop: 5,
-            backgroundColor: "#fff",
-            elevation: 5,
-            alignSelf: "center",
-          }}
-        >
-          <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
-
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            7.5
-          </Text>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            height: responsiveHeight(6),
-            width: responsiveWidth(90),
-            borderRadius: 2,
-            marginTop: 5,
-            backgroundColor: "#fff",
-            elevation: 5,
-            alignSelf: "center",
-          }}
-        >
-          <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
-
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            7.5
-          </Text>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            height: responsiveHeight(6),
-            width: responsiveWidth(90),
-            borderRadius: 2,
-            marginTop: 5,
-            backgroundColor: "#fff",
-            elevation: 5,
-            alignSelf: "center",
-          }}
-        >
-          <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
-
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            7.5
-          </Text>
-        </View>
+        
       </View>
+      
+
     </SafeAreaView>
   );
 };

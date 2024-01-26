@@ -87,7 +87,7 @@ const Home = ({ navigation }) => {
             setMydata(result.data.upcomingGames);
             // setMyid(result.data.upcomingGames[0]._id)
             // console.log(myid, "myid");
-            await AsyncStorage.setItem("_id", result.data.upcomingGames[0]._id);
+            await AsyncStorage.setItem("_id", result.data?.upcomingGames[0]._id);
             // console.log(result.data.upcomingGames[0]._id, "_id");
           } else {
             console.log(result.message, "else");

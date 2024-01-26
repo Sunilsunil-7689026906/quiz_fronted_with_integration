@@ -164,53 +164,30 @@ const LeaderboardRank = ({ navigation }) => {
           >
             Rank
           </Text>
+
           <Text
             style={{
               alignSelf: "center",
               color: "#000",
               fontWeight: "500",
-              marginLeft: 20,
+              marginLeft: 10,
+              marginRight:30
             }}
           >
             Name
           </Text>
+
           <Text
             style={{
               alignSelf: "center",
               color: "#000",
               fontWeight: "500",
-              marginLeft: 20,
+              marginRight: 10,
             }}
           >
-            Option
+            Id
           </Text>
-          <View>
-            <Text
-              style={{
-                alignSelf: "center",
-                color: "#000",
-                fontWeight: "500",
-                marginLeft: 10,
-              }}
-            >
-              Time
-            </Text>
-            <Text
-              style={{
-                alignSelf: "center",
-                color: "#000",
-                fontWeight: "500",
-                marginLeft: 10,
-              }}
-            >
-              taken
-            </Text>
-          </View>
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            %
-          </Text>
+          
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
@@ -236,8 +213,7 @@ const LeaderboardRank = ({ navigation }) => {
           <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
           <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
           <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>₹400</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
+          
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
@@ -263,8 +239,7 @@ const LeaderboardRank = ({ navigation }) => {
           <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
           <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
           <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>₹400</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
+        
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
@@ -290,8 +265,7 @@ const LeaderboardRank = ({ navigation }) => {
           <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
           <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
           <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>₹400</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
+         
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
@@ -317,8 +291,7 @@ const LeaderboardRank = ({ navigation }) => {
           <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
           <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
           <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>₹400</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
+        
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
@@ -344,8 +317,7 @@ const LeaderboardRank = ({ navigation }) => {
           <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
           <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
           <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>₹400</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
+          
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}

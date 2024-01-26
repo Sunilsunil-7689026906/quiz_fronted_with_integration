@@ -13,13 +13,17 @@ import { disabled } from "deprecated-react-native-prop-types/DeprecatedTextPropT
 import io from 'socket.io-client';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+//questionId,gameId,question,timeTaken,answer,rawPoints,rM,rC
+//type:"RIGHT" or "WRONG"
+
 
 const MyLeaderBoard = ({ navigation }) => {
 
   const [select, setSelect] = useState("");
   const [checked, setChecked] = useState("first");
-  const [correct, setCorrect] = useState("");
+  const [correct, setCorrect] = useState({});
   const [save, setSave] = useState(false);
+  const [confirm, setConfirm] = useState(0)
 
   const [final,] = useState('')
 
@@ -45,50 +49,15 @@ const MyLeaderBoard = ({ navigation }) => {
   const [sumdata, setsumdata] = useState(0)
   const [sumdata2, setsumdata2] = useState(0)
   const [allData, setallData] = useState()
-  const arr = [
-    {
-      id: 0,
-      value: 0,
-    },
-    {
-      id: 1,
-      value: 1,
-    },
-    {
-      id: 2,
-      value: 2,
-    },
-    {
-      id: 3,
-      value: 3,
-    },
-    {
-      id: 4,
-      value: 4,
-    },
-    {
-      id: 5,
-      value: 5,
-    },
-    {
-      id: 6,
-      value: 6,
-    },
-    {
-      id: 7,
-      value: 7,
-    },
-    {
-      id: 8,
-      value: 8,
-    },
-    {
-      id: 9,
-      value: 9,
-    },
-  ]
+
+  const [getId, setGetId] = useState()
+  const [mygameId,setMygameId] = useState()
+  const [myanswer,setMyanswer] = useState()
+
+
 
   useEffect(() => {
+
     const socket = io('http://3.111.23.56:5059');
 
     // Event listener for connection success
@@ -102,6 +71,14 @@ const MyLeaderBoard = ({ navigation }) => {
       };
       socket.emit('joinGame', joinGameData);
     });
+
+
+
+
+
+
+
+
 
     // Event listener for receiving messages from the server
     socket.on('message', (data) => {
@@ -118,9 +95,18 @@ const MyLeaderBoard = ({ navigation }) => {
 
           await setQuestion(questionData.question.questionInEnglish);
           await setoption(questionData.question.optionsInEnglish)
+          await setGetId(questionData.question._id)
+          await setMygameId(questionData.question.gameId)
+          await setMyanswer()
+
         } else {
           await setQuestion(questionData.question.questionInHindi);
-          await setoption(questionData.question.optionsInHindi)
+          await setoption(questionData.question.optionsInHindi);
+          await setGetId(questionData.question._id)
+          await setMygameId(questionData.question.gameId)
+          await setMyanswer(questionData.question.optionsInEnglish[0].id)
+
+
         }
         // Update the component state with the received question
         console.log('Received question from the server: jon', JSON.stringify(questionData));
@@ -146,25 +132,11 @@ const MyLeaderBoard = ({ navigation }) => {
   const I = 8;
   const J = 9;
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.emit('wantQuestions',{gameId:"659c3fdd9b22fdcebbdd7e88"})
-  //   }
-  // }, []);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on("get-question", (data) => {
-  //       console.log(data)
-  //       setSocketData(data.Questions)
-  //       setTotaltime(data.duration);
-  //       setTotalQuestions(data.noOfQuestion)
-  //       setQuestionInterval(data.interval)
-  //       setQuestionTime(data.t)
-  //     });
-  //   }
-  // }, [socket]);
-  // setMySocket(socket)
+
+
+
+
 
   useEffect(() => {
     let interval;
@@ -210,7 +182,7 @@ const MyLeaderBoard = ({ navigation }) => {
   }
 
   const savebtn = () => {
-    alert(parseFloat(sumdata2))
+    // alert(parseFloat(sumdata2))
     // alert(parseFloat(parseFloat(initialSeconds)))
 
     let sum = parseFloat(parseFloat(sumdata2) + parseFloat(initialSeconds)).toFixed(2);
@@ -233,9 +205,26 @@ const MyLeaderBoard = ({ navigation }) => {
     setActiveanalysis(true)
     // Store the remaining timer value in a variable
     await setInitialSeconds(seconds);
-
-
   };
+
+
+
+  const sendData = async () => {
+    alert(select)
+    const socket = io('http://3.111.23.56:5059');
+    socket.emit("give_answer", {
+
+      QuestionId: getId,
+      gameId: mygameId,
+      Question: question,
+      timeTken: initialSeconds,
+      answer: select,
+      rawPoints: mainValuerl,
+      rm: mainValuerl,
+      rc: correct
+    })
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView>
@@ -301,7 +290,7 @@ const MyLeaderBoard = ({ navigation }) => {
                   fontSize: 16,
                 }}
               >
-                {noOfQuestion}/{left}
+                {left}/{noOfQuestion}
               </Text>
             </TouchableOpacity>
           </View>
@@ -499,7 +488,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => { setCorrect(0), setcorrectvalue(0), calculation(mainValuerl, 0) }}
+              onPress={() => { setCorrect(0), savebtn(), calculation(mainValuerl, 0) }}
             // onPress={() => { setChecked("second"); setmainValuerl(3.5) }}
 
             >
@@ -1221,7 +1210,7 @@ const MyLeaderBoard = ({ navigation }) => {
                   backgroundColor: "#6A5AE0",
                 }}
                 // onPress={() =>  setSave(true)}
-                onPress={() => { handleStopTimer(), savebtn() }}
+                onPress={() => { handleStopTimer(), savebtn(), setConfirm(1), sendData() }}
 
               >
                 <Text
@@ -1232,7 +1221,11 @@ const MyLeaderBoard = ({ navigation }) => {
                     fontSize: 16,
                   }}
                 >
-                  Save
+                  {
+                    confirm == 0 ? <><Text>Save</Text></> :
+                      <><Text>Confirm</Text></>
+                  }
+
                 </Text>
               </TouchableOpacity>
 

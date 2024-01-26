@@ -5,10 +5,27 @@ import { ScrollView } from 'react-native-gesture-handler'
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
+import PieChart from 'react-native-pie-chart';
+import { BarChart } from 'react-native-chart-kit';
 
 const AllQuestion = ({ navigation }) => {
     const [select, setSelect] = useState('')
     const [number, setNumber] = useState(1)
+
+    const widthAndHeight = 150;
+    const series = [70, 30];
+    const sliceColor = ['#6A5AE0', '#A8A8A8'];
+
+    const data = {
+        labels: ['A', 'B', 'C', 'D'],
+        datasets: [
+            {
+                data: [28, 45, 15, 35],
+            },
+        ],
+    };
+
+
     return (
         <SafeAreaView>
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
@@ -22,6 +39,9 @@ const AllQuestion = ({ navigation }) => {
                     <Text style={{ color: '#fff', fontSize: 20, fontWeight: '500', alignSelf: 'center', marginTop: 15, marginLeft: '26%' }}>All Question</Text>
                 </View>
             </View>
+
+            <ScrollView style={{marginBottom:40}}>
+
 
             <ScrollView style={{ flexDirection: 'row' }} horizontal showsHorizontalScrollIndicator={false} >
                 <View style={{ flexDirection: 'row', marginTop: 15, marginHorizontal: 20 }}>
@@ -107,6 +127,8 @@ const AllQuestion = ({ navigation }) => {
                 </View>
             </ScrollView>
 
+
+
             <View style={{ height: responsiveHeight(32), width: responsiveWidth(90), marginBottom: 10, paddingHorizontal: 20, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
                 <Text style={{ marginTop: 20, fontSize: 17, fontWeight: '500', color: '#000' }}>Q. Which of the following statements is incorrect as a rule of grammer?</Text>
 
@@ -151,6 +173,67 @@ const AllQuestion = ({ navigation }) => {
                 </View>
 
             </View>
+
+
+
+            <View style={{ height: responsiveHeight(60), alignSelf: 'center', width: responsiveWidth(90), marginBottom: 10, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
+
+                    <View style={{ marginTop: 30, alignSelf: 'center' }}>
+                        <PieChart
+                            widthAndHeight={widthAndHeight}
+                            series={series}
+                            sliceColor={sliceColor}
+                            coverRadius={0.45}
+                            coverFill={'#FFF'}
+                        />
+
+                    </View>
+
+
+                    <View style={{ flexDirection: 'row', marginTop: '5%', justifyContent: 'space-evenly', }}>
+                        <View style={{ height: responsiveHeight(2), marginRight: -10, width: responsiveWidth(4), backgroundColor: '#6A5AE0' }}>
+
+                        </View>
+
+                        <Text style={{ fontSize: 13, marginRight: 10 }}>700 Attempted</Text>
+
+                        <View style={{ height: responsiveHeight(2), marginRight: -10, marginLeft: 10, width: responsiveWidth(4), backgroundColor: '#A8A8A8' }}>
+
+                        </View>
+
+                        <Text style={{ fontSize: 13 }}>300 Not Attempted</Text>
+
+                    </View>
+
+                    <View style={{ alignSelf: 'center', marginTop: 30 }}>
+                        <BarChart
+                            data={data}
+                            width={300}
+                            height={200}
+                            yAxisLabel=""
+                            chartConfig={{
+                                backgroundColor: '#fff',
+                                backgroundGradientFrom: '#fff',
+                                backgroundGradientTo: '#fff',
+                                decimalPlaces: 0,
+                                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                style: {
+                                    borderRadius: 16,
+                                },
+                            }}
+                            style={{
+                                marginVertical: 8,
+                                borderRadius: 16,
+                            }}
+                        />
+                    </View>
+
+
+                </View>
+
+
+
 
             <View style={{ height: responsiveHeight(46),alignSelf:'center',justifyContent:'center', width: responsiveWidth(90), marginBottom: 10,  backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
                 <View style={{ height: responsiveHeight(6), justifyContent: 'center', width: responsiveWidth(85), borderWidth: 1, borderRadius: 10, alignSelf: 'center' }}>
@@ -225,7 +308,7 @@ const AllQuestion = ({ navigation }) => {
 
             </View>
 
-
+            </ScrollView>
             
         </SafeAreaView>
     )
