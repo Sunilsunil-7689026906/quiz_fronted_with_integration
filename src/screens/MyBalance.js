@@ -7,13 +7,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {base_url} from "./Base_url"
 import { useToast } from "react-native-toast-notifications";
+// import RazorpayCheckout from 'react-native-razorpay';
+import RazorpayCheckout from 'react-native-razorpay';
 const MyBalance = ({navigation}) => {
     const [balance, setbalance] = useState()
     const [data, setdata] = useState({})
     const toast = useToast();
 
     const getBalance = async()=>{
-       
+        console.log(await AsyncStorage.getItem('token'));
        try {
            var myHeaders = new Headers();
 myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
@@ -26,7 +28,7 @@ var requestOptions = {
 
 fetch(`${base_url}/getWallet`, requestOptions)
  .then(response => response.json())
- .then(result => {console.log(result)
+ .then(result => {
 
 if (result.success == true ) {
    setdata(result.data.wallet)
@@ -38,7 +40,7 @@ if (result.success == true ) {
        }
    }
     const addBalance = async()=>{
-       
+       console.log(await AsyncStorage.getItem('token'));
         try {
             var myHeaders = new Headers();
 myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
@@ -57,12 +59,56 @@ var requestOptions = {
 
 fetch(`${base_url}/addWallet`, requestOptions)
   .then(response => response.json())
-  .then(result => {console.log(result)
+  .then(result => {
     if (result.success == true) {
         
+            var options = {
+            description: 'Credits towards consultation',
+            image: 'https://i.imgur.com/3g7nmJC.jpg',
+            currency: 'INR',
+            key: 'rzp_test_HJoTELgiW51anQ',
+            amount: '100',
+            name: 'PdoWin',
+            order_id: result.data.order.id,//Replace this with an order_id created using Orders API.
+            prefill: {
+              email: 'santoshkumarsharmabagda@gmail.com',
+              contact: '7719220457',
+              name: 'santosh ji'
+            },
+            theme: {color: '#53a20e'}
+          }
+          RazorpayCheckout.open(options).then(async(data) => {
+            // handle success
+            console.log(data);
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+myHeaders.append("Content-Type", "application/json");
+
+var raw = JSON.stringify(data);
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch(`${base_url}/addWallet-hook`, requestOptions)
+  .then(response => response.json())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+            alert(`Success: ${data.razorpay_payment_id}`);
+          }).catch((error) => {
+            // handle failure
+            console.log(error)
+            alert(`Error: ${error.code} | ${error.description}`);
+          });
+        
+          
         setbalance("")
         getBalance()
-        toast.show(result?.message);
+        console.log(result.data.order.id);
+        // toast.show(result?.message);
     }
 })
   .catch(error => console.log('error', error));
