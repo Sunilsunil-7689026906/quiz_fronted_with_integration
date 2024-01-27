@@ -133,11 +133,6 @@ const MyLeaderBoard = ({ navigation }) => {
   const J = 9;
 
 
-
-
-
-
-
   useEffect(() => {
     let interval;
 
@@ -210,18 +205,28 @@ const MyLeaderBoard = ({ navigation }) => {
 
 
   const sendData = async () => {
-    alert(select)
+    // alert(allData)
+    console.log(getId,"getId");
+    console.log(mygameId,"mygameId");
+    console.log(question,"question");
+    console.log(initialSeconds,"initialSeconds");
+    console.log(select,"select");
+    console.log(allData,"allData");
+    console.log(mainValuerl,"mainValuerl");
+    console.log(correct,"correct");
+
+
     const socket = io('http://3.111.23.56:5059');
     socket.emit("give_answer", {
 
-      QuestionId: getId,
-      gameId: mygameId,
-      Question: question,
-      timeTken: initialSeconds,
-      answer: select,
-      rawPoints: mainValuerl,
-      rm: mainValuerl,
-      rc: correct
+      questionId: await getId,
+      gameId: await mygameId,
+      question: await question,
+      timeTaken: await initialSeconds,
+      answer: await select,
+      rawPoints: await allData,
+      rM: await mainValuerl,
+      rC: await correct
     })
   }
 

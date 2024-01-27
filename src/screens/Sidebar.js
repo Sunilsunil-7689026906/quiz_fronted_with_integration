@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Sidebar = ({ navigation }) => {
 
-    const logoutApi =async () => {
+    const logoutApi = async () => {
         try {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -22,14 +22,16 @@ const Sidebar = ({ navigation }) => {
 
             fetch(`${base_url}/log-out`, requestOptions)
                 .then(response => response.json())
-                .then(result =>{ console.log(result)
-                navigation.navigate('Login')
-                
+                .then(async (result) => {
+                    console.log(result)
+                    await AsyncStorage.clear()
+                    navigation.navigate('Login')
+
                 })
                 .catch(error => console.log('error', error));
 
         } catch (error) {
-console.log(error);
+            console.log(error);
         }
     }
     return (
@@ -112,7 +114,7 @@ console.log(error);
                 </TouchableOpacity>
 
                 <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 30 }}
-                onPress={()=>{logoutApi()}}>
+                    onPress={() => { logoutApi() }}>
                     <Image source={require('../images/logout.png')} style={{ height: responsiveHeight(2.3), tintColor: '#fff', width: responsiveWidth(4.8), alignSelf: 'center', borderRadius: 100 }} />
 
                     <Text style={{ color: '#fff', fontWeight: '500', fontSize: 16, alignSelf: 'flex-start', marginLeft: 10 }}>Logout</Text>

@@ -36,7 +36,7 @@ const Welcome = () => {
      <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#fff' }}>
       <StatusBar translucent={true} barStyle={'dark-content'} backgroundColor={'#fff'} />
 
-      <Image source={require('../images/logo.png')} style={{ alignSelf: 'center', height: responsiveHeight(14), width: responsiveWidth(40) }} />
+      <Image source={require('../images/logomain.png')} style={{ alignSelf: 'center', height: responsiveHeight(14), width: responsiveWidth(40) }} />
 
     </View>
   )

@@ -68,6 +68,7 @@ const MyExam = ({ navigation }) => {
         .then(async (result) => {
           if (result.success == true) {
             // console.log(result.data.userGameList[0].Game, "userGameList")
+            console.log(`${await AsyncStorage.getItem("token")}`,"token");
             setMydata(result.data.userGameList);
 
             setSeduleTime(result.data.userGameList[0].schedule - 300000);

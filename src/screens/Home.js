@@ -8,6 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
+
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -21,11 +22,20 @@ import { base_url } from "./Base_url";
 import { Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { formatTimestamp } from "./../utils/formatDate";
+// import { formattedDateTime } from "../utils/FormateTime";
+import { FormatDateTime } from "../utils/FormateTime";
 
 const Home = ({ navigation }) => {
   const [imgdata, setImgData] = useState([{}]);
   const [mydata, setMydata] = useState([]);
   const [myid, setMyid] = useState([{}]);
+
+  function FormatDateTime() {
+    const milliseconds = 1642958701000; // Example timestamp in milliseconds
+    const formattedDateTime = convertMillisecondsToDateTime(milliseconds);
+    console.log(formattedDateTime);
+    return formattedDateTime
+  }
 
   const sliderApi = async () => {
     try {
@@ -97,7 +107,7 @@ const Home = ({ navigation }) => {
     } catch (error) { }
   };
 
-  
+
 
   // console.log(mydata, "mmmmmmmmmy");
 
@@ -144,7 +154,7 @@ const Home = ({ navigation }) => {
             />
           </TouchableOpacity>
           <Image
-            source={require("../images/logo.png")}
+            source={require("../images/logomain.png")}
             style={{
               height: responsiveHeight(6),
               marginRight: 40,
@@ -285,7 +295,7 @@ const Home = ({ navigation }) => {
               return (
                 <View style={{ flexDirection: "row", flex: 1 }}>
                   {imgdata.map((data) => {
-                    console.log(data, "flatdata");
+                    // console.log(data, "flatdata");
                     return (
                       <>
                         <View
@@ -434,7 +444,7 @@ const Home = ({ navigation }) => {
                         }}
                       >
                         {data.noOfQuestion} Questions | Time{" "}
-                        {data.duration / 1000 / 60} mins
+                        {parseInt(parseInt(data.duration)/60000)} mins
                       </Text>
                     </View>
 
