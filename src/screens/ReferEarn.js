@@ -122,7 +122,7 @@ console.log(error,"uuuu");
         </TouchableOpacity>
 
         <TouchableOpacity onPress={shareContent} style={{alignSelf:'center',marginTop:-4}}>
-          <Image source={require('../images/google.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(10), alignSelf: 'center' }} />
+          <Image source={require('../images/google.png ')} style={{ height: responsiveHeight(5), width: responsiveWidth(10), alignSelf: 'center' }} />
           <Text style={{marginTop:-3}}>Google</Text>
         </TouchableOpacity>
 
