@@ -19,11 +19,12 @@ import ScrollableTabView, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { base_url } from "./Base_url";
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
 
 const Winner = ({ navigation }) => {
   const [data, setdata] = useState([])
-
-  const api = async () => {
+  const [lodings, setlodings] = useState(true)
+  const api = async (name) => {
     try {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -34,7 +35,7 @@ const Winner = ({ navigation }) => {
         redirect: 'follow'
       };
 
-      fetch(`${base_url}/winners-list`, requestOptions)
+      fetch(`${base_url}/winners-list?&name=${name}`, requestOptions)
         .then(response => response.json())
         .then(async (result) => {
           console.log(result)
@@ -42,7 +43,7 @@ const Winner = ({ navigation }) => {
           await AsyncStorage.setItem('g_id', result.data.joingGame[0]._id)
           console.log('g_id', result.data.joingGame[0]._id);
         })
-        .catch(error => console.log('error', error));
+        .catch(error => console.log('error', error)).finally(()=>{setlodings(false)});
     } catch (error) {
 
     }
@@ -51,9 +52,20 @@ const Winner = ({ navigation }) => {
 
 
   useEffect(() => {
-    api()
+    api("")
   }, [])
   return (
+    <>
+      {lodings?
+        <OrientationLoadingOverlay
+          visible={lodings}
+          color="white"
+          indicatorSize="large"
+          messageFontSize={24}
+          message="Loading... "
+          />
+      :
+      
     <View>
       <StatusBar
         translucent={true}
@@ -240,6 +252,9 @@ const Winner = ({ navigation }) => {
             }}
           >
             <TextInput
+            
+            onChangeText={(value)=>{
+              api(value)            }}
               require
               placeholder="Search here.."
               placeholderTextColor={"#000"}
@@ -528,6 +543,8 @@ const Winner = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </View>
+      }
+    </>
   );
 };
 

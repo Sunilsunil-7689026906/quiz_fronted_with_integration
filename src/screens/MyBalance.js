@@ -40,7 +40,7 @@ const MyBalance = ({ navigation }) => {
         }
     }
     const addBalance = async () => {
-        console.log(await AsyncStorage.getItem('token'));
+        
         try {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
@@ -60,6 +60,8 @@ const MyBalance = ({ navigation }) => {
             fetch(`${base_url}/addWallet`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
+                    console.log(result,"mmm");
+                    
                     if (result.success == true) {
 
                         var options = {
@@ -67,24 +69,24 @@ const MyBalance = ({ navigation }) => {
                             image: 'https://i.imgur.com/3g7nmJC.jpg',
                             currency: 'INR',
                             key: 'rzp_test_HJoTELgiW51anQ',
-                            amount: balance,
+                            amount: result.data.amount,
                             name: 'PdoWin',
                             order_id: result.data.order.id,//Replace this with an order_id created using Orders API.
                             prefill: {
-                                email: 'santoshkumarsharmabagda@gmail.com',
-                                contact: '7719220457',
-                                name: 'santosh ji'
+                                email: result.data.email,
+                                contact: result.data.mobile ,
+                                name: result.data.name
                             },
                             theme: { color: '#53a20e' }
                         }
                         RazorpayCheckout.open(options).then(async (data) => {
                             // handle success
-                            console.log(data);
+                            console.log(data,"kkk");
                             var myHeaders = new Headers();
                             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
                             myHeaders.append("Content-Type", "application/json");
 
-                            var raw = JSON.stringify(data);
+                            var raw = JSON.stringify({data:data});
 
                             var requestOptions = {
                                 method: 'POST',
@@ -114,6 +116,7 @@ const MyBalance = ({ navigation }) => {
                 .catch(error => console.log('error', error));
         } catch (error) {
             console.log(error);
+            
         }
     }
 

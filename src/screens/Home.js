@@ -8,7 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-
+import loding from "../images/loding.gif"
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -24,12 +24,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { formatTimestamp } from "./../utils/formatDate";
 // import { formattedDateTime } from "../utils/FormateTime";
 import { FormatDateTime } from "../utils/FormateTime";
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
 
 const Home = ({ navigation }) => {
   const [imgdata, setImgData] = useState([{}]);
   const [mydata, setMydata] = useState([]);
   const [myid, setMyid] = useState([{}]);
-
+const [lodings, setlodings] = useState(true)
   function FormatDateTime() {
     const milliseconds = 1642958701000; // Example timestamp in milliseconds
     const formattedDateTime = convertMillisecondsToDateTime(milliseconds);
@@ -67,13 +68,14 @@ const Home = ({ navigation }) => {
             console.log(result.message);
           }
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => console.log("error", error)).finally(()=>{setlodings(false)});
     } catch (error) { }
   };
 
   // console.log(imgdata, "setimhimh");
 
   const examApi = async () => {
+
     try {
       var myHeaders = new Headers();
       myHeaders.append(
@@ -103,7 +105,7 @@ const Home = ({ navigation }) => {
             console.log(result.message, "else");
           }
         })
-        .catch((error) => console.log("errorrr", error));
+        .catch((error) => console.log("errorrr", error)).finally(()=>{setlodings(false)});
     } catch (error) { }
   };
 
@@ -119,7 +121,16 @@ const Home = ({ navigation }) => {
   // console.log(myid,"myid");
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+   <>
+   
+   <OrientationLoadingOverlay
+          visible={lodings}
+          color="white"
+          indicatorSize="large"
+          messageFontSize={24}
+          message="Loading... "
+          />
+     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar
         translucent={true}
         barStyle={"light-content"}
@@ -698,6 +709,7 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </View>
+   </>
   );
 };
 

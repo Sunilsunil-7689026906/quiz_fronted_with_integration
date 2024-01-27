@@ -11,10 +11,11 @@ import { formatTimestamp } from '../utils/formatDate';
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { base_url } from './Base_url';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
 
 
 const QuizType = ({ navigation }) => {
-
+    const [lodings, setlodings] = useState(true)
     const [sliderValue, setSliderValue] = useState(0);
     const [win, setWin] = useState(0);
     const [mydata, setMydata] = useState([]);
@@ -56,7 +57,7 @@ const QuizType = ({ navigation }) => {
 
                     }
                 })
-                .catch(error => console.log('error', error));
+                .catch(error => console.log('error', error)).finally(()=>{setlodings(false)});
         } catch (error) {
 
         }
@@ -106,6 +107,17 @@ const QuizType = ({ navigation }) => {
     // console.log(mydata, 'mydata');
 
     return (
+        <>
+        {
+            lodings?
+            <OrientationLoadingOverlay
+          visible={lodings}
+          color="white"
+          indicatorSize="large"
+          messageFontSize={24}
+          message="Loading... "
+          />
+            :
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
 
@@ -463,7 +475,10 @@ const QuizType = ({ navigation }) => {
 
 
         </SafeAreaView>
+        }
+        </>
     )
+
 }
 
 export default QuizType
