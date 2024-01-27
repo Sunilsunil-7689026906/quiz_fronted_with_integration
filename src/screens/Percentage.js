@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -16,9 +16,54 @@ import { ScrollView } from "react-native-gesture-handler";
 import ScrollableTabView, {
   DefaultTabBar,
 } from "react-native-scrollable-tab-view";
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { base_url } from "./Base_url";
 
 const Percentage = ({ navigation }) => {
+  const [alldata, setdata] = useState([])
+  const [lodings, setlodings] = useState(true)
+
+  const api = async(name)=>{
+    
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append(
+        "Authorization",
+        `${await AsyncStorage.getItem("token")}`
+      );
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch(`${base_url}/correct-percent?&name=${name}`, requestOptions)
+  .then(response => response.json())
+  .then(result => {console.log(result)
+  setdata(result.data.joingGame)
+  })
+  .catch(error => console.log('error', error)).finally(()=>{setlodings(false)});
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  useEffect(() => {
+   api("");
+  }, []);
+  
+  
   return (
+    <>
+ <OrientationLoadingOverlay
+          visible={lodings}
+          color="white"
+          indicatorSize="large"
+          messageFontSize={24}
+          message="Loading... "
+          />
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar
         translucent={true}
@@ -206,6 +251,9 @@ const Percentage = ({ navigation }) => {
             }}
           >
             <TextInput
+            
+            onChangeText={(value)=>{
+              api(value)            }}
               require
               placeholder="Search here.."
               placeholderTextColor={"#000"}
@@ -234,7 +282,11 @@ const Percentage = ({ navigation }) => {
       </View>
 
       <ScrollView style={{ height: responsiveHeight(66) }}>
-        <View
+        {
+          alldata?.map((data)=>{
+            return(
+              <>
+              <View
           style={{
             height: responsiveHeight(45),
             width: responsiveWidth(90),
@@ -255,7 +307,7 @@ const Percentage = ({ navigation }) => {
               marginTop: 15,
             }}
           >
-            SSC 2024 JAN Exam EPT34
+            {data?.gameNameInEnglish}
           </Text>
           <Text
             style={{
@@ -265,7 +317,7 @@ const Percentage = ({ navigation }) => {
               marginTop: 5,
             }}
           >
-            Rank : #13
+            Rank : #{data?.rank}
           </Text>
 
           <View style={{ borderBottomWidth: 0.6, marginTop: 10 }}></View>
@@ -287,7 +339,7 @@ const Percentage = ({ navigation }) => {
             />
 
             <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
-              20 DEC, 2023 | 4:00 PM
+            {new Date(data.schedule * 1000).toDateString()}
             </Text>
           </View>
 
@@ -308,7 +360,7 @@ const Percentage = ({ navigation }) => {
             />
 
             <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
-              15 Questions | Time 18 mins
+            {data.noOfQuestion} Questions | Time {parseInt(parseInt(data.duration) / 60000)} mins
             </Text>
           </View>
 
@@ -331,7 +383,7 @@ const Percentage = ({ navigation }) => {
                 fontSize: 14,
               }}
             >
-              Joined : 19 Dec, 2023
+              Joined : {alldata?.length}
             </Text>
           </View>
 
@@ -354,7 +406,7 @@ const Percentage = ({ navigation }) => {
                 fontSize: 14,
               }}
             >
-              Joined Fees: ₹450
+              Joined Fees: {data.pricePool}
             </Text>
           </View>
 
@@ -408,6 +460,10 @@ const Percentage = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
+              </>
+            )
+          })
+        }
       </ScrollView>
 
       <View
@@ -511,6 +567,7 @@ const Percentage = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </View>
+    </>
   );
 };
 

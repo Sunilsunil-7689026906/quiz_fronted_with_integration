@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
 import { base_url } from './Base_url';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
 
 
 
@@ -15,7 +16,7 @@ const WinnerDetail = ({ navigation }) => {
     const [number, setNumber] = useState(1)
 
     const [mydata, setMydata] = useState([])
-
+    const [lodings, setlodings] = useState(true)
 
     const leadershipApi = async () => {
         try {
@@ -45,7 +46,7 @@ const WinnerDetail = ({ navigation }) => {
 
                     }
                 })
-                .catch(error => console.log('error', error));
+                .catch(error => console.log('error', error)).finally(()=>{setlodings(false)});
 
         } catch (error) {
 
@@ -58,6 +59,17 @@ const WinnerDetail = ({ navigation }) => {
 
 
     return (
+        <>
+           { lodings?
+            <OrientationLoadingOverlay
+          visible={lodings}
+          color="white"
+          indicatorSize="large"
+          messageFontSize={24}
+          message="Loading... "
+          />
+            :
+            
         <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }} >
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
 
@@ -225,6 +237,8 @@ const WinnerDetail = ({ navigation }) => {
             </View>
 
         </SafeAreaView>
+            }
+        </>
     )
 }
 
