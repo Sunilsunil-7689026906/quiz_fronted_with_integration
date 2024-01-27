@@ -40,8 +40,8 @@ const WinnerDetail = ({ navigation }) => {
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
-                        console.log(result.data.gameLeadership)
-                        setMydata(result.data.gameLeadership)
+                        console.log(result.data.gameLeadership[0].UserGame[0])
+                        setMydata(result.data.gameLeadership[0].UserGame)
 
                     }
                 })
@@ -153,6 +153,7 @@ const WinnerDetail = ({ navigation }) => {
                     alignSelf: "center",
                     borderBottomLeftRadius: 8,
                     borderBottomRightRadius: 8,
+                    
                 }}
             >
                 <View
@@ -208,10 +209,31 @@ const WinnerDetail = ({ navigation }) => {
                     mydata?.map((res) => {
                         return (
                             <>
-                            {
-                                
-                            }
-                                
+                                <TouchableOpacity
+                                    style={{
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        height: responsiveHeight(6),
+                                        width: responsiveWidth(90),
+                                        paddingHorizontal: 10,
+                                        borderRadius: 2,
+                                        marginTop: 5,
+                                        backgroundColor: "#EDEAFB",
+                                        alignSelf: "center",
+                                    }}
+                                    onPress={() => navigation.navigate("AllQuestion",{id:(res.User[0].id)})}
+                                >
+                                    <Text style={{ alignSelf: "center", color: "#6A5AE0",flex:0.25 }}>{res?.rank}</Text>
+                                    <Text style={{ alignSelf: "center", color: "#000",flex:0.25 }}>{res.User[0].name}</Text>
+                                    <Text style={{ alignSelf: "center", color: "green",flex:0.25 }}>{res.User[0].id}</Text>
+
+
+                                    <Text
+                                        style={{ alignSelf: "center", color: "#000", fontWeight: "500",flex:0.10 }}
+                                    >
+                                        {res?.mainPoints}
+                                    </Text>
+                                </TouchableOpacity>
                             </>
                         )
                     })

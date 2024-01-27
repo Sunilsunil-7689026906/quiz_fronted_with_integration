@@ -17,6 +17,11 @@ const ExamLeaderboard = ({ navigation }) => {
     const series = [70, 30];
     const sliceColor = ['#6A5AE0', '#A8A8A8'];
 
+    const widthAndHeight2 = 150;
+    const series2 = [70, 30];
+    const sliceColor2 = ['#0085FF', '#A8A8A8'];
+
+
     const data = {
         labels: ['A', 'B', 'C', 'D'],
         datasets: [
@@ -177,32 +182,74 @@ const ExamLeaderboard = ({ navigation }) => {
 
                 <View style={{ height: responsiveHeight(60), alignSelf: 'center', width: responsiveWidth(90), marginBottom: 10, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
 
-                    <View style={{ marginTop: 30, alignSelf: 'center' }}>
-                        <PieChart
-                            widthAndHeight={widthAndHeight}
-                            series={series}
-                            sliceColor={sliceColor}
-                            coverRadius={0.45}
-                            coverFill={'#FFF'}
-                        />
 
-                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
 
+                        <View style={{ marginTop: 30, alignSelf: 'center' }}>
+                            <PieChart
+                                widthAndHeight={widthAndHeight2}
+                                series={series2}
+                                sliceColor={sliceColor2}
+                                coverRadius={0.45}
+                                coverFill={'#FFF'}
+                            />
 
-                    <View style={{ flexDirection: 'row', marginTop: '5%', justifyContent: 'space-evenly', }}>
-                        <View style={{ height: responsiveHeight(2), marginRight: -10, width: responsiveWidth(4), backgroundColor: '#6A5AE0' }}>
+                            <View style={{ marginTop: '5%', justifyContent: 'space-evenly', alignSelf: 'center' }}>
+
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ height: responsiveHeight(1.5), width: responsiveWidth(3), backgroundColor: '#0085FF', alignSelf: 'center' }}>
+
+                                    </View>
+
+                                    <Text style={{ fontSize: 11, marginRight: 10 }}>700 Attempted</Text>
+                                </View>
+
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ height: responsiveHeight(1.5), width: responsiveWidth(3), backgroundColor: '#A8A8A8', alignSelf: 'center' }}>
+
+                                    </View>
+
+                                    <Text style={{ fontSize: 11 }}>300 Not Attempted</Text>
+                                </View>
+
+                            </View>
 
                         </View>
 
-                        <Text style={{ fontSize: 13, marginRight: 10 }}>700 Attempted</Text>
+                        <View style={{ marginTop: 30, alignSelf: 'center' }}>
+                            <PieChart
+                                widthAndHeight={widthAndHeight}
+                                series={series}
+                                sliceColor={sliceColor}
+                                coverRadius={0.45}
+                                coverFill={'#FFF'}
+                            />
 
-                        <View style={{ height: responsiveHeight(2), marginRight: -10, marginLeft: 10, width: responsiveWidth(4), backgroundColor: '#A8A8A8' }}>
+                            <View style={{ marginTop: '5%', justifyContent: 'space-evenly', alignSelf: 'center' }}>
+
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ height: responsiveHeight(1.5), width: responsiveWidth(3), backgroundColor: '#A8A8A8', alignSelf: 'center' }}>
+
+                                    </View>
+
+                                    <Text style={{ fontSize: 11, marginRight: 10 }}>700 Attempted</Text>
+                                </View>
+
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ height: responsiveHeight(1.5), width: responsiveWidth(3), backgroundColor: '#6A5AE0', alignSelf: 'center' }}>
+
+                                    </View>
+
+                                    <Text style={{ fontSize: 11 }}>300 Not Attempted</Text>
+                                </View>
+
+                            </View>
 
                         </View>
-
-                        <Text style={{ fontSize: 13 }}>300 Not Attempted</Text>
-
                     </View>
+
+
+
 
                     <View style={{ alignSelf: 'center', marginTop: 30 }}>
                         <BarChart

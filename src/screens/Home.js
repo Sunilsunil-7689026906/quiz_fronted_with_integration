@@ -158,9 +158,9 @@ const Home = ({ navigation }) => {
             style={{
               height: responsiveHeight(6),
               marginRight: 40,
-              width: responsiveWidth(26),
+              width: responsiveWidth(40),
               alignSelf: "center",
-              marginTop: 3,
+              marginTop: 5,
             }}
           />
 
@@ -168,7 +168,7 @@ const Home = ({ navigation }) => {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <TouchableOpacity
-              style={{ marginRight: 9, alignSelf: "center", marginTop: 3 }}
+              style={{ marginRight: 9, alignSelf: "center", marginTop: 1 }}
               onPress={() => navigation.navigate("Notification")}
             >
               <Image
@@ -180,8 +180,8 @@ const Home = ({ navigation }) => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ marginRight: 9, alignSelf: "center", marginTop: 3 }}
-            >
+              style={{ marginRight: 9, alignSelf: "center", marginTop: 1 }}
+            onPress={()=>navigation.navigate("MyBalance")}>
               <Image
                 source={require("../images/walletcopy.png")}
                 style={{

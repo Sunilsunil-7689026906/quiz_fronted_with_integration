@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -18,8 +18,54 @@ import ScrollableTabView, {
 } from "react-native-scrollable-tab-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { base_url } from "./Base_url";
+
+
 
 const LeaderboardRank = ({ navigation }) => {
+
+  const [mydata, setMydata] = useState([])
+
+  const leadershipApi = async () => {
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
+      myHeaders.append("Content-Type", "application/json");
+
+      console.log(`${await AsyncStorage.getItem("g_id")}`);
+
+      var raw = JSON.stringify({
+        "gameId": `${await AsyncStorage.getItem("g_id")}`
+      });
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      };
+
+      fetch(`${base_url}/quiz-leadership`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          if (result.success == true) {
+            console.log(result.data.gameLeadership[0].UserGame[0])
+            setMydata(result.data.gameLeadership[0].UserGame)
+
+          }
+        })
+        .catch(error => console.log('error', error));
+
+    } catch (error) {
+
+    }
+  }
+
+  useEffect(() => {
+    leadershipApi();
+  }, [])
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar
@@ -171,7 +217,7 @@ const LeaderboardRank = ({ navigation }) => {
               color: "#000",
               fontWeight: "500",
               marginLeft: 10,
-              marginRight:30
+              marginRight: 30
             }}
           >
             Name
@@ -187,7 +233,7 @@ const LeaderboardRank = ({ navigation }) => {
           >
             Id
           </Text>
-          
+
 
           <Text
             style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
@@ -196,135 +242,44 @@ const LeaderboardRank = ({ navigation }) => {
           </Text>
         </View>
 
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            height: responsiveHeight(6),
-            width: responsiveWidth(90),
-            paddingHorizontal: 10,
-            borderRadius: 2,
-            marginTop: 5,
-            backgroundColor: "#EDEAFB",
-            alignSelf: "center",
-          }}
-          onPress={() => navigation.navigate("AllQuestion")}
-        >
-          <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-          
+        {
+          mydata?.map((res) => {
+            return (
+              <>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    height: responsiveHeight(6),
+                    width: responsiveWidth(90),
+                    paddingHorizontal: 10,
+                    borderRadius: 2,
+                    marginTop: 5,
+                    backgroundColor: "#EDEAFB",
+                    alignSelf: "center",
+                  }}
+                  onPress={() => navigation.navigate("AllQuestion", { id: (res.User[0].id) })}
+                >
+                  <Text style={{ alignSelf: "center", color: "#6A5AE0", flex: 0.25 }}>{res?.rank}</Text>
+                  <Text style={{ alignSelf: "center", color: "#000", flex: 0.25 }}>{res.User[0].name}</Text>
+                  <Text style={{ alignSelf: "center", color: "green", flex: 0.25 }}>{res.User[0].id}</Text>
 
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            7.5
-          </Text>
-        </TouchableOpacity>
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            height: responsiveHeight(6),
-            width: responsiveWidth(90),
-            borderRadius: 2,
-            marginTop: 5,
-            backgroundColor: "#fff",
-            elevation: 10,
-            alignSelf: "center",
-          }}
-        >
-          <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-        
+                  <Text
+                    style={{ alignSelf: "center", color: "#000", fontWeight: "500", flex: 0.10 }}
+                  >
+                    {res?.mainPoints}
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )
+          })
+        }
 
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            7.5
-          </Text>
-        </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            height: responsiveHeight(6),
-            width: responsiveWidth(90),
-            borderRadius: 2,
-            marginTop: 5,
-            backgroundColor: "#fff",
-            elevation: 5,
-            alignSelf: "center",
-          }}
-        >
-          <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-         
 
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            7.5
-          </Text>
-        </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            height: responsiveHeight(6),
-            width: responsiveWidth(90),
-            borderRadius: 2,
-            marginTop: 5,
-            backgroundColor: "#fff",
-            elevation: 5,
-            alignSelf: "center",
-          }}
-        >
-          <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-        
 
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            7.5
-          </Text>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            height: responsiveHeight(6),
-            width: responsiveWidth(90),
-            borderRadius: 2,
-            marginTop: 5,
-            backgroundColor: "#fff",
-            elevation: 5,
-            alignSelf: "center",
-          }}
-        >
-          <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-          <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-          <Text style={{ alignSelf: "center", color: "green" }}>43322</Text>
-          
-
-          <Text
-            style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-          >
-            7.5
-          </Text>
-        </View>
       </View>
     </SafeAreaView>
   );

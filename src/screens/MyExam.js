@@ -68,11 +68,11 @@ const MyExam = ({ navigation }) => {
         .then(async (result) => {
           if (result.success == true) {
             // console.log(result.data.userGameList[0].Game, "userGameList")
-            console.log(`${await AsyncStorage.getItem("token")}`,"token");
+            console.log(`${await AsyncStorage.getItem("token")}`, "token");
             setMydata(result.data.userGameList);
 
             setSeduleTime(result.data.userGameList[0].schedule - 300000);
-            console.log(result.data.userGameList,"completedataaaa");
+            console.log(result.data.userGameList, "completedataaaa");
             setCompletedata(result.data.userGameList);
             // console.log(result.data.userGameList[0]._id, "jjjjjjjjjj");
             await AsyncStorage.setItem("_id2", result.data.userGameList[0]._id);
@@ -129,13 +129,13 @@ const MyExam = ({ navigation }) => {
             />
           </TouchableOpacity>
           <Image
-            source={require("../images/logo.png")}
+            source={require("../images/logomain.png")}
             style={{
               height: responsiveHeight(6),
               marginRight: 40,
-              width: responsiveWidth(26),
+              width: responsiveWidth(40),
               alignSelf: "center",
-              marginTop: 3,
+              marginTop: 5,
             }}
           />
 
@@ -143,7 +143,7 @@ const MyExam = ({ navigation }) => {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <TouchableOpacity
-              style={{ marginRight: 9, alignSelf: "center", marginTop: 3 }}
+              style={{ marginRight: 9, alignSelf: "center", marginTop: 1 }}
               onPress={() => navigation.navigate("Notification")}
             >
               <Image
@@ -155,8 +155,8 @@ const MyExam = ({ navigation }) => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ marginRight: 9, alignSelf: "center", marginTop: 3 }}
-            >
+              style={{ marginRight: 9, alignSelf: "center", marginTop: 1 }}
+              onPress={()=>navigation.navigate("MyBalance")}>
               <Image
                 source={require("../images/walletcopy.png")}
                 style={{
@@ -275,7 +275,7 @@ const MyExam = ({ navigation }) => {
             backgroundColor: live == 1 ? "#6A5AE0" : "#fff",
             alignSelf: "flex-start",
           }}
-          onPress={() => 
+          onPress={() =>
             setLive(1)
             // , setHit("COMPLETED");
           }
@@ -365,377 +365,179 @@ const MyExam = ({ navigation }) => {
         </View>
       </View>
 
-      <ScrollView>
-        {live == 0 ? (
-          <View>
-            {mydata?.length > 0 ? (
-              mydata.map((data) => {
-                // console.log(data, 'data');
-                return (
-                  <>
-                    <View
-                      style={{
-                        height: responsiveHeight(45),
-                        width: responsiveWidth(90),
-                        marginBottom: 10,
-                        paddingHorizontal: 20,
-                        backgroundColor: "#fff",
-                        alignSelf: "center",
-                        marginTop: 20,
-                        borderRadius: 5,
-                        elevation: 10,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#6A5ADF",
-                          fontWeight: "500",
-                          fontSize: 16,
-                          marginTop: 15,
-                        }}
-                      >
-                        {data?.Game[0].gameNameInEnglish}
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#000",
-                          fontWeight: "400",
-                          fontSize: 14,
-                          marginTop: 5,
-                        }}
-                      >
-                        {data?.Game[0].category}
-                      </Text>
-
-                      <View
-                        style={{ borderBottomWidth: 0.6, marginTop: 10 }}
-                      ></View>
-
+      <View style={{height:responsiveHeight(59)}}>
+        <ScrollView>
+          {live == 0 ? (
+            <View>
+              {mydata?.length > 0 ? (
+                mydata.map((data) => {
+                  // console.log(data, 'data');
+                  return (
+                    <>
                       <View
                         style={{
-                          flexDirection: "row",
-                          justifyContent: "flex-start",
-                          marginTop: 10,
-                        }}
-                      >
-                        <Image
-                          source={require("../images/calender.png")}
-                          style={{
-                            tintColor: "#6A5ADF",
-                            height: responsiveHeight(4),
-                            width: responsiveWidth(8),
-                          }}
-                        />
-
-                        <Text
-                          style={{
-                            alignSelf: "center",
-                            marginLeft: 10,
-                            fontSize: 13,
-                          }}
-                        >
-                          {convertMillisecondsToDateTime(data?.schedule)}
-                        </Text>
-                      </View>
-
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "flex-start",
-                          marginTop: 10,
-                        }}
-                      >
-                        <Image
-                          source={require("../images/question.png")}
-                          style={{
-                            tintColor: "#6A5ADF",
-                            height: responsiveHeight(4),
-                            width: responsiveWidth(8),
-                          }}
-                        />
-
-                        <Text
-                          style={{
-                            alignSelf: "center",
-                            marginLeft: 10,
-                            fontSize: 13,
-                          }}
-                        >
-                          {data?.Game[0].noOfQuestion} Questions | Time {millisToMinutesAndSeconds(data?.Game[0].duration)} mins
-                        </Text>
-                      </View>
-
-                      <View
-                        style={{
-                          height: responsiveHeight(5),
-                          justifyContent: "center",
-                          borderRadius: 20,
-                          width: responsiveWidth(80),
-                          marginTop: 10,
-                          backgroundColor: "#EDEAFB",
+                          height: responsiveHeight(45),
+                          width: responsiveWidth(90),
+                          marginBottom: 10,
+                          paddingHorizontal: 20,
+                          backgroundColor: "#fff",
                           alignSelf: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            marginLeft: 10,
-                            color: "#6A5ADF",
-                            fontWeight: "500",
-                            fontSize: 14,
-                          }}
-                        >
-                          Joined Member : {data?.Game[0].UserGame.length}
-                        </Text>
-                      </View>
-
-                      <View
-                        style={{
-                          height: responsiveHeight(5),
-                          justifyContent: "center",
-                          borderRadius: 20,
-                          width: responsiveWidth(80),
-                          marginTop: 10,
-                          backgroundColor: "#EDEAFB",
-                          alignSelf: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            marginLeft: 10,
-                            color: "#6A5ADF",
-                            fontWeight: "500",
-                            fontSize: 14,
-                          }}
-                        >
-                          Joined Fees: ₹{data?.Game[0].entranceAmount}
-                        </Text>
-                      </View>
-
-                      <Text
-                        style={{
-                          color: "#000",
-                          fontWeight: "500",
-                          fontSize: 13,
-                          marginTop: 5,
-                        }}
-                      >
-                        15 minutes left to exam start
-                      </Text>
-
-                      <TouchableOpacity
-                        style={{
-                          height: responsiveHeight(4.8),
-                          justifyContent: "center",
-                          borderRadius: 25,
-                          width: responsiveWidth(28),
                           marginTop: 20,
-                          backgroundColor: "#A9A3E9",
-                          alignSelf: "flex-start",
-                        }}
-                        onPress={() => {
-                          if (currentDate >= seduleTime) {
-                            navigation.navigate("Instruction");
-                          }
+                          borderRadius: 5,
+                          elevation: 10,
                         }}
                       >
                         <Text
                           style={{
-                            color: "#fff",
-                            fontWeight: "400",
-                            alignSelf: "center",
+                            color: "#6A5ADF",
+                            fontWeight: "500",
                             fontSize: 16,
+                            marginTop: 15,
                           }}
                         >
-                          Join Now
+                          {data?.Game[0].gameNameInEnglish}
                         </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </>
-                );
-              })
-            ) : (
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "red",
-                  justifyContent: "center",
-                  fontFamily: "Jaldi-Regular",
-                  alignItems: "center",
-                  borderColor: "red",
-                  borderRadius: 10,
-                  marginVertical: 20,
-                  marginHorizontal: 20,
-                  paddingVertical: 20,
-                  fontSize: 18,
-                }}
-              >
-                No data found
-              </Text>
-            )}
-          </View>
-        ) : null}
-
-        {live == 1 ? (
-          <View>
-            {completedata?.length > 0 ? (
-              completedata.map((item) => {
-                console.log(item, "inlinedata");
-                return (
-                  <>
-                    <View
-                      style={{
-                        height: responsiveHeight(45),
-                        width: responsiveWidth(90),
-                        marginBottom: 10,
-                        paddingHorizontal: 20,
-                        backgroundColor: "#fff",
-                        alignSelf: "center",
-                        marginTop: 20,
-                        borderRadius: 5,
-                        elevation: 10,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#6A5ADF",
-                          fontWeight: "500",
-                          fontSize: 16,
-                          marginTop: 15,
-                        }}
-                      >
-                        SSC 2024 JAN Exam EPT34
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#000",
-                          fontWeight: "500",
-                          fontSize: 14,
-                          marginTop: 5,
-                        }}
-                      >
-                        Rank : #{item?.rank}
-                      </Text>
-
-                      <View
-                        style={{ borderBottomWidth: 0.6, marginTop: 10 }}
-                      ></View>
-
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "flex-start",
-                          marginTop: 10,
-                        }}
-                      >
-                        <Image
-                          source={require("../images/calender.png")}
-                          style={{
-                            tintColor: "#6A5ADF",
-                            height: responsiveHeight(4),
-                            width: responsiveWidth(8),
-                          }}
-                        />
-
                         <Text
                           style={{
-                            alignSelf: "center",
-                            marginLeft: 10,
-                            fontSize: 13,
-                          }}
-                        >
-                          {formatTimestamp(item?.schedule)}
-                        </Text>
-                      </View>
-
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "flex-start",
-                          marginTop: 10,
-                        }}
-                      >
-                        <Image
-                          source={require("../images/question.png")}
-                          style={{
-                            tintColor: "#6A5ADF",
-                            height: responsiveHeight(4),
-                            width: responsiveWidth(8),
-                          }}
-                        />
-
-                        <Text
-                          style={{
-                            alignSelf: "center",
-                            marginLeft: 10,
-                            fontSize: 13,
-                          }}
-                        >
-                          15 Questions | Time 18 mins
-                        </Text>
-                      </View>
-
-                      <View
-                        style={{
-                          height: responsiveHeight(5),
-                          justifyContent: "center",
-                          borderRadius: 20,
-                          width: responsiveWidth(80),
-                          marginTop: 10,
-                          backgroundColor: "#EDEAFB",
-                          alignSelf: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            marginLeft: 10,
-                            color: "#6A5ADF",
-                            fontWeight: "500",
+                            color: "#000",
+                            fontWeight: "400",
                             fontSize: 14,
+                            marginTop: 5,
                           }}
                         >
-                          Joined : {item?.businessDate}
+                          {data?.Game[0].category}
                         </Text>
-                      </View>
 
-                      <View
-                        style={{
-                          height: responsiveHeight(5),
-                          justifyContent: "center",
-                          borderRadius: 20,
-                          width: responsiveWidth(80),
-                          marginTop: 10,
-                          backgroundColor: "#EDEAFB",
-                          alignSelf: "center",
-                        }}
-                      >
+                        <View
+                          style={{ borderBottomWidth: 0.6, marginTop: 10 }}
+                        ></View>
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "flex-start",
+                            marginTop: 10,
+                          }}
+                        >
+                          <Image
+                            source={require("../images/calender.png")}
+                            style={{
+                              tintColor: "#6A5ADF",
+                              height: responsiveHeight(4),
+                              width: responsiveWidth(8),
+                            }}
+                          />
+
+                          <Text
+                            style={{
+                              alignSelf: "center",
+                              marginLeft: 10,
+                              fontSize: 13,
+                            }}
+                          >
+                            {convertMillisecondsToDateTime(data?.schedule)}
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "flex-start",
+                            marginTop: 10,
+                          }}
+                        >
+                          <Image
+                            source={require("../images/question.png")}
+                            style={{
+                              tintColor: "#6A5ADF",
+                              height: responsiveHeight(4),
+                              width: responsiveWidth(8),
+                            }}
+                          />
+
+                          <Text
+                            style={{
+                              alignSelf: "center",
+                              marginLeft: 10,
+                              fontSize: 13,
+                            }}
+                          >
+                            {data?.Game[0].noOfQuestion} Questions | Time {millisToMinutesAndSeconds(data?.Game[0].duration)} mins
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            height: responsiveHeight(5),
+                            justifyContent: "center",
+                            borderRadius: 20,
+                            width: responsiveWidth(80),
+                            marginTop: 10,
+                            backgroundColor: "#EDEAFB",
+                            alignSelf: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              marginLeft: 10,
+                              color: "#6A5ADF",
+                              fontWeight: "500",
+                              fontSize: 14,
+                            }}
+                          >
+                            Joined Member : {data?.Game[0].UserGame.length}
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            height: responsiveHeight(5),
+                            justifyContent: "center",
+                            borderRadius: 20,
+                            width: responsiveWidth(80),
+                            marginTop: 10,
+                            backgroundColor: "#EDEAFB",
+                            alignSelf: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              marginLeft: 10,
+                              color: "#6A5ADF",
+                              fontWeight: "500",
+                              fontSize: 14,
+                            }}
+                          >
+                            Joined Fees: ₹{data?.Game[0].entranceAmount}
+                          </Text>
+                        </View>
+
                         <Text
                           style={{
-                            marginLeft: 10,
-                            color: "#6A5ADF",
+                            color: "#000",
                             fontWeight: "500",
-                            fontSize: 14,
+                            fontSize: 13,
+                            marginTop: 5,
                           }}
                         >
-                          Joined Fees: {item?.amount}
+                          15 minutes left to exam start
                         </Text>
-                      </View>
 
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
                         <TouchableOpacity
                           style={{
                             height: responsiveHeight(4.8),
                             justifyContent: "center",
                             borderRadius: 25,
-                            width: responsiveWidth(38),
+                            width: responsiveWidth(28),
                             marginTop: 20,
-                            backgroundColor: "#6A5AE0",
+                            backgroundColor: "#A9A3E9",
+                            alignSelf: "flex-start",
                           }}
-                          onPress={() => navigation.navigate("LeaderboardRank")}
+                          onPress={() => {
+                            if (currentDate >= seduleTime) {
+                              navigation.navigate("Instruction");
+                            }
+                          }}
                         >
                           <Text
                             style={{
@@ -745,59 +547,259 @@ const MyExam = ({ navigation }) => {
                               fontSize: 16,
                             }}
                           >
-                            Leaderboard
-                          </Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                          style={{
-                            height: responsiveHeight(4.8),
-                            justifyContent: "center",
-                            borderRadius: 25,
-                            width: responsiveWidth(38),
-                            marginTop: 20,
-                            backgroundColor: "#6A5AE0",
-                          }}
-                          onPress={() => navigation.navigate("ExamLeaderboard")}
-                        >
-                          <Text
-                            style={{
-                              color: "#fff",
-                              fontWeight: "400",
-                              alignSelf: "center",
-                              fontSize: 16,
-                            }}
-                          >
-                            Show Result
+                            Join Now
                           </Text>
                         </TouchableOpacity>
                       </View>
-                    </View>
-                  </>
-                );
-              })
-            ) : (
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "red",
-                  justifyContent: "center",
-                  fontFamily: "Jaldi-Regular",
-                  alignItems: "center",
-                  borderColor: "red",
-                  borderRadius: 10,
-                  marginVertical: 20,
-                  marginHorizontal: 20,
-                  paddingVertical: 20,
-                  fontSize: 18,
-                }}
-              >
-                No data
-              </Text>
-            )}
-          </View>
-        ) : null}
-      </ScrollView>
+                    </>
+                  );
+                })
+              ) : (
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "red",
+                    justifyContent: "center",
+                    fontFamily: "Jaldi-Regular",
+                    alignItems: "center",
+                    borderColor: "red",
+                    borderRadius: 10,
+                    marginVertical: 20,
+                    marginHorizontal: 20,
+                    paddingVertical: 20,
+                    fontSize: 18,
+                  }}
+                >
+                  No data found
+                </Text>
+              )}
+            </View>
+          ) : null}
+
+          {live == 1 ? (
+            <View>
+              {completedata?.length > 0 ? (
+                completedata.map((item) => {
+                  console.log(item, "inlinedata");
+                  return (
+                    <>
+                      <View
+                        style={{
+                          height: responsiveHeight(45),
+                          width: responsiveWidth(90),
+                          marginBottom: 10,
+                          paddingHorizontal: 20,
+                          backgroundColor: "#fff",
+                          alignSelf: "center",
+                          marginTop: 20,
+                          borderRadius: 5,
+                          elevation: 10,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "#6A5ADF",
+                            fontWeight: "500",
+                            fontSize: 16,
+                            marginTop: 15,
+                          }}
+                        >
+                          SSC 2024 JAN Exam EPT34
+                        </Text>
+                        <Text
+                          style={{
+                            color: "#000",
+                            fontWeight: "500",
+                            fontSize: 14,
+                            marginTop: 5,
+                          }}
+                        >
+                          Rank : #{item?.rank}
+                        </Text>
+
+                        <View
+                          style={{ borderBottomWidth: 0.6, marginTop: 10 }}
+                        ></View>
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "flex-start",
+                            marginTop: 10,
+                          }}
+                        >
+                          <Image
+                            source={require("../images/calender.png")}
+                            style={{
+                              tintColor: "#6A5ADF",
+                              height: responsiveHeight(4),
+                              width: responsiveWidth(8),
+                            }}
+                          />
+
+                          <Text
+                            style={{
+                              alignSelf: "center",
+                              marginLeft: 10,
+                              fontSize: 13,
+                            }}
+                          >
+                            {formatTimestamp(item?.schedule)}
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "flex-start",
+                            marginTop: 10,
+                          }}
+                        >
+                          <Image
+                            source={require("../images/question.png")}
+                            style={{
+                              tintColor: "#6A5ADF",
+                              height: responsiveHeight(4),
+                              width: responsiveWidth(8),
+                            }}
+                          />
+
+                          <Text
+                            style={{
+                              alignSelf: "center",
+                              marginLeft: 10,
+                              fontSize: 13,
+                            }}
+                          >
+                            15 Questions | Time 18 mins
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            height: responsiveHeight(5),
+                            justifyContent: "center",
+                            borderRadius: 20,
+                            width: responsiveWidth(80),
+                            marginTop: 10,
+                            backgroundColor: "#EDEAFB",
+                            alignSelf: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              marginLeft: 10,
+                              color: "#6A5ADF",
+                              fontWeight: "500",
+                              fontSize: 14,
+                            }}
+                          >
+                            Joined : {item?.businessDate}
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            height: responsiveHeight(5),
+                            justifyContent: "center",
+                            borderRadius: 20,
+                            width: responsiveWidth(80),
+                            marginTop: 10,
+                            backgroundColor: "#EDEAFB",
+                            alignSelf: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              marginLeft: 10,
+                              color: "#6A5ADF",
+                              fontWeight: "500",
+                              fontSize: 14,
+                            }}
+                          >
+                            Joined Fees: {item?.amount}
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <TouchableOpacity
+                            style={{
+                              height: responsiveHeight(4.8),
+                              justifyContent: "center",
+                              borderRadius: 25,
+                              width: responsiveWidth(38),
+                              marginTop: 20,
+                              backgroundColor: "#6A5AE0",
+                            }}
+                            onPress={() => navigation.navigate("LeaderboardRank")}
+                          >
+                            <Text
+                              style={{
+                                color: "#fff",
+                                fontWeight: "400",
+                                alignSelf: "center",
+                                fontSize: 16,
+                              }}
+                            >
+                              Leaderboard
+                            </Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={{
+                              height: responsiveHeight(4.8),
+                              justifyContent: "center",
+                              borderRadius: 25,
+                              width: responsiveWidth(38),
+                              marginTop: 20,
+                              backgroundColor: "#6A5AE0",
+                            }}
+                            onPress={() => navigation.navigate("ExamLeaderboard")}
+                          >
+                            <Text
+                              style={{
+                                color: "#fff",
+                                fontWeight: "400",
+                                alignSelf: "center",
+                                fontSize: 16,
+                              }}
+                            >
+                              Show Result
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </>
+                  );
+                })
+              ) : (
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "red",
+                    justifyContent: "center",
+                    fontFamily: "Jaldi-Regular",
+                    alignItems: "center",
+                    borderColor: "red",
+                    borderRadius: 10,
+                    marginVertical: 20,
+                    marginHorizontal: 20,
+                    paddingVertical: 20,
+                    fontSize: 18,
+                  }}
+                >
+                  No data
+                </Text>
+              )}
+            </View>
+          ) : null}
+        </ScrollView>
+      </View>
 
       <View
         style={{

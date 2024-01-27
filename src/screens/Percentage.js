@@ -54,13 +54,13 @@ const Percentage = ({ navigation }) => {
             />
           </TouchableOpacity>
           <Image
-            source={require("../images/logo.png")}
+            source={require("../images/logomain.png")}
             style={{
               height: responsiveHeight(6),
               marginRight: 40,
-              width: responsiveWidth(26),
+              width: responsiveWidth(40),
               alignSelf: "center",
-              marginTop: 3,
+              marginTop: 5,
             }}
           />
 
@@ -68,7 +68,7 @@ const Percentage = ({ navigation }) => {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <TouchableOpacity
-              style={{ marginRight: 9, alignSelf: "center", marginTop: 3 }}
+              style={{ marginRight: 9, alignSelf: "center", marginTop: 1 }}
               onPress={() => navigation.navigate("Notification")}
             >
               <Image
@@ -80,8 +80,8 @@ const Percentage = ({ navigation }) => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ marginRight: 9, alignSelf: "center", marginTop: 3 }}
-            >
+              style={{ marginRight: 9, alignSelf: "center", marginTop: 1 }}
+              onPress={() => navigation.navigate("MyBalance")}>
               <Image
                 source={require("../images/walletcopy.png")}
                 style={{
@@ -233,182 +233,186 @@ const Percentage = ({ navigation }) => {
         </View>
       </View>
 
-      <ScrollView style={{ height: responsiveHeight(66) }}>
-        <View
-          style={{
-            height: responsiveHeight(45),
-            width: responsiveWidth(90),
-            marginBottom: 10,
-            paddingHorizontal: 20,
-            backgroundColor: "#fff",
-            alignSelf: "center",
-            marginTop: 20,
-            borderRadius: 5,
-            elevation: 10,
-          }}
-        >
-          <Text
-            style={{
-              color: "#6A5ADF",
-              fontWeight: "500",
-              fontSize: 16,
-              marginTop: 15,
-            }}
-          >
-            SSC 2024 JAN Exam EPT34
-          </Text>
-          <Text
-            style={{
-              color: "#000",
-              fontWeight: "500",
-              fontSize: 14,
-              marginTop: 5,
-            }}
-          >
-            Rank : #13
-          </Text>
 
-          <View style={{ borderBottomWidth: 0.6, marginTop: 10 }}></View>
-
+      <View style={{height:responsiveHeight(66)}}>
+        <ScrollView style={{ height: responsiveHeight(66) }}>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              marginTop: 10,
-            }}
-          >
-            <Image
-              source={require("../images/calender.png")}
-              style={{
-                tintColor: "#6A5ADF",
-                height: responsiveHeight(4),
-                width: responsiveWidth(8),
-              }}
-            />
-
-            <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
-              20 DEC, 2023 | 4:00 PM
-            </Text>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              marginTop: 10,
-            }}
-          >
-            <Image
-              source={require("../images/question.png")}
-              style={{
-                tintColor: "#6A5ADF",
-                height: responsiveHeight(4),
-                width: responsiveWidth(8),
-              }}
-            />
-
-            <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
-              15 Questions | Time 18 mins
-            </Text>
-          </View>
-
-          <View
-            style={{
-              height: responsiveHeight(5),
-              justifyContent: "center",
-              borderRadius: 20,
-              width: responsiveWidth(80),
-              marginTop: 10,
-              backgroundColor: "#EDEAFB",
+              height: responsiveHeight(45),
+              width: responsiveWidth(90),
+              marginBottom: 10,
+              paddingHorizontal: 20,
+              backgroundColor: "#fff",
               alignSelf: "center",
+              marginTop: 20,
+              borderRadius: 5,
+              elevation: 10,
             }}
           >
             <Text
               style={{
-                marginLeft: 10,
                 color: "#6A5ADF",
                 fontWeight: "500",
-                fontSize: 14,
+                fontSize: 16,
+                marginTop: 15,
               }}
             >
-              Joined : 19 Dec, 2023
+              SSC 2024 JAN Exam EPT34
             </Text>
-          </View>
-
-          <View
-            style={{
-              height: responsiveHeight(5),
-              justifyContent: "center",
-              borderRadius: 20,
-              width: responsiveWidth(80),
-              marginTop: 10,
-              backgroundColor: "#EDEAFB",
-              alignSelf: "center",
-            }}
-          >
             <Text
               style={{
-                marginLeft: 10,
-                color: "#6A5ADF",
+                color: "#000",
                 fontWeight: "500",
                 fontSize: 14,
+                marginTop: 5,
               }}
             >
-              Joined Fees: ₹450
+              Rank : #13
             </Text>
-          </View>
 
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <TouchableOpacity
+            <View style={{ borderBottomWidth: 0.6, marginTop: 10 }}></View>
+
+            <View
               style={{
-                height: responsiveHeight(4.8),
-                justifyContent: "center",
-                borderRadius: 25,
-                width: responsiveWidth(38),
-                marginTop: 20,
-                backgroundColor: "#6A5AE0",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                marginTop: 10,
               }}
-              onPress={() => navigation.navigate("AllLeaderRank")}
+            >
+              <Image
+                source={require("../images/calender.png")}
+                style={{
+                  tintColor: "#6A5ADF",
+                  height: responsiveHeight(4),
+                  width: responsiveWidth(8),
+                }}
+              />
+
+              <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
+                20 DEC, 2023 | 4:00 PM
+              </Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                marginTop: 10,
+              }}
+            >
+              <Image
+                source={require("../images/question.png")}
+                style={{
+                  tintColor: "#6A5ADF",
+                  height: responsiveHeight(4),
+                  width: responsiveWidth(8),
+                }}
+              />
+
+              <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
+                15 Questions | Time 18 mins
+              </Text>
+            </View>
+
+            <View
+              style={{
+                height: responsiveHeight(5),
+                justifyContent: "center",
+                borderRadius: 20,
+                width: responsiveWidth(80),
+                marginTop: 10,
+                backgroundColor: "#EDEAFB",
+                alignSelf: "center",
+              }}
             >
               <Text
                 style={{
-                  color: "#fff",
-                  fontWeight: "400",
-                  alignSelf: "center",
-                  fontSize: 16,
+                  marginLeft: 10,
+                  color: "#6A5ADF",
+                  fontWeight: "500",
+                  fontSize: 14,
                 }}
               >
-                Leaderboard
+                Joined : 19 Dec, 2023
               </Text>
-            </TouchableOpacity>
+            </View>
 
-            <TouchableOpacity
+            <View
               style={{
-                height: responsiveHeight(4.8),
+                height: responsiveHeight(5),
                 justifyContent: "center",
-                borderRadius: 25,
-                width: responsiveWidth(38),
-                marginTop: 20,
-                backgroundColor: "#6A5AE0",
+                borderRadius: 20,
+                width: responsiveWidth(80),
+                marginTop: 10,
+                backgroundColor: "#EDEAFB",
+                alignSelf: "center",
               }}
-              onPress={() => navigation.navigate("AllLeaderboard")}
             >
               <Text
                 style={{
-                  color: "#fff",
-                  fontWeight: "400",
-                  alignSelf: "center",
-                  fontSize: 16,
+                  marginLeft: 10,
+                  color: "#6A5ADF",
+                  fontWeight: "500",
+                  fontSize: 14,
                 }}
               >
-                Show Result
+                Joined Fees: ₹450
               </Text>
-            </TouchableOpacity>
+            </View>
+
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <TouchableOpacity
+                style={{
+                  height: responsiveHeight(4.8),
+                  justifyContent: "center",
+                  borderRadius: 25,
+                  width: responsiveWidth(38),
+                  marginTop: 20,
+                  backgroundColor: "#6A5AE0",
+                }}
+                onPress={() => navigation.navigate("AllLeaderRank")}
+              >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontWeight: "400",
+                    alignSelf: "center",
+                    fontSize: 16,
+                  }}
+                >
+                  Leaderboard
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{
+                  height: responsiveHeight(4.8),
+                  justifyContent: "center",
+                  borderRadius: 25,
+                  width: responsiveWidth(38),
+                  marginTop: 20,
+                  backgroundColor: "#6A5AE0",
+                }}
+                onPress={() => navigation.navigate("AllLeaderboard")}
+              >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontWeight: "400",
+                    alignSelf: "center",
+                    fontSize: 16,
+                  }}
+                >
+                  Show Result
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+
+      </View>
 
       <View
         style={{
