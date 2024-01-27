@@ -23,18 +23,15 @@ import { formatTimestamp } from "./../utils/formatDate";
 import { formattedTime } from "./../utils/FormateTime";
 // import { FormatDateTime, } from './../utils/FormateTime';
 // import { formatTimestamp } from "./../utils/formatDate";
-import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
 
 const MyExam = ({ navigation }) => {
   const [live, setLive] = useState(0);
-const [search, setsearch] = useState("")
+
   const [hit, setHit] = useState("LIVE");
   const [mydata, setMydata] = useState([]);
   const [completedata, setCompletedata] = useState([]);
   const [seduleTime, setSeduleTime] = useState([]);
-  const [lodings, setlodings] = useState(true)
-  const [datanot, setdatanot] = useState()
-  
+
   function convertMillisecondsToDateTime(milliseconds) {
     const dateObject = new Date(milliseconds);
     return dateObject.toLocaleString();
@@ -52,8 +49,7 @@ const [search, setsearch] = useState("")
   }
 
 
-  const myexamApi = async (name) => {
-    // alert(name)
+  const myexamApi = async () => {
     try {
       var myHeaders = new Headers();
       myHeaders.append(
@@ -67,12 +63,9 @@ const [search, setsearch] = useState("")
         redirect: "follow",
       };
 
-      fetch(`${base_url}/my-exam?type=${hit}&name=${name}`, requestOptions)
+      fetch(`${base_url}/my-exam?type=${hit}`, requestOptions)
         .then((response) => response.json())
         .then(async (result) => {
-          console.log('====================================');
-          console.log(result);
-          console.log('====================================');
           if (result.success == true) {
             // console.log(result.data.userGameList[0].Game, "userGameList")
             console.log(`${await AsyncStorage.getItem("token")}`, "token");
@@ -84,37 +77,23 @@ const [search, setsearch] = useState("")
             // console.log(result.data.userGameList[0]._id, "jjjjjjjjjj");
             await AsyncStorage.setItem("_id2", result.data.userGameList[0]._id);
           } else {
-            setdatanot()
-            console.log(result.data.userGameList,"lll");
-            setCompletedata(result.data.userGameList);
-            setMydata(result.data.userGameList);
+            console.log(result.message, "else");
           }
         })
-        .catch((error) => console.log("error", error)).finally(()=>{setlodings(false)});
+        .catch((error) => console.log("error", error));
     } catch (error) { }
   };
 
   useEffect(() => {
-    myexamApi("");
+    myexamApi();
   }, []);
 
-  // console.log(mydata, "mydataaa");
-  // console.log(JSON.stringify(completedata), "uuuuuuuu");
+  console.log(mydata, "mydataaa");
+  console.log(JSON.stringify(completedata), "uuuuuuuu");
 
   // alert(seduleTime,"SeduleTime")
 
   return (
-    <>
-      {
-        lodings?
-        <OrientationLoadingOverlay
-          visible={lodings}
-          color="white"
-          indicatorSize="large"
-          messageFontSize={24}
-          message="Loading... "
-          />
-          :
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar
         translucent={true}
@@ -359,9 +338,6 @@ const [search, setsearch] = useState("")
             style={{ flex: 0.8, justifyContent: "center", alignSelf: "center" }}
           >
             <TextInput
-
-            onChangeText={(value)=>{
-              myexamApi(value)            }}
               require
               placeholder="Search here.."
               placeholderTextColor={"#000"}
@@ -372,7 +348,6 @@ const [search, setsearch] = useState("")
                 fontSize: 17,
                 fontFamily: "Jaldi-Regular",
               }}
-              
             />
           </View>
         </View>
@@ -390,47 +365,48 @@ const [search, setsearch] = useState("")
         </View>
       </View>
 
-      <ScrollView>
-        {live == 0 ? (
-          <View>
-            {mydata?.length > 0 ? (
-              mydata.map((data) => {
-                // console.log(data, 'data');
-                return (
-                  <>
-                    <View
-                      style={{
-                        height: responsiveHeight(45),
-                        width: responsiveWidth(90),
-                        marginBottom: 10,
-                        paddingHorizontal: 20,
-                        backgroundColor: "#fff",
-                        alignSelf: "center",
-                        marginTop: 20,
-                        borderRadius: 5,
-                        elevation: 10,
-                      }}
-                    >
-                      <Text
+      <View style={{height:responsiveHeight(59)}}>
+        <ScrollView>
+          {live == 0 ? (
+            <View>
+              {mydata?.length > 0 ? (
+                mydata.map((data) => {
+                  // console.log(data, 'data');
+                  return (
+                    <>
+                      <View
                         style={{
-                          color: "#6A5ADF",
-                          fontWeight: "500",
-                          fontSize: 16,
-                          marginTop: 15,
+                          height: responsiveHeight(45),
+                          width: responsiveWidth(90),
+                          marginBottom: 10,
+                          paddingHorizontal: 20,
+                          backgroundColor: "#fff",
+                          alignSelf: "center",
+                          marginTop: 20,
+                          borderRadius: 5,
+                          elevation: 10,
                         }}
                       >
-                        {data?.Game[0].gameNameInEnglish}
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#000",
-                          fontWeight: "400",
-                          fontSize: 14,
-                          marginTop: 5,
-                        }}
-                      >
-                        {data?.Game[0].category}
-                      </Text>
+                        <Text
+                          style={{
+                            color: "#6A5ADF",
+                            fontWeight: "500",
+                            fontSize: 16,
+                            marginTop: 15,
+                          }}
+                        >
+                          {data?.Game[0].gameNameInEnglish}
+                        </Text>
+                        <Text
+                          style={{
+                            color: "#000",
+                            fontWeight: "400",
+                            fontSize: 14,
+                            marginTop: 5,
+                          }}
+                        >
+                          {data?.Game[0].category}
+                        </Text>
 
                         <View
                           style={{ borderBottomWidth: 0.6, marginTop: 10 }}
@@ -927,8 +903,6 @@ const [search, setsearch] = useState("")
         </TouchableOpacity>
       </View>
     </View>
-      }
-    </>
   );
 };
 
