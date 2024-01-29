@@ -84,6 +84,26 @@ const MyExam = ({ navigation }) => {
     } catch (error) { }
   };
 
+  function navigetLo(times) {
+    const currentTimeInMilliseconds = new Date().getTime();
+    let availableTime = times - currentTimeInMilliseconds
+    const availableMinutes = Math.floor(availableTime / (1000 * 60));
+    if(availableMinutes < 0){
+      alert("Expiration date ")
+          }
+    else  if (availableMinutes <= 5) {
+      navigation.navigate("Instruction",{
+        times:availableMinutes
+      });
+    }
+    else{
+      alert(`Wait ${availableMinutes - 5} minutes and try again`); 
+      // navigation.navigate("Instruction",{
+      //   times:availableMinutes
+      // });
+    }
+   
+  }
   useEffect(() => {
     myexamApi();
   }, []);
@@ -534,9 +554,7 @@ const MyExam = ({ navigation }) => {
                             alignSelf: "flex-start",
                           }}
                           onPress={() => {
-                            if (currentDate >= seduleTime) {
-                              navigation.navigate("Instruction");
-                            }
+                           navigetLo(data?.schedule)
                           }}
                         >
                           <Text

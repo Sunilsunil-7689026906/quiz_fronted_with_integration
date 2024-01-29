@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Linking
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -49,6 +50,10 @@ const Winner = ({ navigation }) => {
     }
   }
 
+  const handleLinkPress = () => {
+    alert("ok")
+    // Linking.openURL("https://www.youtube.com/channel/UCT9zcQNlyht7fRlcjmflRSA");
+  };
 
 
   useEffect(() => {
@@ -462,6 +467,7 @@ const Winner = ({ navigation }) => {
               width: responsiveWidth(5.8),
               alignSelf: "center",
             }}
+            onPress={()=>{handleLinkPress()}}
           />
 
           <Text style={{ color: "#fff", fontWeight: "400", fontSize: 12 }}>

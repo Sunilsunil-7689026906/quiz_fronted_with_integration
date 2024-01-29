@@ -1,14 +1,108 @@
-import { View, Text, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, StatusBar, Image, TextInput, TouchableOpacity, Clipboard } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { ScrollView } from 'react-native-gesture-handler'
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { base_url } from "./Base_url";
 
 const MyTransaction = ({ navigation }) => {
     const [widraw, setWidraw] = useState(0)
     const [his, setHis] = useState(0)
+    const [widrawdata, setwidrawdata] = useState([])
+    const [depositdata, setdepositdata] = useState([])
+    const [quiseRewarddata, setquiseRewarddata] = useState([])
+const Widrawal = async()=>{
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append(
+            "Authorization",
+            `${await AsyncStorage.getItem("token")}`
+          );
+
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch(`${base_url}/withdraw-history`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    // console.log(result.data.transactions)
+    setwidrawdata(result.data.transactions)
+
+})
+  .catch(error => console.log('error', error));
+    } catch (error) {
+      console.log(error);  
+    }
+}
+
+const depositData = async()=>{
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append(
+            "Authorization",
+            `${await AsyncStorage.getItem("token")}`
+          );
+
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch(`${base_url}/deposit-history`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    // console.log(result.data.transactions)
+    setdepositdata(result.data.transactions)
+})
+  .catch(error => console.log('error', error));
+    } catch (error) {
+       console.log(error); 
+    }
+} 
+
+const quiseReward = async()=>{
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append(
+            "Authorization",
+            `${await AsyncStorage.getItem("token")}`
+          );
+
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch(`${base_url}/quiz-history`, requestOptions)
+  .then(response => response.json())
+  .then(
+    result => {console.log(result.data.quizs)
+    
+        setquiseRewarddata(result.data.quizs)
+    })
+  .catch(error => console.log('error', error));
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function copydata(text) {
+    Clipboard.setString(text);
+    alert('Text copied to clipboard: ' + text);
+}
+
+useEffect(() => {
+    depositData()
+    quiseReward()
+}, [])
 
     return (
         <SafeAreaView>
@@ -25,12 +119,12 @@ const MyTransaction = ({ navigation }) => {
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
                 <TouchableOpacity style={{ height: responsiveHeight(4.8), justifyContent: 'center', borderRadius: 25, width: responsiveWidth(28), marginTop: 20, backgroundColor: widraw == 0 ? '#6A5AE0' : '#fff', borderWidth: widraw == 0 ? 0 : 1, alignSelf: 'flex-start' }}
-                    onPress={() => setWidraw(0)}>
+                    onPress={() => {setWidraw(0),depositData()}}>
                     <Text style={{ color: widraw == 0 ? '#fff' : '#000', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Deposit</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={{ height: responsiveHeight(4.8), justifyContent: 'center', borderRadius: 25, width: responsiveWidth(28), marginTop: 20, backgroundColor: widraw == 1 ? '#6A5AE0' : '#fff', borderWidth: widraw == 1 ? 0 : 1, alignSelf: 'flex-start' }}
-                    onPress={() => setWidraw(1)}>
+                    onPress={() => {setWidraw(1),Widrawal()}}>
                     <Text style={{ color: widraw == 1 ? '#fff' : '#000', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Widrawal</Text>
                 </TouchableOpacity>
 
@@ -79,73 +173,26 @@ const MyTransaction = ({ navigation }) => {
 
                         </View>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(8), width: responsiveWidth(90), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>1.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
+
+                        {
+                            depositdata?.map((res,i)=>{
+                            return(
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(8), width: responsiveWidth(90), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>{i+1}</Text>
+                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹{res.amount}</Text>
+                            <Text  style={{ alignSelf: 'center', color: 'green' }}>#{res._id.toString().substring(0, 4)}...<AntDesign name="copy1" size={18} color="black" onPress={()=>{copydata(res._id)}} /></Text>
+                            <Text style={{ alignSelf: 'center', color: '#000' }}>{res.status}</Text>
 
                             <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
+                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleDateString()}</Text>
+                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleTimeString()}</Text>
                             </View>
 
 
                         </View>
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(90), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>2.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
-
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                            </View>
-
-                        </View>
-
-
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(90), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>3.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
-
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                            </View>
-
-                        </View>
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(90), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>4.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
-
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                            </View>
-
-                        </View>
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(90), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>5.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
-
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                            </View>
-
-                        </View>
+                            )
+                        })
+                      }
 
 
                     </View>
@@ -192,73 +239,27 @@ const MyTransaction = ({ navigation }) => {
 
                         </View>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(8), width: responsiveWidth(90), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>1.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
+                        {
+                        widrawdata?.map((res,i)=>{
+                            return(
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(8), width: responsiveWidth(90), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>{i+1}</Text>
+                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹{res.amount}</Text>
+                            <Text  style={{ alignSelf: 'center', color: 'green' }}>#{res._id.toString().substring(0, 4)}...<AntDesign name="copy1" size={18} color="black" onPress={()=>{copydata(res._id)}} /></Text>
+                            <Text style={{ alignSelf: 'center', color: '#000' }}>{res.status}</Text>
 
                             <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
+                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleDateString()}</Text>
+                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleTimeString()}</Text>
                             </View>
 
 
                         </View>
+                            )
+                        })
+                      }
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(90), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>2.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
-
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                            </View>
-
-                        </View>
-
-
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(90), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>3.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
-
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                            </View>
-
-                        </View>
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(90), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>4.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
-
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                            </View>
-
-                        </View>
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(90), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>5.</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹4902</Text>
-                            <Text style={{ alignSelf: 'center', color: 'green' }}>#4332322</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>Pending</Text>
-
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                            </View>
-
-                        </View>
+                        
 
 
                     </View>
@@ -344,97 +345,30 @@ const MyTransaction = ({ navigation }) => {
 
 
                                     </View>
-
-                                    <View style={{ flexDirection: 'row', height: responsiveHeight(9), width: responsiveWidth(95), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
-                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.1 }}>1.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.4 }}>SSE 202..</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.2, marginRight: 15 }}>₹400</Text>
+{quiseRewarddata?.map((res,index)=>{
+    return(
+        <>
+        <View style={{ flexDirection: 'row', height: responsiveHeight(9), width: responsiveWidth(95), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
+                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.1 }}>{index+1}</Text>
+                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.4 }}>{res.gameId.gameNameInEnglish}</Text>
+                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.2, marginRight: 15 }}>₹{res.amount}</Text>
                                         <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>18</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>#4</Text>
+                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>#{res.rank}</Text>
                                         <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>32</Text>
 
                                         <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
+                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.businessDate).toLocaleDateString()}</Text>
+                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.businessDate).toLocaleTimeString()}</Text>
                                         </View>
 
 
                                     </View>
 
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(95), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.1 }}>2.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.4 }}>SSE 202..</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.2, marginRight: 15 }}>₹400</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>18</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>#4</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>32</Text>
-
-
-
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                                        </View>
-
-                                    </View>
-
-
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(95), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.1 }}>3.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.4 }}>SSE 202..</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.2, marginRight: 15 }}>₹400</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>18</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>#4</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>32</Text>
-
-
-
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                                        </View>
-
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(95), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.1 }}>4.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.4 }}>SSE 202..</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.2, marginRight: 15 }}>₹400</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>18</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>#4</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>32</Text>
-
-
-
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                                        </View>
-
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(95), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.1 }}>5.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.4 }}>SSE 202..</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.2, marginRight: 15 }}>₹400</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>18</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>#4</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>32</Text>
-
-
-
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                                        </View>
-
-                                    </View>
+        </>
+    )
+})}
+                                   
+                                    
 
 
                                 </View>

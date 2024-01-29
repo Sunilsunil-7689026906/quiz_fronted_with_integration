@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import loding from "../images/loding.gif"
@@ -31,14 +32,21 @@ const Home = ({ navigation }) => {
   const [mydata, setMydata] = useState([]);
   const [myid, setMyid] = useState([{}]);
 const [lodings, setlodings] = useState(true)
+const [linksdata, setlinksdata] = useState([])
+const [ylink, setylink] = useState("")
+const [tlink, settlink] = useState("")
+const [elink, setelink] = useState("")
   function FormatDateTime() {
     const milliseconds = 1642958701000; // Example timestamp in milliseconds
     const formattedDateTime = convertMillisecondsToDateTime(milliseconds);
-    console.log(formattedDateTime);
+    // console.log(formattedDateTime);
     return formattedDateTime
   }
 
   const sliderApi = async () => {
+    // console.log('====================================');
+    // console.log(await AsyncStorage.getItem("token"),"token");
+    // console.log('====================================');
     try {
       var myHeaders = new Headers();
       myHeaders.append(
@@ -65,7 +73,7 @@ const [lodings, setlodings] = useState(true)
             // console.log(result.data.slides, "imgimg");
             setImgData(result.data.slides);
           } else {
-            console.log(result.message);
+            // console.log(result.message);
           }
         })
         .catch((error) => console.log("error", error)).finally(()=>{setlodings(false)});
@@ -94,7 +102,7 @@ const [lodings, setlodings] = useState(true)
         .then((response) => response.json())
         .then(async (result) => {
           if (result.success == true) {
-            console.log(result.message, "if");
+            // console.log(result.message, "if");
             // console.log(result.data.upcomingGames, "myApidata");
             setMydata(result.data.upcomingGames);
             // setMyid(result.data.upcomingGames[0]._id)
@@ -102,23 +110,59 @@ const [lodings, setlodings] = useState(true)
             await AsyncStorage.setItem("_id", result.data?.upcomingGames[0]._id);
             // console.log(result.data.upcomingGames[0]._id, "_id");
           } else {
-            console.log(result.message, "else");
+            // console.log(result.message, "else");
           }
         })
         .catch((error) => console.log("errorrr", error)).finally(()=>{setlodings(false)});
     } catch (error) { }
   };
 
+  const Linkings = async()=>{
+    // alert("jk")
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append(
+        "Authorization",
+        `${await AsyncStorage.getItem("token")}`
+      );;
 
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch(`${base_url}/social-links`, requestOptions)
+  .then(response => response.json())
+  .then(result =>{ console.log(result.data.links[4].link,"comkk")
+    // setlinksdata(result.links)
+    setylink(result.data.links[2].link)
+    settlink(result.data.links[1].link)
+    setelink(result.links[4].link)  
+  })
+  .catch(error => console.log('error', error));
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleLinkPress = (l) => {
+    // alert(l)
+    Linking.openURL(l);
+  };
 
   // console.log(mydata, "mmmmmmmmmy");
 
   useEffect(() => {
+    Linkings()
     sliderApi();
     examApi();
   }, []);
 
   // console.log(myid,"myid");
+
+
 
   return (
    <>
@@ -358,7 +402,7 @@ const [lodings, setlodings] = useState(true)
 
         {mydata.length > 0 ? (
           mydata.map((data) => {
-            console.log(data, "datamydata");
+            {/* console.log(data, "datamydata"); */}
 
             // setMyid(data._id)
 
@@ -615,7 +659,10 @@ const [lodings, setlodings] = useState(true)
           flexDirection: "row",
         }}
       >
-        <TouchableOpacity style={{ alignSelf: "center" }}>
+        
+        <TouchableOpacity style={{ alignSelf: "center" }}
+        onPress={()=>{handleLinkPress(ylink)}}
+        >
           <Image
             source={require("../images/yt.webp")}
             style={{
@@ -632,9 +679,7 @@ const [lodings, setlodings] = useState(true)
 
         <TouchableOpacity
           style={{ alignSelf: "center" }}
-          onPress={() => {
-            examApi();
-          }}
+          onPress={()=>{handleLinkPress(tlink)}}
         >
           <Image
             source={require("../images/yt.webp")}
@@ -653,7 +698,7 @@ const [lodings, setlodings] = useState(true)
 
         <TouchableOpacity
           style={{ alignSelf: "center" }}
-          onPress={() => navigation.navigate("Dummy")}
+          onPress={()=>{handleLinkPress(elink)}}
         >
           <Image
             source={require("../images/tmail.png")}
