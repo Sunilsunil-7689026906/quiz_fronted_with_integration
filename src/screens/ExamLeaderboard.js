@@ -278,83 +278,79 @@ const ExamLeaderboard = ({ navigation }) => {
 
                 </View>
 
-                <View style={{ height: responsiveHeight(6), width: responsiveWidth(90), paddingHorizontal: 20, backgroundColor: '#6A5AE0', alignSelf: 'center', marginTop: 20, borderTopLeftRadius: 8, borderTopRightRadius: 8, elevation: 10 }}>
-                    <View style={{ flexDirection: 'row', marginTop: 12, justifyContent: 'space-between', marginHorizontal: 20 }}>
-
-                        <View style={{ justifyContent: 'center' }}>
-                            <Text style={{ fontSize: 18, fontWeight: '400', alignSelf: 'center', color: '#fff' }}>Leaderboard Winner</Text>
-                        </View>
-
-                        <View style={{ justifyContent: 'center' }}>
-                            <Image source={require('../images/leaderboard.png')} style={{ tintColor: '#fff', width: responsiveWidth(7), height: responsiveHeight(3.5) }} />
-                        </View>
-
+                <View style={{ height: responsiveHeight(46), alignSelf: 'center', justifyContent: 'center', width: responsiveWidth(90), marginBottom: 10, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
+                    <View style={{ height: responsiveHeight(6), justifyContent: 'center', width: responsiveWidth(85), borderWidth: 1, borderRadius: 10, alignSelf: 'center' }}>
+                        <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0', fontWeight: '500' }}>Row Point Table</Text>
                     </View>
+
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 11, marginTop: 10 }}>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>M</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>C</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>T</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>Total</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 11 }}>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>2.5</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>6</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>7</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>9.5</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ height: responsiveHeight(6), justifyContent: 'center', width: responsiveWidth(85), borderWidth: 1, marginTop: 20, borderRadius: 10, alignSelf: 'center' }}>
+                        <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0', fontWeight: '500' }}>Main Point Table</Text>
+                    </View>
+
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 11, marginTop: 10 }}>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>M</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>C</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>T</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>Total</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 11 }}>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>2.5</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>6</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>7</Text>
+                        </View>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
+                            <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>9.5</Text>
+                        </View>
+                    </View>
+
                 </View>
 
-                <View style={{ height: responsiveHeight(42), width: responsiveWidth(90), elevation: 10, marginBottom: 10, paddingHorizontal: 20, backgroundColor: '#fff', alignSelf: 'center', borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', alignSelf: 'center' }}>
-                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>Rank</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500', marginLeft: 20 }}>Name</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500', marginLeft: 20 }}>Reg.ID</Text>
-                        <View>
-                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500', marginLeft: 10 }}>Winning</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500', marginLeft: 10 }}>amount</Text>
-
-                        </View>
-                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>Points</Text>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
-                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>#1</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>Kamal ka..</Text>
-                        <Text style={{ alignSelf: 'center', color: 'green' }}>43322</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>₹400</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>7.5</Text>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>#1</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>Kamal ka..</Text>
-                        <Text style={{ alignSelf: 'center', color: 'green' }}>43322</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>₹400</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>7.5</Text>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 5, alignSelf: 'center' }}>
-                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>#1</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>Kamal ka..</Text>
-                        <Text style={{ alignSelf: 'center', color: 'green' }}>43322</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>₹400</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>7.5</Text>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 5, alignSelf: 'center' }}>
-                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>#1</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>Kamal ka..</Text>
-                        <Text style={{ alignSelf: 'center', color: 'green' }}>43322</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>₹400</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>7.5</Text>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 5, alignSelf: 'center' }}>
-                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>#1</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>Kamal ka..</Text>
-                        <Text style={{ alignSelf: 'center', color: 'green' }}>43322</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000' }}>₹400</Text>
-                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>7.5</Text>
-
-                    </View>
-
-
-                </View>
-                
             </ScrollView>
 
         </SafeAreaView>

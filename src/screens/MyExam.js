@@ -759,7 +759,7 @@ const MyExam = ({ navigation }) => {
                               marginTop: 20,
                               backgroundColor: "#6A5AE0",
                             }}
-                            onPress={() => navigation.navigate("ExamLeaderboard")}
+                            onPress={() => navigation.navigate("AllQuestion")}
                           >
                             <Text
                               style={{

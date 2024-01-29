@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -16,8 +16,44 @@ import { ScrollView } from "react-native-gesture-handler";
 import ScrollableTabView, {
   DefaultTabBar,
 } from "react-native-scrollable-tab-view";
+import { base_url } from "./Base_url";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const Percentage = ({ navigation }) => {
+  const [data, setdata] = useState([])
+
+
+  const correctApi = async () => {
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+
+      fetch(`${base_url}/correct-percent`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          if (result.success == true) {
+            console.log(result.data.joingGame)
+            setdata(result.data.joingGame)
+
+          }
+        })
+        .catch(error => console.log('error', error));
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    correctApi()
+  },[])
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar
@@ -233,182 +269,196 @@ const Percentage = ({ navigation }) => {
         </View>
       </View>
 
-      <ScrollView style={{ height: responsiveHeight(66) }}>
-        <View
-          style={{
-            height: responsiveHeight(45),
-            width: responsiveWidth(90),
-            marginBottom: 10,
-            paddingHorizontal: 20,
-            backgroundColor: "#fff",
-            alignSelf: "center",
-            marginTop: 20,
-            borderRadius: 5,
-            elevation: 10,
-          }}
-        >
-          <Text
-            style={{
-              color: "#6A5ADF",
-              fontWeight: "500",
-              fontSize: 16,
-              marginTop: 15,
-            }}
-          >
-            SSC 2024 JAN Exam EPT34
-          </Text>
-          <Text
-            style={{
-              color: "#000",
-              fontWeight: "500",
-              fontSize: 14,
-              marginTop: 5,
-            }}
-          >
-            Rank : #13
-          </Text>
 
-          <View style={{ borderBottomWidth: 0.6, marginTop: 10 }}></View>
+      <View style={{height:responsiveHeight(66),marginBottom:0}}>
+        <ScrollView >
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              marginTop: 10,
-            }}
-          >
-            <Image
-              source={require("../images/calender.png")}
-              style={{
-                tintColor: "#6A5ADF",
-                height: responsiveHeight(4),
-                width: responsiveWidth(8),
-              }}
-            />
+          {
+            data?.map((res) => {
+              return (
+                <>
+                  <View
+                    style={{
+                      height: responsiveHeight(45),
+                      width: responsiveWidth(90),
+                      marginBottom: 10,
+                      paddingHorizontal: 20,
+                      backgroundColor: "#fff",
+                      alignSelf: "center",
+                      marginTop: 20,
+                      borderRadius: 5,
+                      elevation: 10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#6A5ADF",
+                        fontWeight: "500",
+                        fontSize: 16,
+                        marginTop: 15,
+                      }}
+                    >
+                      {res.gameNameInEnglish}
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#000",
+                        fontWeight: "500",
+                        fontSize: 14,
+                        marginTop: 5,
+                      }}
+                    >
+                      Rank : #{res.rank}
+                    </Text>
 
-            <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
-              20 DEC, 2023 | 4:00 PM
-            </Text>
-          </View>
+                    <View style={{ borderBottomWidth: 0.6, marginTop: 10 }}></View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              marginTop: 10,
-            }}
-          >
-            <Image
-              source={require("../images/question.png")}
-              style={{
-                tintColor: "#6A5ADF",
-                height: responsiveHeight(4),
-                width: responsiveWidth(8),
-              }}
-            />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        marginTop: 10,
+                      }}
+                    >
+                      <Image
+                        source={require("../images/calender.png")}
+                        style={{
+                          tintColor: "#6A5ADF",
+                          height: responsiveHeight(4),
+                          width: responsiveWidth(8),
+                        }}
+                      />
 
-            <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
-              15 Questions | Time 18 mins
-            </Text>
-          </View>
+                      <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
+                        {new Date(res.schedule * 1000).toDateString()}
+                      </Text>
+                    </View>
 
-          <View
-            style={{
-              height: responsiveHeight(5),
-              justifyContent: "center",
-              borderRadius: 20,
-              width: responsiveWidth(80),
-              marginTop: 10,
-              backgroundColor: "#EDEAFB",
-              alignSelf: "center",
-            }}
-          >
-            <Text
-              style={{
-                marginLeft: 10,
-                color: "#6A5ADF",
-                fontWeight: "500",
-                fontSize: 14,
-              }}
-            >
-              Joined : 19 Dec, 2023
-            </Text>
-          </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        marginTop: 10,
+                      }}
+                    >
+                      <Image
+                        source={require("../images/question.png")}
+                        style={{
+                          tintColor: "#6A5ADF",
+                          height: responsiveHeight(4),
+                          width: responsiveWidth(8),
+                        }}
+                      />
 
-          <View
-            style={{
-              height: responsiveHeight(5),
-              justifyContent: "center",
-              borderRadius: 20,
-              width: responsiveWidth(80),
-              marginTop: 10,
-              backgroundColor: "#EDEAFB",
-              alignSelf: "center",
-            }}
-          >
-            <Text
-              style={{
-                marginLeft: 10,
-                color: "#6A5ADF",
-                fontWeight: "500",
-                fontSize: 14,
-              }}
-            >
-              Joined Fees: ₹450
-            </Text>
-          </View>
+                      <Text style={{ alignSelf: "center", marginLeft: 10, fontSize: 13 }}>
+                        {res.noOfQuestion} Questions | Time {parseInt(parseInt(res.duration) / 60000)} mins
+                      </Text>
+                    </View>
 
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <TouchableOpacity
-              style={{
-                height: responsiveHeight(4.8),
-                justifyContent: "center",
-                borderRadius: 25,
-                width: responsiveWidth(38),
-                marginTop: 20,
-                backgroundColor: "#6A5AE0",
-              }}
-              onPress={() => navigation.navigate("AllLeaderRank")}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontWeight: "400",
-                  alignSelf: "center",
-                  fontSize: 16,
-                }}
-              >
-                Leaderboard
-              </Text>
-            </TouchableOpacity>
+                    <View
+                      style={{
+                        height: responsiveHeight(5),
+                        justifyContent: "center",
+                        borderRadius: 20,
+                        width: responsiveWidth(80),
+                        marginTop: 10,
+                        backgroundColor: "#EDEAFB",
+                        alignSelf: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          marginLeft: 10,
+                          color: "#6A5ADF",
+                          fontWeight: "500",
+                          fontSize: 14,
+                        }}
+                      >
+                        Joined : {data?.length}
+                      </Text>
+                    </View>
 
-            <TouchableOpacity
-              style={{
-                height: responsiveHeight(4.8),
-                justifyContent: "center",
-                borderRadius: 25,
-                width: responsiveWidth(38),
-                marginTop: 20,
-                backgroundColor: "#6A5AE0",
-              }}
-              onPress={() => navigation.navigate("AllLeaderboard")}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontWeight: "400",
-                  alignSelf: "center",
-                  fontSize: 16,
-                }}
-              >
-                Show Result
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
+                    <View
+                      style={{
+                        height: responsiveHeight(5),
+                        justifyContent: "center",
+                        borderRadius: 20,
+                        width: responsiveWidth(80),
+                        marginTop: 10,
+                        backgroundColor: "#EDEAFB",
+                        alignSelf: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          marginLeft: 10,
+                          color: "#6A5ADF",
+                          fontWeight: "500",
+                          fontSize: 14,
+                        }}
+                      >
+                        Joined Fees: ₹{res.pricePool}
+                      </Text>
+                    </View>
+
+                    <View
+                      style={{ flexDirection: "row", justifyContent: "space-between" }}
+                    >
+                      <TouchableOpacity
+                        style={{
+                          height: responsiveHeight(4.8),
+                          justifyContent: "center",
+                          borderRadius: 25,
+                          width: responsiveWidth(38),
+                          marginTop: 20,
+                          backgroundColor: "#6A5AE0",
+                        }}
+                        onPress={() => navigation.navigate("WinnerDetail")}
+                      >
+                        <Text
+                          style={{
+                            color: "#fff",
+                            fontWeight: "400",
+                            alignSelf: "center",
+                            fontSize: 16,
+                          }}
+                        >
+                          Leaderboard
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={{
+                          height: responsiveHeight(4.8),
+                          justifyContent: "center",
+                          borderRadius: 25,
+                          width: responsiveWidth(38),
+                          marginTop: 20,
+                          backgroundColor: "#6A5AE0",
+                        }}
+                        onPress={() => navigation.navigate("AllLeaderboard")}
+                      >
+                        <Text
+                          style={{
+                            color: "#fff",
+                            fontWeight: "400",
+                            alignSelf: "center",
+                            fontSize: 16,
+                          }}
+                        >
+                          Show Result
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </>
+              )
+            })
+          }
+
+        </ScrollView>
+      </View>
+
 
       <View
         style={{
@@ -431,6 +481,7 @@ const Percentage = ({ navigation }) => {
               alignSelf: "center",
             }}
           />
+
 
           <Text style={{ color: "#fff", fontWeight: "400", fontSize: 12 }}>
             Youtube

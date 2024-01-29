@@ -9,8 +9,6 @@ import PieChart from 'react-native-pie-chart';
 import { BarChart } from 'react-native-chart-kit';
 
 
-
-
 const AllLeaderboard = ({ navigation }) => {
     const [select, setSelect] = useState('')
     const [number, setNumber] = useState(1)
@@ -38,7 +36,6 @@ const AllLeaderboard = ({ navigation }) => {
         <SafeAreaView  >
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
 
-            <ScrollView showsVerticalScrollIndicator={false} >
 
                 <View style={{ height: responsiveHeight(7), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
@@ -49,6 +46,9 @@ const AllLeaderboard = ({ navigation }) => {
                         <Text style={{ color: '#fff', fontSize: 20, fontWeight: '500', alignSelf: 'center', marginTop: 15, marginLeft: '26%' }}>Leaderboard</Text>
                     </View>
                 </View>
+
+            <ScrollView showsVerticalScrollIndicator={false} >
+
 
 
                 <ScrollView style={{ flexDirection: 'row' }} horizontal showsHorizontalScrollIndicator={false} >

@@ -75,7 +75,7 @@ const MyBalance = ({ navigation }) => {
                             prefill: {
                                 email: result.data.email,
                                 contact: result.data.mobile ,
-                                name: result.data.name
+                                name: result.data.q
                             },
                             theme: { color: '#53a20e' }
                         }
