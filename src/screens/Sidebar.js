@@ -8,6 +8,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const Sidebar = ({ navigation }) => {
+    const [img, setimg] = useState("")
+    const [names, setnames] = useState("")
+    const [email, setemail] = useState("")
 
     const logoutApi = async () => {
         try {
@@ -34,19 +37,41 @@ const Sidebar = ({ navigation }) => {
             console.log(error);
         }
     }
+    const imgget = async()=>{
+        setimg(await AsyncStorage.getItem("pr"))
+        setimg(await AsyncStorage.getItem("pr"))
+        setnames(await AsyncStorage.getItem("names"))
+        setemail(await AsyncStorage.getItem("email"))
+    }
+    useEffect(async()=>{
+        try {
+            
+            setimg(await AsyncStorage.getItem("pr"))
+            setnames(await AsyncStorage.getItem("names"))
+            setemail(await AsyncStorage.getItem("email"))
+        } catch (error) {
+            console.log(error);
+        }
+        
+    },[])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#6A5AE0' }}>
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
 
+<TouchableOpacity onPress={imgget} >
+
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginHorizontal: 20, marginTop: 40 }}>
-                <Image source={require('../images/user.jpg')} style={{ height: responsiveHeight(5), width: responsiveWidth(10), borderRadius: 100, alignSelf: 'center', marginTop: 3 }} />
+                <Image source={{
+                                  uri: img,
+                                }} style={{ height: responsiveHeight(5), width: responsiveWidth(10), borderRadius: 100, alignSelf: 'center', marginTop: 3 }} />
                 <View style={{ justifyContent: 'center', marginLeft: 20 }}>
-                    <Text style={{ color: '#fff', fontWeight: '500', fontSize: 16, alignSelf: 'flex-start' }}>Raman kant</Text>
-                    <Text style={{ color: '#fff', fontWeight: '400', alignSelf: 'center' }}>Raman688@gmail.com</Text>
+                    <Text style={{ color: '#fff', fontWeight: '500', fontSize: 16, alignSelf: 'flex-start' }}>{names}</Text>
+                    <Text style={{ color: '#fff', fontWeight: '400', alignSelf: 'center' }}>{email}</Text>
                 </View>
                 <Image source={require('../images/wcross.png')} style={{ height: responsiveHeight(2), width: responsiveWidth(5), borderRadius: 100, marginTop: 8 }} />
 
             </View>
+</TouchableOpacity>
 
             <View style={{ marginTop: 40, marginHorizontal: 20 }}>
 
