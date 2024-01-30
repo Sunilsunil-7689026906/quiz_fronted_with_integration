@@ -26,8 +26,10 @@ import { base_url } from "./Base_url";
 const LeaderboardRank = ({ navigation }) => {
 
   const [mydata, setMydata] = useState([])
+  const [filterText, setFilterText] = useState("");
 
-  const leadershipApi = async () => {
+
+  const leadershipApi = async ({name}) => {
     try {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -46,7 +48,7 @@ const LeaderboardRank = ({ navigation }) => {
         redirect: 'follow'
       };
 
-      fetch(`${base_url}/quiz-leadership`, requestOptions)
+      fetch(`${base_url}/quiz-leadership?name=${name}`, requestOptions)
         .then(response => response.json())
         .then(result => {
           if (result.success == true) {
@@ -63,8 +65,8 @@ const LeaderboardRank = ({ navigation }) => {
   }
 
   useEffect(() => {
-    leadershipApi();
-  }, [])
+    leadershipApi({name:filterText})
+  }, [filterText]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -124,7 +126,7 @@ const LeaderboardRank = ({ navigation }) => {
           style={{
             backgroundColor: "#fff",
             height: responsiveHeight(5.5),
-            width: responsiveWidth(70),
+            width: responsiveWidth(84),
             borderRadius: 10,
             justifyContent: "center",
             marginTop: 10,
@@ -154,6 +156,7 @@ const LeaderboardRank = ({ navigation }) => {
             style={{ flex: 0.8, justifyContent: "center", alignSelf: "center" }}
           >
             <TextInput
+            onChangeText={(value)=>setFilterText(value)}
               require
               placeholder="Search here.."
               placeholderTextColor={"#000"}
@@ -168,7 +171,7 @@ const LeaderboardRank = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ alignSelf: "center" }}>
+        {/* <View style={{ alignSelf: "center" }}>
           <Image
             source={require("../images/calender.png")}
             style={{
@@ -178,7 +181,7 @@ const LeaderboardRank = ({ navigation }) => {
               marginLeft: 10,
             }}
           />
-        </View>
+        </View> */}
       </View>
 
       <View

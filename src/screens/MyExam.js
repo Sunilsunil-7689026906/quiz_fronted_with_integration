@@ -31,6 +31,7 @@ const MyExam = ({ navigation }) => {
   const [mydata, setMydata] = useState([]);
   const [completedata, setCompletedata] = useState([]);
   const [seduleTime, setSeduleTime] = useState([]);
+  const [filterText, setFilterText] = useState("");
 
   function convertMillisecondsToDateTime(milliseconds) {
     const dateObject = new Date(milliseconds);
@@ -48,8 +49,7 @@ const MyExam = ({ navigation }) => {
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
   }
 
-
-  const myexamApi = async () => {
+  const myexamApi = async ({name}) => {
     try {
       var myHeaders = new Headers();
       myHeaders.append(
@@ -63,7 +63,7 @@ const MyExam = ({ navigation }) => {
         redirect: "follow",
       };
 
-      fetch(`${base_url}/my-exam?type=${hit}`, requestOptions)
+      fetch(`${base_url}/my-exam?type=${hit}&name=${name}`, requestOptions)
         .then((response) => response.json())
         .then(async (result) => {
           if (result.success == true) {
@@ -83,10 +83,31 @@ const MyExam = ({ navigation }) => {
         .catch((error) => console.log("error", error));
     } catch (error) { }
   };
+  
 
+  function navigetLo(times) {
+    const currentTimeInMilliseconds = new Date().getTime();
+    let availableTime = times - currentTimeInMilliseconds
+    const availableMinutes = Math.floor(availableTime / (1000 * 60));
+    if(availableMinutes < 0){
+      alert("Expiration date ")
+          }
+    else  if (availableMinutes <= 5) {
+      navigation.navigate("Instruction",{
+        times:availableMinutes
+      });
+    }
+    else{
+      alert(`Wait ${availableMinutes - 5} minutes and try again`); 
+      // navigation.navigate("Instruction",{
+      //   times:availableMinutes
+      // });
+    }
+   
+  }
   useEffect(() => {
-    myexamApi();
-  }, []);
+    myexamApi({name:filterText})
+  }, [filterText]);
 
   console.log(mydata, "mydataaa");
   console.log(JSON.stringify(completedata), "uuuuuuuu");
@@ -308,7 +329,7 @@ const MyExam = ({ navigation }) => {
           style={{
             backgroundColor: "#fff",
             height: responsiveHeight(5.5),
-            width: responsiveWidth(70),
+            width: responsiveWidth(88),
             borderRadius: 10,
             justifyContent: "center",
             marginTop: 10,
@@ -338,6 +359,11 @@ const MyExam = ({ navigation }) => {
             style={{ flex: 0.8, justifyContent: "center", alignSelf: "center" }}
           >
             <TextInput
+            // onChangeText={(value)=>{
+            //   myexamApi(value)
+            // }}
+            // value={filterText}
+            onChangeText={(value)=>setFilterText(value)}
               require
               placeholder="Search here.."
               placeholderTextColor={"#000"}
@@ -352,7 +378,7 @@ const MyExam = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ alignSelf: "center" }}>
+        {/* <View style={{ alignSelf: "center" }}>
           <Image
             source={require("../images/calender.png")}
             style={{
@@ -362,7 +388,7 @@ const MyExam = ({ navigation }) => {
               marginLeft: 10,
             }}
           />
-        </View>
+        </View> */}
       </View>
 
       <View style={{height:responsiveHeight(59)}}>
@@ -395,7 +421,8 @@ const MyExam = ({ navigation }) => {
                             marginTop: 15,
                           }}
                         >
-                          {data?.Game[0].gameNameInEnglish}
+                          {/* {data?.Game[0].gameNameInEnglish} */}
+                          {data?.gameNameInEnglish}
                         </Text>
                         <Text
                           style={{
@@ -534,9 +561,7 @@ const MyExam = ({ navigation }) => {
                             alignSelf: "flex-start",
                           }}
                           onPress={() => {
-                            if (currentDate >= seduleTime) {
-                              navigation.navigate("Instruction");
-                            }
+                           navigetLo(data?.schedule)
                           }}
                         >
                           <Text

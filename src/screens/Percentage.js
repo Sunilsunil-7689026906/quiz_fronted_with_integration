@@ -22,9 +22,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Percentage = ({ navigation }) => {
   const [data, setdata] = useState([])
+  const [filterText, setFilterText] = useState("");
 
 
-  const correctApi = async () => {
+
+  const correctApi = async (name) => {
     try {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -35,13 +37,16 @@ const Percentage = ({ navigation }) => {
         redirect: 'follow'
       };
 
-      fetch(`${base_url}/correct-percent`, requestOptions)
+      fetch(`${base_url}/correct-percent?&name=${name}`, requestOptions)
         .then(response => response.json())
         .then(result => {
           if (result.success == true) {
             console.log(result.data.joingGame)
             setdata(result.data.joingGame)
 
+          }
+          else{
+            console.log(result.message,"else");
           }
         })
         .catch(error => console.log('error', error));
@@ -52,8 +57,8 @@ const Percentage = ({ navigation }) => {
   }
 
   useEffect(() => {
-    correctApi()
-  },[])
+    correctApi({ name: filterText })
+  }, [filterText]);
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar
@@ -90,13 +95,13 @@ const Percentage = ({ navigation }) => {
             />
           </TouchableOpacity>
           <Image
-            source={require("../images/logomain.png")}
+            source={require("../images/logo.png")}
             style={{
               height: responsiveHeight(6),
               marginRight: 40,
-              width: responsiveWidth(40),
+              width: responsiveWidth(26),
               alignSelf: "center",
-              marginTop: 5,
+              marginTop: 3,
             }}
           />
 
@@ -208,7 +213,7 @@ const Percentage = ({ navigation }) => {
           style={{
             backgroundColor: "#fff",
             height: responsiveHeight(5.5),
-            width: responsiveWidth(70),
+            width: responsiveWidth(88),
             borderRadius: 10,
             justifyContent: "center",
             marginTop: 10,
@@ -242,6 +247,7 @@ const Percentage = ({ navigation }) => {
             }}
           >
             <TextInput
+              onChangeText={(value) => setFilterText(value)}
               require
               placeholder="Search here.."
               placeholderTextColor={"#000"}
@@ -256,7 +262,7 @@ const Percentage = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ alignSelf: "center" }}>
+        {/* <View style={{ alignSelf: "center" }}>
           <Image
             source={require("../images/calender.png")}
             style={{
@@ -266,11 +272,11 @@ const Percentage = ({ navigation }) => {
               marginLeft: 10,
             }}
           />
-        </View>
+        </View> */}
       </View>
 
 
-      <View style={{height:responsiveHeight(66),marginBottom:0}}>
+      <View style={{ height: responsiveHeight(66), marginBottom: 0 }}>
         <ScrollView >
 
           {

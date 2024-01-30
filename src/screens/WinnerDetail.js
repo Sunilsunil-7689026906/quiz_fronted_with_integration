@@ -14,11 +14,13 @@ import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 const WinnerDetail = ({ navigation }) => {
     const [select, setSelect] = useState('')
     const [number, setNumber] = useState(1)
+    const [filterText, setFilterText] = useState("");
+
 
     const [mydata, setMydata] = useState([])
     const [lodings, setlodings] = useState(true)
 
-    const leadershipApi = async () => {
+    const leadershipApi = async ({ name }) => {
         try {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -37,7 +39,7 @@ const WinnerDetail = ({ navigation }) => {
                 redirect: 'follow'
             };
 
-            fetch(`${base_url}/quiz-leadership`, requestOptions)
+            fetch(`${base_url}/quiz-leadership?name=${name}`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
@@ -45,104 +47,108 @@ const WinnerDetail = ({ navigation }) => {
                         setMydata(result.data.gameLeadership[0].UserGame)
 
                     }
+                    else{
+                        console.log(result.message,"elsee");
+                    }
                 })
-                .catch(error => console.log('error', error)).finally(()=>{setlodings(false)});
+                .catch(error => console.log('error', error)).finally(() => { setlodings(false) });
 
         } catch (error) {
-
+            console.log(error);
         }
     }
 
     useEffect(() => {
-        leadershipApi();
-    }, [])
+        leadershipApi({ name: filterText })
+    }, [filterText]);
 
 
     return (
         <>
-           { lodings?
-            <OrientationLoadingOverlay
-          visible={lodings}
-          color="white"
-          indicatorSize="large"
-          messageFontSize={24}
-          message="Loading... "
-          />
-            :
-            
-        <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }} >
-            <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
+            {lodings ?
+                <OrientationLoadingOverlay
+                    visible={lodings}
+                    color="white"
+                    indicatorSize="large"
+                    messageFontSize={24}
+                    message="Loading... "
+                />
+                :
 
-            <View style={{ height: responsiveHeight(7), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ justifyContent: 'center', alignSelf: 'flex-start', marginTop: 15 }}>
-                        <AntDesign name="arrowleft" size={24} color="white" />
-                    </TouchableOpacity>
+                <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }} >
+                    <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
 
-                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: '500', alignSelf: 'center', marginTop: 15, marginLeft: '24%' }}>Winner Details</Text>
-                </View>
-            </View>
+                    <View style={{ height: responsiveHeight(7), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                            <TouchableOpacity onPress={() => navigation.goBack()} style={{ justifyContent: 'center', alignSelf: 'flex-start', marginTop: 15 }}>
+                                <AntDesign name="arrowleft" size={24} color="white" />
+                            </TouchableOpacity>
 
-            <View
-                style={{
-                    height: responsiveHeight(8.1),
-                    flexDirection: "row",
-                    width: responsiveWidth(95),
-                    alignSelf: "center",
-                    marginTop: 20,
-                    borderRadius: 10,
-                    backgroundColor: "#6A5AE0",
-                }}
-            >
-                <View
-                    style={{
-                        backgroundColor: "#fff",
-                        height: responsiveHeight(5.5),
-                        width: responsiveWidth(70),
-                        borderRadius: 10,
-                        justifyContent: "center",
-                        marginTop: 10,
-                        flexDirection: "row",
-                        marginHorizontal: 20,
-                    }}
-                >
+                            <Text style={{ color: '#fff', fontSize: 20, fontWeight: '500', alignSelf: 'center', marginTop: 15, marginLeft: '24%' }}>Winner Details</Text>
+                        </View>
+                    </View>
+
                     <View
                         style={{
-                            flex: 0.15,
-                            justifyContent: "center",
+                            height: responsiveHeight(8.1),
+                            flexDirection: "row",
+                            width: responsiveWidth(95),
                             alignSelf: "center",
+                            marginTop: 20,
+                            borderRadius: 10,
+                            backgroundColor: "#6A5AE0",
                         }}
                     >
-                        <Image
-                            source={require("../images/search.png")}
+                        <View
                             style={{
-                                tintColor: "#C0C0C0",
-                                height: responsiveHeight(3),
-                                width: responsiveWidth(6),
-                                marginLeft: 10,
+                                backgroundColor: "#fff",
+                                height: responsiveHeight(5.5),
+                                width: responsiveWidth(84),
+                                borderRadius: 10,
+                                justifyContent: "center",
+                                marginTop: 10,
+                                flexDirection: "row",
+                                marginHorizontal: 20,
                             }}
-                        />
-                    </View>
+                        >
+                            <View
+                                style={{
+                                    flex: 0.15,
+                                    justifyContent: "center",
+                                    alignSelf: "center",
+                                }}
+                            >
+                                <Image
+                                    source={require("../images/search.png")}
+                                    style={{
+                                        tintColor: "#C0C0C0",
+                                        height: responsiveHeight(3),
+                                        width: responsiveWidth(6),
+                                        marginLeft: 10,
+                                    }}
+                                />
+                            </View>
 
-                    <View
-                        style={{ flex: 0.8, justifyContent: "center", alignSelf: "center" }}
-                    >
-                        <TextInput
-                            require
-                            placeholder="Search here.."
-                            placeholderTextColor={"#000"}
-                            style={{
-                                color: "#000",
-                                marginLeft: 15,
-                                fontWeight: "400",
-                                fontSize: 17,
-                                fontFamily: "Jaldi-Regular",
-                            }}
-                        />
-                    </View>
-                </View>
+                            <View
+                                style={{ flex: 0.8, justifyContent: "center", alignSelf: "center" }}
+                            >
+                                <TextInput
+                                    onChangeText={(value) => setFilterText(value)}
+                                    require
+                                    placeholder="Search here.."
+                                    placeholderTextColor={"#000"}
+                                    style={{
+                                        color: "#000",
+                                        marginLeft: 15,
+                                        fontWeight: "400",
+                                        fontSize: 17,
+                                        fontFamily: "Jaldi-Regular",
+                                    }}
+                                />
+                            </View>
+                        </View>
 
-                <View style={{ alignSelf: "center" }}>
+                        {/* <View style={{ alignSelf: "center" }}>
                     <Image
                         source={require("../images/calender.png")}
                         style={{
@@ -152,113 +158,113 @@ const WinnerDetail = ({ navigation }) => {
                             marginLeft: 10,
                         }}
                     />
-                </View>
-            </View>
+                </View> */}
+                    </View>
 
-            <View
-                style={{
-                    height: responsiveHeight(42),
-                    width: responsiveWidth(95),
-                    marginBottom: 10,
-                    paddingHorizontal: 20,
-                    backgroundColor: "#fff",
-                    alignSelf: "center",
-                    borderBottomLeftRadius: 8,
-                    borderBottomRightRadius: 8,
-                    
-                }}
-            >
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        height: responsiveHeight(6),
-                        width: responsiveWidth(90),
-                        borderRadius: 2,
-                        marginTop: 10,
-                        backgroundColor: "#fff",
-                        alignSelf: "center",
-                    }}
-                >
-                    <Text
-                        style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-                    >
-                        Rank
-                    </Text>
-
-                    <Text
+                    <View
                         style={{
+                            height: responsiveHeight(42),
+                            width: responsiveWidth(95),
+                            marginBottom: 10,
+                            paddingHorizontal: 20,
+                            backgroundColor: "#fff",
                             alignSelf: "center",
-                            color: "#000",
-                            fontWeight: "500",
-                            marginLeft: 10,
-                            marginRight: 30
+                            borderBottomLeftRadius: 8,
+                            borderBottomRightRadius: 8,
+
                         }}
                     >
-                        Name
-                    </Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                height: responsiveHeight(6),
+                                width: responsiveWidth(90),
+                                borderRadius: 2,
+                                marginTop: 10,
+                                backgroundColor: "#fff",
+                                alignSelf: "center",
+                            }}
+                        >
+                            <Text
+                                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
+                            >
+                                Rank
+                            </Text>
 
-                    <Text
-                        style={{
-                            alignSelf: "center",
-                            color: "#000",
-                            fontWeight: "500",
-                            marginRight: 10,
-                        }}
-                    >
-                        Id
-                    </Text>
+                            <Text
+                                style={{
+                                    alignSelf: "center",
+                                    color: "#000",
+                                    fontWeight: "500",
+                                    marginLeft: 10,
+                                    marginRight: 30
+                                }}
+                            >
+                                Name
+                            </Text>
 
-
-                    <Text
-                        style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-                    >
-                        Point
-                    </Text>
-                </View>
-
-                {
-                    mydata?.map((res) => {
-                        return (
-                            <>
-                                <TouchableOpacity
-                                    style={{
-                                        flexDirection: "row",
-                                        justifyContent: "space-between",
-                                        height: responsiveHeight(6),
-                                        width: responsiveWidth(90),
-                                        paddingHorizontal: 10,
-                                        borderRadius: 2,
-                                        marginTop: 5,
-                                        backgroundColor: "#EDEAFB",
-                                        alignSelf: "center",
-                                    }}
-                                    onPress={() => navigation.navigate("AllQuestion",{id:(res.User[0].id)})}
-                                >
-                                    <Text style={{ alignSelf: "center", color: "#6A5AE0",flex:0.25 }}>{res?.rank}</Text>
-                                    <Text style={{ alignSelf: "center", color: "#000",flex:0.25 }}>{res.User[0].name}</Text>
-                                    <Text style={{ alignSelf: "center", color: "green",flex:0.25 }}>{res.User[0].id}</Text>
+                            <Text
+                                style={{
+                                    alignSelf: "center",
+                                    color: "#000",
+                                    fontWeight: "500",
+                                    marginRight: 10,
+                                }}
+                            >
+                                Id
+                            </Text>
 
 
-                                    <Text
-                                        style={{ alignSelf: "center", color: "#000", fontWeight: "500",flex:0.10 }}
-                                    >
-                                        {res?.mainPoints}
-                                    </Text>
-                                </TouchableOpacity>
-                            </>
-                        )
-                    })
-                }
+                            <Text
+                                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
+                            >
+                                Point
+                            </Text>
+                        </View>
+
+                        {
+                            mydata?.map((res) => {
+                                return (
+                                    <>
+                                        <TouchableOpacity
+                                            style={{
+                                                flexDirection: "row",
+                                                justifyContent: "space-between",
+                                                height: responsiveHeight(6),
+                                                width: responsiveWidth(90),
+                                                paddingHorizontal: 10,
+                                                borderRadius: 2,
+                                                marginTop: 5,
+                                                backgroundColor: "#EDEAFB",
+                                                alignSelf: "center",
+                                            }}
+                                            onPress={() => navigation.navigate("AllQuestion", { id: (res.User[0].id) })}
+                                        >
+                                            <Text style={{ alignSelf: "center", color: "#6A5AE0", flex: 0.25 }}>{res?.rank}</Text>
+                                            <Text style={{ alignSelf: "center", color: "#000", flex: 0.25 }}>{res.User[0].name}</Text>
+                                            <Text style={{ alignSelf: "center", color: "green", flex: 0.25 }}>{res.User[0].id}</Text>
+
+
+                                            <Text
+                                                style={{ alignSelf: "center", color: "#000", fontWeight: "500", flex: 0.10 }}
+                                            >
+                                                {res?.mainPoints}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )
+                            })
+                        }
 
 
 
 
 
 
-            </View>
+                    </View>
 
-        </SafeAreaView>
+                </SafeAreaView>
             }
         </>
     )

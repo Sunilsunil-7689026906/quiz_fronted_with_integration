@@ -234,7 +234,7 @@ const QuizType = ({ navigation }) => {
                                                 </View>
 
                                                 {
-                                                    item.GamePool[0].pool?.map((res) => {
+                                                    item?.GamePool[0]?.pool?.map((res) => {
                                                         return (
                                                             <>
                                                                 <View style={{ marginHorizontal: 10, flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>

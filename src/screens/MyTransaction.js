@@ -14,98 +14,137 @@ const MyTransaction = ({ navigation }) => {
     const [widrawdata, setwidrawdata] = useState([])
     const [depositdata, setdepositdata] = useState([])
     const [quiseRewarddata, setquiseRewarddata] = useState([])
-const Widrawal = async()=>{
-    try {
-        var myHeaders = new Headers();
-        myHeaders.append(
-            "Authorization",
-            `${await AsyncStorage.getItem("token")}`
-          );
+    const [mydata, setMydata] = useState([])
 
-var requestOptions = {
-  method: 'GET',
-  headers: myHeaders,
-  redirect: 'follow'
-};
+    function convertMillisecondsToDateTime(milliseconds) {
+        const dateObject = new Date(milliseconds);
+        return dateObject.toLocaleString();
+      }
 
-fetch(`${base_url}/withdraw-history`, requestOptions)
-  .then(response => response.json())
-  .then(result => {
-    // console.log(result.data.transactions)
-    setwidrawdata(result.data.transactions)
+      let index = 1
 
-})
-  .catch(error => console.log('error', error));
-    } catch (error) {
-      console.log(error);  
+
+    const Widrawal = async () => {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append(
+                "Authorization",
+                `${await AsyncStorage.getItem("token")}`
+            );
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            fetch(`${base_url}/withdraw-history`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    // console.log(result.data.transactions)
+                    setwidrawdata(result.data.transactions)
+
+                })
+                .catch(error => console.log('error', error));
+        } catch (error) {
+            console.log(error);
+        }
     }
-}
 
-const depositData = async()=>{
-    try {
-        var myHeaders = new Headers();
-        myHeaders.append(
-            "Authorization",
-            `${await AsyncStorage.getItem("token")}`
-          );
+    const depositData = async () => {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append(
+                "Authorization",
+                `${await AsyncStorage.getItem("token")}`
+            );
 
-var requestOptions = {
-  method: 'GET',
-  headers: myHeaders,
-  redirect: 'follow'
-};
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
 
-fetch(`${base_url}/deposit-history`, requestOptions)
-  .then(response => response.json())
-  .then(result => {
-    // console.log(result.data.transactions)
-    setdepositdata(result.data.transactions)
-})
-  .catch(error => console.log('error', error));
-    } catch (error) {
-       console.log(error); 
+            fetch(`${base_url}/deposit-history`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    // console.log(result.data.transactions)
+                    setdepositdata(result.data.transactions)
+                })
+                .catch(error => console.log('error', error));
+        } catch (error) {
+            console.log(error);
+        }
     }
-} 
 
-const quiseReward = async()=>{
-    try {
-        var myHeaders = new Headers();
-        myHeaders.append(
-            "Authorization",
-            `${await AsyncStorage.getItem("token")}`
-          );
+    const quiseReward = async () => {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append(
+                "Authorization",
+                `${await AsyncStorage.getItem("token")}`
+            );
 
-var requestOptions = {
-  method: 'GET',
-  headers: myHeaders,
-  redirect: 'follow'
-};
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
 
-fetch(`${base_url}/quiz-history`, requestOptions)
-  .then(response => response.json())
-  .then(
-    result => {console.log(result.data.quizs)
-    
-        setquiseRewarddata(result.data.quizs)
-    })
-  .catch(error => console.log('error', error));
-    } catch (error) {
-        console.log(error);
+            fetch(`${base_url}/quiz-history`, requestOptions)
+                .then(response => response.json())
+                .then(
+                    result => {
+                        console.log(result.data.quizs)
+
+                        setquiseRewarddata(result.data.quizs)
+                    })
+                .catch(error => console.log('error', error));
+        } catch (error) {
+            console.log(error);
+        }
     }
-}
 
-function copydata(text) {
-    Clipboard.setString(text);
-    alert('Text copied to clipboard: ' + text);
-}
+    const referhistoryApi = async () => {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
 
-useEffect(() => {
-    depositData()
-    quiseReward()
-}, [])
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            fetch(`${base_url}/ref-history`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success == true) {
+                        console.log(result.data.refReward, "ababa")
+                        setMydata(result.data.refReward)
+                    }
+                })
+                .catch(error => console.log('error', error));
+
+        } catch (error) {
+            console.log(error, "error");
+
+        }
+    }
+
+    function copydata(text) {
+        Clipboard.setString(text);
+        alert('Text copied to clipboard: ' + text);
+    }
+
+    useEffect(() => {
+        depositData()
+        quiseReward()
+        referhistoryApi()
+    }, [])
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
 
             <View style={{ height: responsiveHeight(8), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
@@ -119,12 +158,12 @@ useEffect(() => {
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
                 <TouchableOpacity style={{ height: responsiveHeight(4.8), justifyContent: 'center', borderRadius: 25, width: responsiveWidth(28), marginTop: 20, backgroundColor: widraw == 0 ? '#6A5AE0' : '#fff', borderWidth: widraw == 0 ? 0 : 1, alignSelf: 'flex-start' }}
-                    onPress={() => {setWidraw(0),depositData()}}>
+                    onPress={() => { setWidraw(0), depositData() }}>
                     <Text style={{ color: widraw == 0 ? '#fff' : '#000', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Deposit</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={{ height: responsiveHeight(4.8), justifyContent: 'center', borderRadius: 25, width: responsiveWidth(28), marginTop: 20, backgroundColor: widraw == 1 ? '#6A5AE0' : '#fff', borderWidth: widraw == 1 ? 0 : 1, alignSelf: 'flex-start' }}
-                    onPress={() => {setWidraw(1),Widrawal()}}>
+                    onPress={() => { setWidraw(1), Widrawal() }}>
                     <Text style={{ color: widraw == 1 ? '#fff' : '#000', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Widrawal</Text>
                 </TouchableOpacity>
 
@@ -175,24 +214,24 @@ useEffect(() => {
 
 
                         {
-                            depositdata?.map((res,i)=>{
-                            return(
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(8), width: responsiveWidth(90), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>{i+1}</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹{res.amount}</Text>
-                            <Text  style={{ alignSelf: 'center', color: 'green' }}>#{res._id.toString().substring(0, 4)}...<AntDesign name="copy1" size={18} color="black" onPress={()=>{copydata(res._id)}} /></Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>{res.status}</Text>
+                            depositdata?.map((res, i) => {
+                                return (
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(8), width: responsiveWidth(90), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
+                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>{i + 1}</Text>
+                                        <Text style={{ alignSelf: 'center', color: '#000' }}>₹{res.amount}</Text>
+                                        <Text style={{ alignSelf: 'center', color: 'green' }}>#{res._id.toString().substring(0, 4)}...<AntDesign name="copy1" size={18} color="black" onPress={() => { copydata(res._id) }} /></Text>
+                                        <Text style={{ alignSelf: 'center', color: '#000' }}>{res.status}</Text>
 
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleDateString()}</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleTimeString()}</Text>
-                            </View>
+                                        <View style={{ alignSelf: 'center' }}>
+                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleDateString()}</Text>
+                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleTimeString()}</Text>
+                                        </View>
 
 
-                        </View>
-                            )
-                        })
-                      }
+                                    </View>
+                                )
+                            })
+                        }
 
 
                     </View>
@@ -240,26 +279,26 @@ useEffect(() => {
                         </View>
 
                         {
-                        widrawdata?.map((res,i)=>{
-                            return(
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(8), width: responsiveWidth(90), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>{i+1}</Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>₹{res.amount}</Text>
-                            <Text  style={{ alignSelf: 'center', color: 'green' }}>#{res._id.toString().substring(0, 4)}...<AntDesign name="copy1" size={18} color="black" onPress={()=>{copydata(res._id)}} /></Text>
-                            <Text style={{ alignSelf: 'center', color: '#000' }}>{res.status}</Text>
+                            widrawdata?.map((res, i) => {
+                                return (
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(8), width: responsiveWidth(90), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
+                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>{i + 1}</Text>
+                                        <Text style={{ alignSelf: 'center', color: '#000' }}>₹{res.amount}</Text>
+                                        <Text style={{ alignSelf: 'center', color: 'green' }}>#{res._id.toString().substring(0, 4)}...<AntDesign name="copy1" size={18} color="black" onPress={() => { copydata(res._id) }} /></Text>
+                                        <Text style={{ alignSelf: 'center', color: '#000' }}>{res.status}</Text>
 
-                            <View style={{ alignSelf: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleDateString()}</Text>
-                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleTimeString()}</Text>
-                            </View>
+                                        <View style={{ alignSelf: 'center' }}>
+                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleDateString()}</Text>
+                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.createdAt).toLocaleTimeString()}</Text>
+                                        </View>
 
 
-                        </View>
-                            )
-                        })
-                      }
+                                    </View>
+                                )
+                            })
+                        }
 
-                        
+
 
 
                     </View>
@@ -345,30 +384,30 @@ useEffect(() => {
 
 
                                     </View>
-{quiseRewarddata?.map((res,index)=>{
-    return(
-        <>
-        <View style={{ flexDirection: 'row', height: responsiveHeight(9), width: responsiveWidth(95), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
-                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.1 }}>{index+1}</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.4 }}>{res.gameId.gameNameInEnglish}</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.2, marginRight: 15 }}>₹{res.amount}</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>18</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>#{res.rank}</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>32</Text>
+                                    {quiseRewarddata?.map((res, index) => {
+                                        return (
+                                            <>
+                                                <View style={{ flexDirection: 'row', height: responsiveHeight(9), width: responsiveWidth(95), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
+                                                    <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.1 }}>{index + 1}</Text>
+                                                    <Text style={{ alignSelf: 'center', color: '#000', flex: 0.4 }}>{res?.gameId.gameNameInEnglish}</Text>
+                                                    <Text style={{ alignSelf: 'center', color: 'green', flex: 0.2, marginRight: 15 }}>₹{res.amount}</Text>
+                                                    <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>{res?.mainPoints}</Text>
+                                                    <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>#{res?.rank}</Text>
+                                                    <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>{res?.wonAmount}</Text>
 
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.businessDate).toLocaleDateString()}</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res.businessDate).toLocaleTimeString()}</Text>
-                                        </View>
+                                                    <View style={{ alignSelf: 'center' }}>
+                                                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res?.businessDate).toLocaleDateString()}</Text>
+                                                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(res?.businessDate).toLocaleTimeString()}</Text>
+                                                    </View>
 
 
-                                    </View>
+                                                </View>
 
-        </>
-    )
-})}
-                                   
-                                    
+                                            </>
+                                        )
+                                    })}
+
+
 
 
                                 </View>
@@ -403,7 +442,7 @@ useEffect(() => {
                                 </View>
 
 
-                                <View style={{ height: responsiveHeight(62), width: responsiveWidth(95), marginBottom: 10, paddingHorizontal: 10, backgroundColor: '#fff', alignSelf: 'center', borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
+                                <View style={{ height: responsiveHeight(65), width: responsiveWidth(95), marginBottom: 1, paddingHorizontal: 1, backgroundColor: '#fff', alignSelf: 'center', borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(6), width: responsiveWidth(90), borderRadius: 2, marginTop: 10, backgroundColor: '#fff', alignSelf: 'center' }}>
                                         <Text style={{ alignSelf: 'center', color: '#000', fontSize: 13, fontWeight: '500', }}>Sno.</Text>
@@ -413,11 +452,11 @@ useEffect(() => {
                                         </View>
 
                                         <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontSize: 13, fontWeight: '500',marginRight:25 }}>Refer Income</Text>
+                                            <Text style={{ alignSelf: 'center', color: '#000', fontSize: 13, fontWeight: '500', marginRight: 25 }}>Refer Income</Text>
                                         </View>
-                                        
 
-                                        
+
+
 
                                         <View style={{ alignSelf: 'center' }}>
                                             <Text style={{ alignSelf: 'center', color: '#000', fontSize: 13, fontWeight: '500' }}>Date&time</Text>
@@ -427,73 +466,37 @@ useEffect(() => {
 
                                     </View>
 
-                                    <View style={{ flexDirection: 'row', height: responsiveHeight(9), width: responsiveWidth(95), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
-                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.2 }}>1.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.5,marginLeft:10 }}>Syam sunder</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.5,marginLeft:25 }}>₹400</Text>
-                                        
+                                    <ScrollView showsVerticalScrollIndicator={false}>
 
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                                        </View>
+                                        {
+                                            mydata?.map((data,index) => {
+                                                console.log(data, 'inin');
+                                                return (
+                                                    <>
 
-
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(95), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                                    <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.2 }}>1.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.5,marginLeft:10 }}>Syam sunder</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.5,marginLeft:25 }}>₹400</Text>
-                                        
-
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                                        </View>
-
-                                    </View>
+                                                        <View style={{ flexDirection: 'row', height: responsiveHeight(9), width: responsiveWidth(95), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
+                                                            <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>
+                                                                {index+1}
+                                                            </Text>
+                                                            <Text style={{ alignSelf: 'center', color: '#000', flex: 0.5, marginLeft: 10 }}>{data?.refUserId?.name}</Text>
+                                                            <Text style={{ alignSelf: 'center', color: 'green', flex: 0.5, marginLeft: 25 }}>{data?.amount}</Text>
 
 
+                                                            <View style={{ alignSelf: 'center' }}>
+                                                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{convertMillisecondsToDateTime(data?.createdAt)}</Text>
+                                                                {/* <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text> */}
+                                                            </View>
 
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(95), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                                    <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.2 }}>1.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.5,marginLeft:10 }}>Syam sunder</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.5,marginLeft:25 }}>₹400</Text>
-                                        
 
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                                        </View>
+                                                        </View>
+                                                    </>
+                                                )
+                                            })
+                                        }
 
-                                    </View>
+                                    </ScrollView>
 
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(95), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                                    <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.2 }}>1.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.5,marginLeft:10 }}>Syam sunder</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.5,marginLeft:25 }}>₹400</Text>
-                                        
 
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                                        </View>
-
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(8), width: responsiveWidth(95), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', elevation: 10, alignSelf: 'center' }}>
-                                    <Text style={{ alignSelf: 'center', color: '#6A5AE0', flex: 0.2 }}>1.</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000', flex: 0.5,marginLeft:10 }}>Syam sunder</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green', flex: 0.5,marginLeft:25 }}>₹400</Text>
-                                        
-
-                                        <View style={{ alignSelf: 'center' }}>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>28 Dec,2023</Text>
-                                            <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text>
-                                        </View>
-
-                                    </View>
 
 
                                 </View>
