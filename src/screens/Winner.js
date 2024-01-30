@@ -26,6 +26,35 @@ const Winner = ({ navigation }) => {
   const [data, setdata] = useState([])
   const [lodings, setlodings] = useState(true)
   const [filterText, setFilterText] = useState("");
+  const [logodata, setLogodata] = useState([]);
+
+  const logoApi = async () => {
+    try {
+
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+
+      fetch(`${base_url}/get-logo`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          if (result.success == true) {
+            console.log(result.data.logo, "logoimg")
+            setLogodata(result.data.logo)
+          }
+        })
+        .catch(error => console.log('error', error));
+
+
+    } catch (error) {
+
+    }
+  }
 
   const api = async ({ name }) => {
     try {
@@ -59,6 +88,7 @@ const Winner = ({ navigation }) => {
 
 
   useEffect(() => {
+    logoApi()
     api({ name: filterText })
   }, [filterText]);
 
@@ -109,10 +139,12 @@ const Winner = ({ navigation }) => {
                 />
               </TouchableOpacity>
               <Image
-                source={require("../images/logomain.png")}
+                source={{
+                  uri: `http://3.111.23.56:5059/uploads/${logodata}`,
+                }}
                 style={{
-                  height: responsiveHeight(6),
-                  marginRight: 40,
+                  height: responsiveHeight(4),
+                  marginRight: 10,
                   width: responsiveWidth(40),
                   alignSelf: "center",
                   marginTop: 5,
@@ -466,6 +498,7 @@ const Winner = ({ navigation }) => {
               <Image
                 source={require("../images/yt.webp")}
                 style={{
+                  tintColor:'#A9A9A9',
                   height: responsiveHeight(2.4),
                   width: responsiveWidth(5.8),
                   alignSelf: "center",
@@ -473,26 +506,29 @@ const Winner = ({ navigation }) => {
                 onPress={() => { handleLinkPress() }}
               />
 
-              <Text style={{ color: "#fff", fontWeight: "400", fontSize: 12 }}>
+              <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
                 Youtube
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ alignSelf: "center" }}>
-              <Image
-                source={require("../images/yt.webp")}
-                style={{
-                  tintColor: "#A9A9A9",
-                  height: responsiveHeight(2.4),
-                  width: responsiveWidth(5.8),
-                  alignSelf: "center",
-                }}
-              />
+            <TouchableOpacity
+            style={{ alignSelf: "center" }}
+            onPress={() => { handleLinkPress(tlink) }}
+          >
+            <Image
+              source={require("../images/gram.webp")}
+              style={{
+                tintColor: "#A9A9A9",
+                height: responsiveHeight(2.4),
+                width: responsiveWidth(5),
+                alignSelf: "center",
+              }}
+            />
 
-              <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
-                Telegram
-              </Text>
-            </TouchableOpacity>
+            <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
+              Telegram
+            </Text>
+          </TouchableOpacity>
 
             <TouchableOpacity
               style={{ alignSelf: "center" }}

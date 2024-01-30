@@ -76,6 +76,7 @@ const Notification = ({ navigation }) => {
         }, 2000);
       }, []);
     useEffect(()=>{
+      onRefresh()
         Api()
     },[])
     return (

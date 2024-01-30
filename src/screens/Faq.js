@@ -11,8 +11,10 @@ const Faq = ({ navigation }) => {
     const [open3, setOpen3] = useState(false);
 
     const [mydata, setMydata] = useState([{}])
+    
 
-    const faqApi = () => {
+    const faqApi = (n) => {
+        alert(n)
         try {
 
             var requestOptions = {
@@ -20,7 +22,7 @@ const Faq = ({ navigation }) => {
                 redirect: 'follow'
             };
 
-            fetch(`${base_url}/faq`, requestOptions)
+            fetch(`${base_url}/faq?id=${n}`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {

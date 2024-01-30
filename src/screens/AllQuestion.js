@@ -25,15 +25,16 @@ const AllQuestion = (props) => {
     const [chartdata, setChartdata] = useState([])
     const [attempte, setAttempte] = useState([])
 
+    const noOfQue = route.params?.queNo || null;
 
-    const [useranswer, setUseranswer] = useState()
-    const [correctanswer, setCorrectanswer] = useState()
+
 
 
     const myid = route.params?.id || null;
 
 
-    const resultApi = async () => {
+    const resultApi = async (n) => {
+        alert(n)
         try {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -44,7 +45,7 @@ const AllQuestion = (props) => {
                 redirect: 'follow'
             };
 
-            fetch(`${base_url}/quiz-result`, requestOptions)
+            fetch(`${base_url}/quiz-result?q_no=${n}`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
@@ -65,6 +66,44 @@ const AllQuestion = (props) => {
             console.log(error, "ghgh");
         }
     }
+
+    const renderButtons = () => {
+        const buttons = [];
+
+        for (let i = 1; i <= noOfQue; i++) {
+            buttons.push(
+                <TouchableOpacity
+                    key={i}
+                    style={{
+                        height: responsiveHeight(4.8),
+                        marginRight: 10,
+                        backgroundColor: number === i ? '#6A5AE0' : '#fff',
+                        width: responsiveWidth(10),
+                        borderWidth: 1,
+                        borderRadius: 100,
+                        justifyContent: 'center',
+                    }}
+                    onPress={() => {
+                        setNumber(i);
+                        resultApi(i);
+                    }}
+                >
+                    <Text
+                        style={{
+                            alignSelf: 'center',
+                            fontWeight: '600',
+                            fontSize: 18,
+                            color: number === i ? '#fff' : '#6A5AE0',
+                        }}
+                    >
+                        {i}
+                    </Text>
+                </TouchableOpacity>
+            );
+        }
+
+        return buttons;
+    };
 
     console.log(attempte, "attempte");
 
@@ -118,81 +157,12 @@ const AllQuestion = (props) => {
                 <ScrollView style={{ flexDirection: 'row' }} horizontal showsHorizontalScrollIndicator={false} >
                     <View style={{ flexDirection: 'row', marginTop: 15, marginHorizontal: 20 }}>
 
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 1 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
+                        {/* <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 1 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
                             onPress={() => setNumber(1)}>
                             <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 1 ? '#fff' : '#6A5AE0' }}>1</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 2 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(2)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 2 ? '#fff' : '#6A5AE0' }}>2</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 3 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(3)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 3 ? '#fff' : '#6A5AE0' }}>3</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 4 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(4)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 4 ? '#fff' : '#6A5AE0' }}>4</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 5 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(5)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 5 ? '#fff' : '#6A5AE0' }}>5</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 6 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(6)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 6 ? '#fff' : '#6A5AE0' }}>6</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 7 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(7)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 7 ? '#fff' : '#6A5AE0' }}>7</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 8 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(8)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 8 ? '#fff' : '#6A5AE0' }}>8</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 9 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(9)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 9 ? '#fff' : '#6A5AE0' }}>9</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 10 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(10)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 10 ? '#fff' : '#6A5AE0' }}>10</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 11 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(11)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 11 ? '#fff' : '#6A5AE0' }}>11</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 12 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(12)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 12 ? '#fff' : '#6A5AE0' }}>12</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 13 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(13)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 13 ? '#fff' : '#6A5AE0' }}>13</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 14 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(14)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 14 ? '#fff' : '#6A5AE0' }}>14</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 15 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(15)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 15 ? '#fff' : '#6A5AE0' }}>15</Text>
-                        </TouchableOpacity>
-
+                        {renderButtons()}
 
 
 
@@ -223,6 +193,8 @@ const AllQuestion = (props) => {
                     }
 
                 </View>
+
+
 
 
 
@@ -259,24 +231,24 @@ const AllQuestion = (props) => {
                     {
                         attempte.attempted <= attempte.not_attempted ? (
 
-                            <Text style={{ fontSize: 14, position: 'absolute', color: '#fff', fontWeight: '500', top: '10%', right: '12%' }}>{((attempte.attempted) / (attempte.not_attempted + attempte.attempted) * 100).toFixed(2)}</Text>
+                            <Text style={{ fontSize: 14, position: 'absolute', color: '#fff', fontWeight: '500', top: '10%', right: '12%' }}>{((attempte.attempted) / (attempte.not_attempted + attempte.attempted) * 100).toFixed(1)}%</Text>
                         ) :
                             (
                                 <>
-                                    <Text style={{ fontSize: 14, position: 'absolute', color: '#fff', fontWeight: '500', top: '20%', right: '4%' }}>{((attempte.attempted) / (attempte.not_attempted + attempte.attempted) * 100).toFixed(2)}</Text>
+                                    <Text style={{ fontSize: 14, position: 'absolute', color: '#fff', fontWeight: '500', top: '20%', right: '4%' }}>{((attempte.attempted) / (attempte.not_attempted + attempte.attempted) * 100).toFixed(1)}%</Text>
                                 </>
                             )
                     }
 
                     {
                         attempte.attempted <= attempte.not_attempted ? (
-                            <Text style={{ fontSize: 14, position: 'absolute', top: '20%', fontWeight: '500', right: '35%', color: '#6A5AE0' }}>{((attempte.not_attempted) / (attempte.not_attempted + attempte.attempted) * 100).toFixed(2)}
+                            <Text style={{ fontSize: 14, position: 'absolute', top: '20%', fontWeight: '500', right: '35%', color: '#6A5AE0' }}>{((attempte.not_attempted) / (attempte.not_attempted + attempte.attempted) * 100).toFixed(1)}%
 
                             </Text>
                         ) :
                             (
                                 <>
-                                    <Text style={{ fontSize: 14, position: 'absolute', top: '10%', fontWeight: '500', right: '28%', color: '#6A5AE0' }}>{((attempte.not_attempted) / (attempte.not_attempted + attempte.attempted) * 100).toFixed(2)}
+                                    <Text style={{ fontSize: 14, position: 'absolute', top: '10%', fontWeight: '500', right: '28%', color: '#6A5AE0' }}>{((attempte.not_attempted) / (attempte.not_attempted + attempte.attempted) * 100).toFixed(1)}%
 
                                     </Text>
                                 </>
@@ -289,24 +261,24 @@ const AllQuestion = (props) => {
                     {
                         attempte.correctPercnt <= attempte.wrongPercnt ? (
 
-                            <Text style={{ fontSize: 14, position: 'absolute', color: '#000', fontWeight: '500', top: '10%', right: '63%' }}>{((attempte.correctPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(0)}%</Text>
+                            <Text style={{ fontSize: 14, position: 'absolute', color: '#000', fontWeight: '500', top: '10%', right: '63%' }}>{((attempte.correctPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(1)}%</Text>
                         ) :
                             (
                                 <>
-                                    <Text style={{ fontSize: 14, position: 'absolute', color: '#000', fontWeight: '500', top: '20%', right: '55%' }}>{((attempte.correctPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(0)}%</Text>
+                                    <Text style={{ fontSize: 14, position: 'absolute', color: '#000', fontWeight: '500', top: '20%', right: '55%' }}>{((attempte.correctPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(1)}%</Text>
                                 </>
                             )
                     }
 
                     {
                         attempte.correctPercnt >= attempte.wrongPercnt ? (
-                            <Text style={{ fontSize: 14, position: 'absolute', top: '20%', fontWeight: '500', right: '86%', color: '#0085FF' }}>{((attempte.wrongPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(0)}%
+                            <Text style={{ fontSize: 14, position: 'absolute', top: '20%', fontWeight: '500', right: '86%', color: '#0085FF' }}>{((attempte.wrongPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(1)}%
 
                             </Text>
                         ) :
                             (
                                 <>
-                                    <Text style={{ fontSize: 14, position: 'absolute', top: '10%', fontWeight: '500', right: '79%', color: '#0085FF' }}>{((attempte.wrongPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(0)}%
+                                    <Text style={{ fontSize: 14, position: 'absolute', top: '10%', fontWeight: '500', right: '79%', color: '#0085FF' }}>{((attempte.wrongPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(1)}%
 
                                     </Text>
                                 </>
@@ -398,73 +370,73 @@ const AllQuestion = (props) => {
 
 
                 <View style={{ height: responsiveHeight(46), alignSelf: 'center', justifyContent: 'center', width: responsiveWidth(90), marginBottom: 40, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
-                    <View style={{ height: responsiveHeight(6),backgroundColor:'#fff', justifyContent: 'center', width: responsiveWidth(85), borderWidth: 0.5, borderRadius: 10, alignSelf: 'center' }}>
+                    <View style={{ height: responsiveHeight(6), backgroundColor: '#fff', justifyContent: 'center', width: responsiveWidth(85), borderWidth: 0.5, borderRadius: 10, alignSelf: 'center' }}>
                         <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0', fontWeight: '500' }}>Row Point Table</Text>
                     </View>
 
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 11, marginTop: 10 }}>
 
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>M</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>C</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>T</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>Total</Text>
                         </View>
                     </View>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 11 }}>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>{rowdata.rM}</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>{rowdata.rC}</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB',elevation:5, width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', elevation: 5, width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>{rowdata.timeTaken}</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff',elevation:5, width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', elevation: 5, width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>{rowdata.rawPoints}</Text>
                         </View>
                     </View>
 
-                    <View style={{ height: responsiveHeight(6), justifyContent: 'center', width: responsiveWidth(85), borderWidth: 0.4, marginTop: 20,backgroundColor:'#fff', borderRadius: 10, alignSelf: 'center' }}>
+                    <View style={{ height: responsiveHeight(6), justifyContent: 'center', width: responsiveWidth(85), borderWidth: 0.4, marginTop: 20, backgroundColor: '#fff', borderRadius: 10, alignSelf: 'center' }}>
                         <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0', fontWeight: '500' }}>Main Point Table</Text>
                     </View>
 
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 11, marginTop: 10 }}>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>M</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>C</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>T</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>Total</Text>
                         </View>
                     </View>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 11 }}>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>{rowdata.mM}</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>{rowdata.mC}</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB',elevation:5, width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', elevation: 5, width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>{rowdata.timeTaken}</Text>
                         </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
+                        <View style={{ height: responsiveHeight(5), elevation: 5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
                             <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>{rowdata.mainPoints}</Text>
                         </View>
                     </View>

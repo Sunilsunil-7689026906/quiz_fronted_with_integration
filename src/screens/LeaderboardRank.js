@@ -20,16 +20,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { base_url } from "./Base_url";
+import { useNavigation, useIsFocused, useRoute } from '@react-navigation/native'
 
 
 
-const LeaderboardRank = ({ navigation }) => {
+
+const LeaderboardRank = ({ navigation, props }) => {
+
+  const route = useRoute();
+
+  const noOfQue = route.params?.QuestionNo || null;
+
+  
 
   const [mydata, setMydata] = useState([])
   const [filterText, setFilterText] = useState("");
 
 
-  const leadershipApi = async ({name}) => {
+  const leadershipApi = async ({ name }) => {
     try {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -65,7 +73,7 @@ const LeaderboardRank = ({ navigation }) => {
   }
 
   useEffect(() => {
-    leadershipApi({name:filterText})
+    leadershipApi({ name: filterText })
   }, [filterText]);
 
   return (
@@ -156,7 +164,7 @@ const LeaderboardRank = ({ navigation }) => {
             style={{ flex: 0.8, justifyContent: "center", alignSelf: "center" }}
           >
             <TextInput
-            onChangeText={(value)=>setFilterText(value)}
+              onChangeText={(value) => setFilterText(value)}
               require
               placeholder="Search here.."
               placeholderTextColor={"#000"}
@@ -261,7 +269,7 @@ const LeaderboardRank = ({ navigation }) => {
                     backgroundColor: "#EDEAFB",
                     alignSelf: "center",
                   }}
-                  onPress={() => navigation.navigate("AllQuestion", { id: (res.User[0].id) })}
+                  onPress={() => navigation.navigate("AllQuestion", { id: (res.User[0].id),queNo:noOfQue })}
                 >
                   <Text style={{ alignSelf: "center", color: "#6A5AE0", flex: 0.25 }}>{res?.rank}</Text>
                   <Text style={{ alignSelf: "center", color: "#000", flex: 0.25 }}>{res.User[0].name}</Text>

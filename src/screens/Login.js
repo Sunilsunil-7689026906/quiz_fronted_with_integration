@@ -45,9 +45,14 @@ const Login = ({ navigation }) => {
                 .then(async (result) => {
                     if(result.success == true){
                         console.log(result.message,"gggggggggggggggggggggggggggggg")
+                        if (isChecked==true) {
+                            // alert(isChecked)
                         navigation.navigate('Home')
                         console.log(result.data.user.jwt,"tokentoken")
                         await AsyncStorage.setItem('token',result.data.user.jwt)
+                            
+                        }
+                        
                     }
                     else{
                         console.log(result.message);

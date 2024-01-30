@@ -23,8 +23,36 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Percentage = ({ navigation }) => {
   const [data, setdata] = useState([])
   const [filterText, setFilterText] = useState("");
+  const [logodata, setLogodata] = useState([]);
 
 
+  const logoApi = async () => {
+    try {
+
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+
+      fetch(`${base_url}/get-logo`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          if (result.success == true) {
+            console.log(result.data.logo, "logoimg")
+            setLogodata(result.data.logo)
+          }
+        })
+        .catch(error => console.log('error', error));
+
+
+    } catch (error) {
+
+    }
+  }
 
   const correctApi = async (name) => {
     try {
@@ -45,8 +73,8 @@ const Percentage = ({ navigation }) => {
             setdata(result.data.joingGame)
 
           }
-          else{
-            console.log(result.message,"else");
+          else {
+            console.log(result.message, "else");
           }
         })
         .catch(error => console.log('error', error));
@@ -57,6 +85,7 @@ const Percentage = ({ navigation }) => {
   }
 
   useEffect(() => {
+    logoApi()
     correctApi({ name: filterText })
   }, [filterText]);
   return (
@@ -95,15 +124,17 @@ const Percentage = ({ navigation }) => {
             />
           </TouchableOpacity>
           <Image
-            source={require("../images/logo.png")}
-            style={{
-              height: responsiveHeight(6),
-              marginRight: 40,
-              width: responsiveWidth(26),
-              alignSelf: "center",
-              marginTop: 3,
-            }}
-          />
+                source={{
+                  uri: `http://3.111.23.56:5059/uploads/${logodata}`,
+                }}
+                style={{
+                  height: responsiveHeight(4),
+                  marginRight: 10,
+                  width: responsiveWidth(40),
+                  alignSelf: "center",
+                  marginTop: 5,
+                }}
+              />
 
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -122,6 +153,7 @@ const Percentage = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{ marginRight: 9, alignSelf: "center", marginTop: 3 }}
+              onPress={() => navigation.navigate("MyBalance")}
             >
               <Image
                 source={require("../images/walletcopy.png")}
@@ -482,6 +514,7 @@ const Percentage = ({ navigation }) => {
           <Image
             source={require("../images/yt.webp")}
             style={{
+              tintColor:'#A9A9A9',
               height: responsiveHeight(2.4),
               width: responsiveWidth(5.8),
               alignSelf: "center",
@@ -489,26 +522,29 @@ const Percentage = ({ navigation }) => {
           />
 
 
-          <Text style={{ color: "#fff", fontWeight: "400", fontSize: 12 }}>
+          <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
             Youtube
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{ alignSelf: "center" }}>
-          <Image
-            source={require("../images/yt.webp")}
-            style={{
-              tintColor: "#A9A9A9",
-              height: responsiveHeight(2.4),
-              width: responsiveWidth(5.8),
-              alignSelf: "center",
-            }}
-          />
+        <TouchableOpacity
+            style={{ alignSelf: "center" }}
+            onPress={() => { handleLinkPress(tlink) }}
+          >
+            <Image
+              source={require("../images/gram.webp")}
+              style={{
+                tintColor: "#A9A9A9",
+                height: responsiveHeight(2.4),
+                width: responsiveWidth(5),
+                alignSelf: "center",
+              }}
+            />
 
-          <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
-            Telegram
-          </Text>
-        </TouchableOpacity>
+            <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
+              Telegram
+            </Text>
+          </TouchableOpacity>
 
         <TouchableOpacity
           style={{ alignSelf: "center" }}

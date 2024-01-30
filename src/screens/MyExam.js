@@ -23,15 +23,25 @@ import { formatTimestamp } from "./../utils/formatDate";
 import { formattedTime } from "./../utils/FormateTime";
 // import { FormatDateTime, } from './../utils/FormateTime';
 // import { formatTimestamp } from "./../utils/formatDate";
+import { useRoute } from '@react-navigation/native';
+
 
 const MyExam = ({ navigation }) => {
+
+  const route = useRoute();
+
   const [live, setLive] = useState(0);
+  const [logodata, setLogodata] = useState([]);
+
 
   const [hit, setHit] = useState("LIVE");
   const [mydata, setMydata] = useState([]);
   const [completedata, setCompletedata] = useState([]);
   const [seduleTime, setSeduleTime] = useState([]);
   const [filterText, setFilterText] = useState("");
+
+  const [question, setQuestion] = useState([]);
+
 
   function convertMillisecondsToDateTime(milliseconds) {
     const dateObject = new Date(milliseconds);
@@ -49,7 +59,35 @@ const MyExam = ({ navigation }) => {
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
   }
 
-  const myexamApi = async ({name}) => {
+  const logoApi = async () => {
+    try {
+
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+
+      fetch(`${base_url}/get-logo`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          if (result.success == true) {
+            console.log(result.data.logo, "logoimg")
+            setLogodata(result.data.logo)
+          }
+        })
+        .catch(error => console.log('error', error));
+
+
+    } catch (error) {
+
+    }
+  }
+
+  const myexamApi = async ({ name }) => {
     try {
       var myHeaders = new Headers();
       myHeaders.append(
@@ -68,11 +106,14 @@ const MyExam = ({ navigation }) => {
         .then(async (result) => {
           if (result.success == true) {
             // console.log(result.data.userGameList[0].Game, "userGameList")
-            console.log(`${await AsyncStorage.getItem("token")}`, "token");
+            // console.log(`${await AsyncStorage.getItem("token")}`, "token");
             setMydata(result.data.userGameList);
 
+            // alert(result.data.userGameList.Game,"QIDDD");
+            setQuestion(result.data.userGameList[0].Game[0].noOfQuestion)
+
             setSeduleTime(result.data.userGameList[0].schedule - 300000);
-            console.log(result.data.userGameList, "completedataaaa");
+            // console.log(JSON.stringify(result.data.userGameList), "completedataaaa");
             setCompletedata(result.data.userGameList);
             // console.log(result.data.userGameList[0]._id, "jjjjjjjjjj");
             await AsyncStorage.setItem("_id2", result.data.userGameList[0]._id);
@@ -80,37 +121,42 @@ const MyExam = ({ navigation }) => {
             console.log(result.message, "else");
           }
         })
-        .catch((error) => console.log("error", error));
-    } catch (error) { }
+        .catch((error) => console.log("errorcatch", error));
+    } catch (error) {
+      console.log(error, "examerror");
+    }
   };
-  
+
+  // alert(question)
 
   function navigetLo(times) {
     const currentTimeInMilliseconds = new Date().getTime();
     let availableTime = times - currentTimeInMilliseconds
     const availableMinutes = Math.floor(availableTime / (1000 * 60));
-    if(availableMinutes < 0){
+    if (availableMinutes < 0) {
       alert("Expiration date ")
-          }
-    else  if (availableMinutes <= 5) {
-      navigation.navigate("Instruction",{
-        times:availableMinutes
+    }
+    else if (availableMinutes <= 5) {
+      navigation.navigate("Instruction", {
+        times: availableMinutes
       });
     }
-    else{
-      alert(`Wait ${availableMinutes - 5} minutes and try again`); 
+    else {
+      alert(`Wait ${availableMinutes - 5} minutes and try again`);
       // navigation.navigate("Instruction",{
       //   times:availableMinutes
       // });
     }
-   
+
   }
   useEffect(() => {
-    myexamApi({name:filterText})
+    logoApi()
+    myexamApi({ name: filterText })
   }, [filterText]);
 
-  console.log(mydata, "mydataaa");
-  console.log(JSON.stringify(completedata), "uuuuuuuu");
+  // console.log(mydata, "mydataaa");
+  // console.log(JSON.stringify(completedata), "uuuuuuuu");
+  // console.log(question, "questionss");
 
   // alert(seduleTime,"SeduleTime")
 
@@ -150,10 +196,12 @@ const MyExam = ({ navigation }) => {
             />
           </TouchableOpacity>
           <Image
-            source={require("../images/logomain.png")}
+            source={{
+              uri: `http://3.111.23.56:5059/uploads/${logodata}`,
+            }}
             style={{
-              height: responsiveHeight(6),
-              marginRight: 40,
+              height: responsiveHeight(4),
+              marginRight: 10,
               width: responsiveWidth(40),
               alignSelf: "center",
               marginTop: 5,
@@ -177,7 +225,7 @@ const MyExam = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{ marginRight: 9, alignSelf: "center", marginTop: 1 }}
-              onPress={()=>navigation.navigate("MyBalance")}>
+              onPress={() => navigation.navigate("MyBalance")}>
               <Image
                 source={require("../images/walletcopy.png")}
                 style={{
@@ -359,11 +407,11 @@ const MyExam = ({ navigation }) => {
             style={{ flex: 0.8, justifyContent: "center", alignSelf: "center" }}
           >
             <TextInput
-            // onChangeText={(value)=>{
-            //   myexamApi(value)
-            // }}
-            // value={filterText}
-            onChangeText={(value)=>setFilterText(value)}
+              // onChangeText={(value)=>{
+              //   myexamApi(value)
+              // }}
+              // value={filterText}
+              onChangeText={(value) => setFilterText(value)}
               require
               placeholder="Search here.."
               placeholderTextColor={"#000"}
@@ -391,7 +439,7 @@ const MyExam = ({ navigation }) => {
         </View> */}
       </View>
 
-      <View style={{height:responsiveHeight(59)}}>
+      <View style={{ height: responsiveHeight(59) }}>
         <ScrollView>
           {live == 0 ? (
             <View>
@@ -561,7 +609,7 @@ const MyExam = ({ navigation }) => {
                             alignSelf: "flex-start",
                           }}
                           onPress={() => {
-                           navigetLo(data?.schedule)
+                            navigetLo(data?.schedule)
                           }}
                         >
                           <Text
@@ -605,7 +653,7 @@ const MyExam = ({ navigation }) => {
             <View>
               {completedata?.length > 0 ? (
                 completedata.map((item) => {
-                  console.log(item, "inlinedata");
+                  // console.log(item, "inlinedata");
                   return (
                     <>
                       <View
@@ -761,7 +809,7 @@ const MyExam = ({ navigation }) => {
                               marginTop: 20,
                               backgroundColor: "#6A5AE0",
                             }}
-                            onPress={() => navigation.navigate("LeaderboardRank")}
+                            onPress={() => navigation.navigate("LeaderboardRank",{ QuestionNo: question })}
                           >
                             <Text
                               style={{
@@ -784,7 +832,7 @@ const MyExam = ({ navigation }) => {
                               marginTop: 20,
                               backgroundColor: "#6A5AE0",
                             }}
-                            onPress={() => navigation.navigate("MyQuestions")}
+                            onPress={() => navigation.navigate("MyQuestions", { QuestionNo: question })}
                           >
                             <Text
                               style={{
@@ -843,22 +891,7 @@ const MyExam = ({ navigation }) => {
           <Image
             source={require("../images/yt.webp")}
             style={{
-              height: responsiveHeight(2.4),
-              width: responsiveWidth(5.8),
-              alignSelf: "center",
-            }}
-          />
-
-          <Text style={{ color: "#fff", fontWeight: "400", fontSize: 12 }}>
-            Youtube
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={{ alignSelf: "center" }}>
-          <Image
-            source={require("../images/yt.webp")}
-            style={{
-              tintColor: "#A9A9A9",
+              tintColor:'#A9A9A9',
               height: responsiveHeight(2.4),
               width: responsiveWidth(5.8),
               alignSelf: "center",
@@ -866,9 +899,28 @@ const MyExam = ({ navigation }) => {
           />
 
           <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
-            Telegram
+            Youtube
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+            style={{ alignSelf: "center" }}
+            onPress={() => { handleLinkPress(tlink) }}
+          >
+            <Image
+              source={require("../images/gram.webp")}
+              style={{
+                tintColor: "#A9A9A9",
+                height: responsiveHeight(2.5),
+                width: responsiveWidth(5.2),
+                alignSelf: "center",
+              }}
+            />
+
+            <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
+              Telegram
+            </Text>
+          </TouchableOpacity>
 
         <TouchableOpacity
           style={{ alignSelf: "center" }}

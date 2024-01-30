@@ -73,14 +73,14 @@ const Register = ({ navigation }) => {
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
-                        console.log('message', result.message);
-                        console.log("open modal");
-                        openModal1();
-                        // navigation.navigate('Home')
-                        // AsyncStorage.setItem('resetToken', result.data.resetToken);
-                        setTkn(result.data.resetToken)
-                        console.log(result.data.resetToken, "resetToken");
+                        if (isChecked == true) {
+                            console.log('message', result.message);
+                            console.log("open modal");
+                            openModal1();
 
+                            setTkn(result.data.resetToken)
+                            console.log(result.data.resetToken, "resetToken");
+                        }
 
 
                     }
@@ -193,8 +193,6 @@ const Register = ({ navigation }) => {
     return (
         <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
-
-            <ScrollView>
 
             <View style={{ height: responsiveHeight(13), justifyContent: 'center', width: responsiveWidth(100), backgroundColor: '#6A5AE0' }}>
 
@@ -446,7 +444,7 @@ const Register = ({ navigation }) => {
                 </View>
             </Modal>
 
-            </ScrollView>
+
 
         </SafeAreaView>
     )

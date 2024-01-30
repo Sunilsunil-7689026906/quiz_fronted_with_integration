@@ -29,6 +29,8 @@ import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 
 const Home = ({ navigation }) => {
   const [imgdata, setImgData] = useState([]);
+  const [logodata, setLogodata] = useState([]);
+
   const [mydata, setMydata] = useState([]);
   const [myid, setMyid] = useState([{}]);
   const [lodings, setlodings] = useState(true)
@@ -43,44 +45,62 @@ const Home = ({ navigation }) => {
     return formattedDateTime
   }
 
-  const sliderApi = async () => {
+  const logoApi = async () => {
     try {
+
       var myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        `${await AsyncStorage.getItem("token")}`
-      );
-      // alert(`${await AsyncStorage.getItem("token")}`)
-      // console.log("1111");
+      myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
 
       var requestOptions = {
-        method: "GET",
+        method: 'GET',
         headers: myHeaders,
-        redirect: "follow",
+        redirect: 'follow'
+      };
+
+      fetch(`${base_url}/get-logo`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          if (result.success == true) {
+            console.log(result.data.logo, "logoimg")
+            setLogodata(result.data.logo)
+          }
+        })
+        .catch(error => console.log('error', error));
+
+
+    } catch (error) {
+
+    }
+  }
+
+  
+  const sliderApi =async () => {
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
       };
 
       fetch(`${base_url}/slide-list`, requestOptions)
-
-        .then((response) => response.json())
-        .then(async (result) => {
-          // console.log("222");
-
-          if (result.success == true) {
-            // console.log(result.message, "if");
-            // console.log(result.data.slides, "imgimg");
-            setImgData(result.data.slides);
-            console.log(result.data.slides,"imggg");
-          } else {
-            console.log(result.message);
+        .then(response => response.json())
+        .then(result => {
+          if (result.success==true) {
+            console.log(result.data.slides,"slslslsd")
+            setImgData(result.data.slides)
           }
         })
-        .catch((error) => console.log("error", error)).finally(() => { setlodings(false) });
-    } catch (error) {
-      console.log(error,"mmmeror");
-     }
-  };
+        .catch(error => console.log('error', error));
 
-  console.log(imgdata, "setimhimh");
+    } catch (error) {
+
+    }
+  }
+
+  // console.log(imgdata, "setimhimh");
 
   const examApi = async () => {
 
@@ -103,7 +123,7 @@ const Home = ({ navigation }) => {
         .then(async (result) => {
           if (result.success == true) {
             console.log(result.message, "if");
-            // console.log(result.data.upcomingGames, "myApidata");
+            console.log(result.data.upcomingGames, "myApidata");
             setMydata(result.data.upcomingGames);
             // setMyid(result.data.upcomingGames[0]._id)
             // console.log(myid, "myid");
@@ -114,7 +134,9 @@ const Home = ({ navigation }) => {
           }
         })
         .catch((error) => console.log("errorrr", error)).finally(() => { setlodings(false) });
-    } catch (error) { }
+    } catch (error) {
+      console.log(error, "errrrror");
+    }
   };
 
 
@@ -137,16 +159,16 @@ const Home = ({ navigation }) => {
         .then(response => response.json())
         .then(result => {
           // alert(result.data.links[0].Name)
-          setlinksdata(result.data.links)
-          setylink(result.data.links[2].link)
+          setlinksdata(result.data.Link)
+          setylink(result.data.links[2].Link)
           // alert(result.data.links[2].link)
-          settlink(result.data.links[1].link)
-          setelink(result.links[4].link)
+          settlink(result.data.links[1].Link)
+          setelink(result.links[4].Link)
         })
-        .catch(error => console.log('error', error));
+        .catch(error => console.log('erroreee', error));
 
     } catch (error) {
-      console.log(error);
+      console.log(error, "ererere");
     }
   }
 
@@ -157,7 +179,8 @@ const Home = ({ navigation }) => {
   };
 
 
-   useEffect(() => {
+  useEffect(() => {
+    logoApi()
     Linkings()
     sliderApi();
     examApi();
@@ -210,10 +233,12 @@ const Home = ({ navigation }) => {
               />
             </TouchableOpacity>
             <Image
-              source={require("../images/logomain.png")}
+              source={{
+                uri: `http://3.111.23.56:5059/uploads/${logodata}`,
+              }}
               style={{
-                height: responsiveHeight(6),
-                marginRight: 40,
+                height: responsiveHeight(4),
+                marginRight: 10,
                 width: responsiveWidth(40),
                 alignSelf: "center",
                 marginTop: 5,
@@ -311,7 +336,7 @@ const Home = ({ navigation }) => {
           </View>
         </View>
 
-        
+
 
         <ScrollView style={{ height: responsiveHeight(100) }}>
           <View style={{ marginTop: "7%" }}>
@@ -340,7 +365,7 @@ const Home = ({ navigation }) => {
                             <TouchableOpacity style={{ flexDirection: "row" }}>
                               <Image
                                 source={{
-                                  uri: `http://3.111.23.56:5059/${data.slide}`,
+                                  uri: `http://3.111.23.56:5059/uploads/${data.img}`,
                                 }}
                                 style={{
                                   backgroungColor: "green",
@@ -348,6 +373,7 @@ const Home = ({ navigation }) => {
                                   width: responsiveWidth(90),
                                   alignSelf: "center",
                                   borderRadius: 15,
+                                  resizeMode:'center'
                                 }}
                               />
                             </TouchableOpacity>
@@ -393,7 +419,7 @@ const Home = ({ navigation }) => {
                         marginTop: 20,
                         borderRadius: 5,
                         elevation: 10,
-                        marginVertical:20
+                        marginVertical: 20
                       }}
                     >
                       <Text
@@ -585,7 +611,7 @@ const Home = ({ navigation }) => {
           </ScrollView>
 
 
-          
+
         </ScrollView>
 
         <View
@@ -601,18 +627,19 @@ const Home = ({ navigation }) => {
           }}
         >
           <TouchableOpacity style={{ alignSelf: "center" }}
-          onPress={() => { handleLinkPress(ylink) }}
+            onPress={() => { handleLinkPress(ylink) }}
           >
             <Image
               source={require("../images/yt.webp")}
               style={{
+                tintColor:'#A9A9A9',
                 height: responsiveHeight(2.4),
                 width: responsiveWidth(5.8),
                 alignSelf: "center",
               }}
             />
 
-            <Text style={{ color: "#fff", fontWeight: "400", fontSize: 12 }}>
+            <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
               Youtube
             </Text>
           </TouchableOpacity>
@@ -622,11 +649,11 @@ const Home = ({ navigation }) => {
             onPress={() => { handleLinkPress(tlink) }}
           >
             <Image
-              source={require("../images/yt.webp")}
+              source={require("../images/gram.webp")}
               style={{
                 tintColor: "#A9A9A9",
                 height: responsiveHeight(2.4),
-                width: responsiveWidth(5.8),
+                width: responsiveWidth(5.2),
                 alignSelf: "center",
               }}
             />

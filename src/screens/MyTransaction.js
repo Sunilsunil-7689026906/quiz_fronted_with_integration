@@ -178,7 +178,7 @@ const MyTransaction = ({ navigation }) => {
                 widraw == 0 ? <>
                     <View style={{ height: responsiveHeight(8.1), flexDirection: 'row', width: responsiveWidth(97), alignSelf: 'center', marginTop: 20, borderRadius: 10, backgroundColor: '#6A5AE0' }}>
 
-                        <View style={{ backgroundColor: '#fff', height: responsiveHeight(5.5), width: responsiveWidth(70), borderRadius: 10, justifyContent: 'center', marginTop: 10, flexDirection: 'row', marginHorizontal: 20 }}>
+                        <View style={{ backgroundColor: '#fff', height: responsiveHeight(5.5), width: responsiveWidth(86), borderRadius: 10, justifyContent: 'center', marginTop: 10, flexDirection: 'row', marginHorizontal: 20 }}>
 
                             <View style={{ flex: 0.15, justifyContent: 'center', alignSelf: 'center' }}>
                                 <Image source={require('../images/search.png')} style={{ tintColor: '#C0C0C0', height: responsiveHeight(3), width: responsiveWidth(6), marginLeft: 10 }} />
@@ -190,10 +190,10 @@ const MyTransaction = ({ navigation }) => {
 
                         </View>
 
-                        <View style={{ alignSelf: 'center' }}>
+                        {/* <View style={{ alignSelf: 'center' }}>
                             <Image source={require('../images/calender.png')} style={{ tintColor: '#fff', height: responsiveHeight(4), width: responsiveWidth(8), marginLeft: 10 }} />
 
-                        </View>
+                        </View> */}
 
                     </View>
 
@@ -244,7 +244,7 @@ const MyTransaction = ({ navigation }) => {
                 widraw == 1 ? <>
                     <View style={{ height: responsiveHeight(8.1), flexDirection: 'row', width: responsiveWidth(97), alignSelf: 'center', marginTop: 20, borderRadius: 10, backgroundColor: '#6A5AE0' }}>
 
-                        <View style={{ backgroundColor: '#fff', height: responsiveHeight(5.5), width: responsiveWidth(70), borderRadius: 10, justifyContent: 'center', marginTop: 10, flexDirection: 'row', marginHorizontal: 20 }}>
+                        <View style={{ backgroundColor: '#fff', height: responsiveHeight(5.5), width: responsiveWidth(86), borderRadius: 10, justifyContent: 'center', marginTop: 10, flexDirection: 'row', marginHorizontal: 20 }}>
 
                             <View style={{ flex: 0.15, justifyContent: 'center', alignSelf: 'center' }}>
                                 <Image source={require('../images/search.png')} style={{ tintColor: '#C0C0C0', height: responsiveHeight(3), width: responsiveWidth(6), marginLeft: 10 }} />
@@ -256,10 +256,10 @@ const MyTransaction = ({ navigation }) => {
 
                         </View>
 
-                        <View style={{ alignSelf: 'center' }}>
+                        {/* <View style={{ alignSelf: 'center' }}>
                             <Image source={require('../images/calender.png')} style={{ tintColor: '#fff', height: responsiveHeight(4), width: responsiveWidth(8), marginLeft: 10 }} />
 
-                        </View>
+                        </View> */}
 
                     </View>
 
@@ -328,7 +328,7 @@ const MyTransaction = ({ navigation }) => {
                             <View>
                                 <View style={{ height: responsiveHeight(8.1), flexDirection: 'row', width: responsiveWidth(97), alignSelf: 'center', marginTop: 20, borderRadius: 10, backgroundColor: '#6A5AE0' }}>
 
-                                    <View style={{ backgroundColor: '#fff', height: responsiveHeight(5.5), width: responsiveWidth(70), borderRadius: 10, justifyContent: 'center', marginTop: 10, flexDirection: 'row', marginHorizontal: 20 }}>
+                                    <View style={{ backgroundColor: '#fff', height: responsiveHeight(5.5), width: responsiveWidth(86), borderRadius: 10, justifyContent: 'center', marginTop: 10, flexDirection: 'row', marginHorizontal: 20 }}>
 
                                         <View style={{ flex: 0.15, justifyContent: 'center', alignSelf: 'center' }}>
                                             <Image source={require('../images/search.png')} style={{ tintColor: '#C0C0C0', height: responsiveHeight(3), width: responsiveWidth(6), marginLeft: 10 }} />
@@ -340,10 +340,10 @@ const MyTransaction = ({ navigation }) => {
 
                                     </View>
 
-                                    <View style={{ alignSelf: 'center' }}>
+                                    {/* <View style={{ alignSelf: 'center' }}>
                                         <Image source={require('../images/calender.png')} style={{ tintColor: '#fff', height: responsiveHeight(4), width: responsiveWidth(8), marginLeft: 10 }} />
 
-                                    </View>
+                                    </View> */}
 
                                 </View>
 
@@ -422,7 +422,7 @@ const MyTransaction = ({ navigation }) => {
                             <View>
                                 <View style={{ height: responsiveHeight(8.1), flexDirection: 'row', width: responsiveWidth(97), alignSelf: 'center', marginTop: 20, borderRadius: 10, backgroundColor: '#6A5AE0' }}>
 
-                                    <View style={{ backgroundColor: '#fff', height: responsiveHeight(5.5), width: responsiveWidth(70), borderRadius: 10, justifyContent: 'center', marginTop: 10, flexDirection: 'row', marginHorizontal: 20 }}>
+                                    <View style={{ backgroundColor: '#fff', height: responsiveHeight(5.5), width: responsiveWidth(86), borderRadius: 10, justifyContent: 'center', marginTop: 10, flexDirection: 'row', marginHorizontal: 20 }}>
 
                                         <View style={{ flex: 0.15, justifyContent: 'center', alignSelf: 'center' }}>
                                             <Image source={require('../images/search.png')} style={{ tintColor: '#C0C0C0', height: responsiveHeight(3), width: responsiveWidth(6), marginLeft: 10 }} />
@@ -434,10 +434,10 @@ const MyTransaction = ({ navigation }) => {
 
                                     </View>
 
-                                    <View style={{ alignSelf: 'center' }}>
+                                    {/* <View style={{ alignSelf: 'center' }}>
                                         <Image source={require('../images/calender.png')} style={{ tintColor: '#fff', height: responsiveHeight(4), width: responsiveWidth(8), marginLeft: 10 }} />
 
-                                    </View>
+                                    </View> */}
 
                                 </View>
 

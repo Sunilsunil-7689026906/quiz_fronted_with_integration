@@ -40,7 +40,7 @@ const MyBalance = ({ navigation }) => {
         }
     }
     const addBalance = async () => {
-        
+
         try {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
@@ -60,8 +60,8 @@ const MyBalance = ({ navigation }) => {
             fetch(`${base_url}/addWallet`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
-                    console.log(result,"mmm");
-                    
+                    console.log(result, "mmm");
+
                     if (result.success == true) {
 
                         var options = {
@@ -74,19 +74,19 @@ const MyBalance = ({ navigation }) => {
                             order_id: result.data.order.id,//Replace this with an order_id created using Orders API.
                             prefill: {
                                 email: result.data.email,
-                                contact: result.data.mobile ,
+                                contact: result.data.mobile,
                                 name: result.data.q
                             },
                             theme: { color: '#53a20e' }
                         }
                         RazorpayCheckout.open(options).then(async (data) => {
                             // handle success
-                            console.log(data,"kkk");
+                            console.log(data, "kkk");
                             var myHeaders = new Headers();
                             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
                             myHeaders.append("Content-Type", "application/json");
 
-                            var raw = JSON.stringify({data:data});
+                            var raw = JSON.stringify({ data: data });
 
                             var requestOptions = {
                                 method: 'POST',
@@ -116,7 +116,7 @@ const MyBalance = ({ navigation }) => {
                 .catch(error => console.log('error', error));
         } catch (error) {
             console.log(error);
-            
+
         }
     }
 
@@ -161,13 +161,22 @@ const MyBalance = ({ navigation }) => {
 
             <View style={{ borderBottomWidth: 0.4, marginHorizontal: 20, marginTop: 20, borderColor: '#8A8A8A' }}></View>
 
-            <View>
-                <View style={{ flexDirection: 'row', marginTop: 15, justifyContent: 'flex-start', marginHorizontal: 20 }}>
-                    <Text style={{ alignSelf: 'center', color: '#8A8A8A', fontSize: 17, fontWeight: '500' }}>Winnings</Text>
-                    <Image source={require('../images/i.png')} style={{ height: responsiveHeight(2.1), width: responsiveWidth(4.3), alignSelf: 'center', marginLeft: 5 }} />
 
+            <View style={{ flexDirection: 'row',justifyContent:'space-between' }}>
+
+                <View>
+                    <View style={{ flexDirection: 'row', marginTop: 15, justifyContent: 'flex-start', marginHorizontal: 20 }}>
+                        <Text style={{ alignSelf: 'center', color: '#8A8A8A', fontSize: 17, fontWeight: '500' }}>Winnings</Text>
+                        <Image source={require('../images/i.png')} style={{ height: responsiveHeight(2.1), width: responsiveWidth(4.3), alignSelf: 'center', marginLeft: 5 }} />
+
+                    </View>
+                    <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹ {data?.winBalance}</Text>
                 </View>
-                <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹ {data?.winBalance}</Text>
+
+                <TouchableOpacity style={{ height: responsiveHeight(4), width: responsiveWidth(20), marginTop: '8%', backgroundColor: '#6A5AE0',marginRight:'10%', borderRadius: 7, alignSelf: 'center', justifyContent: 'center' }}
+                    onPress={() => { addBalance() }} >
+                    <Text style={{ fontSize: 14, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Widrawal</Text>
+                </TouchableOpacity>
 
             </View>
 
