@@ -58,7 +58,7 @@ const UploadKyc = ({ navigation }) => {
 
         });
 
-        console.log(result, "rrrrrrrrr");
+        console.log(result.assets[0].uri, "rrrrrrrrr");
 
         if (!result.canceled) {
             setSelectedImage(result.assets[0].uri);
@@ -124,26 +124,26 @@ const UploadKyc = ({ navigation }) => {
 
             var formdata = new FormData();
             formdata.append("adhaar", {
-                uri: response.uri,
-                type: response.type,
-                name: response.fileName,
+                uri: selectedImage,
+                type: "image/jpeg",
+                name: "adhaarfront.jpg",
             });
             formdata.append("pan", {
-                uri: response.uri,
-                type: response.type,
-                name: response.fileName,
+                uri: selectedImage2,
+                type: "image/jpeg",
+                name: "adhaarback.jpg" ,
             });
             // formdata.append("adhaarFront", fileInput.files[0], adhaarfront);
             formdata.append("adhaarFront", {
-                uri: response.uri,
-                type: response.type,
-                name: response.fileName,
+                uri: selectedImage3,
+                type: "image/jpeg",
+                name: "panFront.jpg",
             });
 
             formdata.append("adhaarBack", {
-                uri: response.uri,
-                type: response.type,
-                name: response.fileName,
+                uri: selectedImage4,
+                type: "image/jpeg",
+                name: "panback.jpg",
             });
             // formdata.append("panFront", panFront);
             // formdata.append("panBack", panback);

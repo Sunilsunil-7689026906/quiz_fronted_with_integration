@@ -22,12 +22,11 @@ const Profile = ({ navigation }) => {
     const [city, setCity] = useState(null)
     const [state, setState] = useState(null)
     const [pincode, setPincode] = useState(null)
-
-
+const [imgs, setimgs] = useState("")
 
 
     async function getPermissions() {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA, Permissions.MEDIA_LIBRARY);
+        const { status } = await Permissions.askAsync([Permissions.CAMERA, Permissions.MEDIA_LIBRARY]);
         if (status !== 'granted') {
             console.log('Permission denied!');
         }
@@ -45,12 +44,41 @@ const Profile = ({ navigation }) => {
             quality: 1,
         });
 
-        if (!result.canceled) {
+        if (!result.cancelled) {
+            console.log(result.assets[0].uri);
             setSelectedImage(result.assets[0].uri);
         }
     };
 
-
+    const update = async () => {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+    
+            var formdata = new FormData();
+            formdata.append("avatar", {
+                uri: selectedImage,
+                name: "avatar.jpg", // You can customize the file name
+                type: "image/jpeg", // Adjust the file type if needed
+            });
+            formdata.append("name", myname);
+    
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: formdata,
+                redirect: 'follow'
+            };
+    
+            fetch(`${base_url}/create-profile`, requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    
     const profileApi = async () => {
         try {
             var myHeaders = new Headers();
@@ -65,7 +93,8 @@ const Profile = ({ navigation }) => {
 
             fetch(`${base_url}/getProfile`, requestOptions)
                 .then(response => response.json())
-                .then(result => {
+                .then(async result => {
+                    console.log(JSON.stringify(result));
                     // alert(result.data.user[0].state)
                     if (result.success == true) {
                         setMyname(result.data.user[0].name)
@@ -76,7 +105,10 @@ const Profile = ({ navigation }) => {
                         setCity(result.data.user[0].city)
                         setState(result.data.user[0].state)
                         setPincode(result.data.user[0].pincode)
-
+                        setimgs(result.data.user[0].avatar)
+                        await AsyncStorage.setItem("pr",`http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
+                        await AsyncStorage.setItem("names",result.data.user[0].name)
+                        await AsyncStorage.setItem("email",result.data.user[0].email)
                     }
                 })
                 .catch(error => console.log('error', error));
@@ -88,7 +120,9 @@ const Profile = ({ navigation }) => {
 
     // console.log(myname,'myname');
 
-
+useEffect(()=>{
+    profileApi()
+},[])
     return (
         <SafeAreaView>
 
@@ -107,9 +141,11 @@ const Profile = ({ navigation }) => {
                 <TouchableOpacity style={{ marginTop: 20 }}  onPress={pickImage}>
 
                     {selectedImage ? <Image source={{ uri: selectedImage }} style={{ height: responsiveHeight(8), width: responsiveWidth(16), borderRadius: 100, alignSelf: 'center', marginTop: 3 }} /> :
-                        <TouchableOpacity style={{ borderWidth: 2.5, borderColor: '#000', height: responsiveHeight(9), width: responsiveWidth(18), borderRadius: 100, alignSelf: 'center' }}
+                        <TouchableOpacity onPress={pickImage} style={{ borderWidth: 2.5, borderColor: '#000', height: responsiveHeight(9), width: responsiveWidth(18), borderRadius: 100, alignSelf: 'center' }}
                            >
-                            <Image source={require('../images/user.jpg')} style={{ height: responsiveHeight(8), width: responsiveWidth(16), borderRadius: 100, alignSelf: 'center', marginTop: 3 }} />
+                            <Image  source={{
+                                  uri: `http://3.111.23.56:5059/uploads/${imgs}`,
+                                }} style={{ height: responsiveHeight(8), width: responsiveWidth(16), borderRadius: 100, alignSelf: 'center', marginTop: 3 }} />
 
                             <View style={{ backgroundColor: '#6A5AE0', height: responsiveHeight(3), borderRadius: 100, justifyContent: 'center', width: responsiveWidth(6), zIndex: 1, marginTop: -20, marginLeft: 50 }}>
                                 <Image source={require('../images/gallery.png')} style={{ height: responsiveHeight(2.5), width: responsiveWidth(5), borderRadius: 100, tintColor: '#fff', alignSelf: 'center' }} />
@@ -187,7 +223,7 @@ const Profile = ({ navigation }) => {
                 </View>
 
                 <TouchableOpacity style={{ height: responsiveHeight(6), justifyContent: 'center', alignSelf: 'center', borderRadius: 5, width: responsiveWidth(90), marginTop: 20, backgroundColor: '#6A5AE0' }}
-                    onPress={() => { profileApi() }}>
+                    onPress={() => { update() }}>
                     <Text style={{ color: '#fff', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Update</Text>
                 </TouchableOpacity>
 
