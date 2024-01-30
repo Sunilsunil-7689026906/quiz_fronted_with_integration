@@ -7,30 +7,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
 import PieChart from 'react-native-pie-chart';
 import { BarChart } from 'react-native-chart-kit';
-import { useNavigation, useIsFocused, useRoute } from '@react-navigation/native'
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { base_url } from "./Base_url";
+import { base_url } from './Base_url';
 
 
-const AllQuestion = (props) => {
+
+const MyQuestions = ({ navigation }) => {
     const [select, setSelect] = useState('')
     const [number, setNumber] = useState(1)
     const [mydata, setMydata] = useState("")
+
     const [question, setquestion] = useState([])
-    const navigation = useNavigation();
-    const route = useRoute();
+    // const navigation = useNavigation();
+    // const route = useRoute();
 
     const [rowdata, setRowdata] = useState([])
 
     const [chartdata, setChartdata] = useState([])
     const [attempte, setAttempte] = useState([])
+    const [rankdata, setRankdata] = useState([])
 
-
-    const [useranswer, setUseranswer] = useState()
-    const [correctanswer, setCorrectanswer] = useState()
-
-
-    const myid = route.params?.id || null;
 
 
     const resultApi = async () => {
@@ -48,11 +44,14 @@ const AllQuestion = (props) => {
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
-                        console.log(result.data.gameQuestion[0], "rcc")
+                        console.log(result.data.gameQuestion[0].questionleaderShip, "rcc")
+                        setRankdata(result.data.gameQuestion.questionleaderShip)
+
                         setAttempte(result.data.gameQuestion[0])
 
                         setRowdata(result.data.gameQuestion[0].UserQuestion)
                         setMydata(result.data.gameQuestion[0].question)
+
                         setquestion(result.data.gameQuestion[0].options)
 
                         setChartdata(result.data.gameQuestion[0].ContestMembers)
@@ -66,9 +65,6 @@ const AllQuestion = (props) => {
         }
     }
 
-    console.log(attempte, "attempte");
-
-
     const widthAndHeight = 150;
     const series = [`${attempte.attempted}`, `${attempte.not_attempted}`];
     const sliceColor = ['#6A5AE0', '#A8A8A8'];
@@ -77,8 +73,6 @@ const AllQuestion = (props) => {
     const widthAndHeight2 = 150;
     const series2 = [`${attempte.correctPercnt}`, `${attempte.wrongPercnt}`];
     const sliceColor2 = ['#0085FF', '#A8A8A8'];
-
-
 
     const data = {
         labels: ['A', 'B', 'C', 'D'],
@@ -92,13 +86,14 @@ const AllQuestion = (props) => {
     };
 
     useEffect(() => {
-        resultApi()
+        resultApi();
     }, [])
 
 
     return (
-        <SafeAreaView>
+        <SafeAreaView  >
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
+
 
             <View style={{ height: responsiveHeight(7), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
@@ -106,13 +101,12 @@ const AllQuestion = (props) => {
                         <AntDesign name="arrowleft" size={24} color="white" />
                     </TouchableOpacity>
 
-                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: '500', alignSelf: 'center', marginTop: 15, marginLeft: '26%' }}>All Question</Text>
+                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: '500', alignSelf: 'center', marginTop: 15, marginLeft: '26%' }}>Leaderboard</Text>
                 </View>
             </View>
 
+            <ScrollView showsVerticalScrollIndicator={false} >
 
-
-            <ScrollView style={{ marginBottom: 40 }}>
 
 
                 <ScrollView style={{ flexDirection: 'row' }} horizontal showsHorizontalScrollIndicator={false} >
@@ -199,11 +193,10 @@ const AllQuestion = (props) => {
                     </View>
                 </ScrollView>
 
-                {/* <Text style={{ fontSize: 15, alignSelf: 'center' }}>myid : {JSON.stringify(myid)}</Text> */}
-
 
                 <View style={{ height: responsiveHeight(32), width: responsiveWidth(90), marginBottom: 10, paddingHorizontal: 20, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
                     <Text style={{ marginTop: 20, fontSize: 17, fontWeight: '500', color: '#000' }}>Q. {mydata}</Text>
+
                     {question?.map((res) => {
                         return (
                             <>
@@ -397,77 +390,73 @@ const AllQuestion = (props) => {
 
 
 
-                <View style={{ height: responsiveHeight(46), alignSelf: 'center', justifyContent: 'center', width: responsiveWidth(90), marginBottom: 40, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
-                    <View style={{ height: responsiveHeight(6),backgroundColor:'#fff', justifyContent: 'center', width: responsiveWidth(85), borderWidth: 0.5, borderRadius: 10, alignSelf: 'center' }}>
-                        <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0', fontWeight: '500' }}>Row Point Table</Text>
+                <View style={{ height: responsiveHeight(6), width: responsiveWidth(90), paddingHorizontal: 20, backgroundColor: '#6A5AE0', alignSelf: 'center', marginTop: 20, borderTopLeftRadius: 8, borderTopRightRadius: 8, elevation: 10 }}>
+                    <View style={{ flexDirection: 'row', marginTop: 12, justifyContent: 'space-between', marginHorizontal: 20 }}>
+
+                        <View style={{ justifyContent: 'center' }}>
+                            <Text style={{ fontSize: 18, fontWeight: '400', alignSelf: 'center', color: '#fff' }}>Leaderboard Winner</Text>
+                        </View>
+
+                        <View style={{ justifyContent: 'center', marginBottom: 5 }}>
+                            <Image source={require('../images/leaderboard.png')} style={{ tintColor: '#fff', width: responsiveWidth(7), alignSelf: 'center', height: responsiveHeight(3.5) }} />
+                        </View>
+
+                    </View>
+                </View>
+
+                <View style={{ height: responsiveHeight(8.1), flexDirection: 'row', width: responsiveWidth(90), alignSelf: 'center', backgroundColor: '#6A5AE0' }}>
+
+                    <View style={{ backgroundColor: '#fff', height: responsiveHeight(5.5), width: responsiveWidth(70), borderRadius: 10, justifyContent: 'center', marginTop: 10, flexDirection: 'row', marginHorizontal: 15 }}>
+
+                        <View style={{ flex: 0.15, justifyContent: 'center', alignSelf: 'center' }}>
+                            <Image source={require('../images/search.png')} style={{ tintColor: '#C0C0C0', height: responsiveHeight(3), width: responsiveWidth(6), marginLeft: 10 }} />
+                        </View>
+
+                        <View style={{ flex: 0.80, justifyContent: 'center', alignSelf: 'center' }}>
+                            <TextInput require placeholder='Search here..' placeholderTextColor={'#000'} style={{ color: '#000', marginLeft: 15, fontWeight: '400', fontSize: 17, fontFamily: 'Jaldi-Regular' }} />
+                        </View>
+
                     </View>
 
+                    <View style={{ alignSelf: 'center' }}>
+                        <Image source={require('../images/calender.png')} style={{ tintColor: '#fff', height: responsiveHeight(4), width: responsiveWidth(8) }} />
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 11, marginTop: 10 }}>
-
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>M</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>C</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>T</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>Total</Text>
-                        </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 11 }}>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>{rowdata.rM}</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>{rowdata.rC}</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB',elevation:5, width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>{rowdata.timeTaken}</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff',elevation:5, width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>{rowdata.rawPoints}</Text>
-                        </View>
+                </View>
+
+                <View style={{ height: responsiveHeight(42), marginBottom: 50, width: responsiveWidth(90), elevation: 10, paddingHorizontal: 20, backgroundColor: '#fff', alignSelf: 'center', borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#fff', alignSelf: 'center' }}>
+                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>Rank</Text>
+                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500', marginLeft: 20 }}>Name</Text>
+                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500', marginLeft: 20 }}>Reg.ID</Text>
+
+                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>Points</Text>
+
                     </View>
 
-                    <View style={{ height: responsiveHeight(6), justifyContent: 'center', width: responsiveWidth(85), borderWidth: 0.4, marginTop: 20,backgroundColor:'#fff', borderRadius: 10, alignSelf: 'center' }}>
-                        <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0', fontWeight: '500' }}>Main Point Table</Text>
-                    </View>
+                    {
+                        rankdata?.map((item, i) => {
+                            console.log(item, "myitem");
+
+                            return (
+                                <>
+                                    <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
+                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>#{item?.rank}</Text>
+                                        <Text style={{ alignSelf: 'center', color: '#000' }}>{item?.User?.name}</Text>
+                                        <Text style={{ alignSelf: 'center', color: 'green' }}>{item?.userId}</Text>
+                                        <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>7.5</Text>
+                                    </View>
+                                </>
+                            );
+                        })
 
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 11, marginTop: 10 }}>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>M</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>C</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>T</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>Total</Text>
-                        </View>
-                    </View>
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 11 }}>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>{rowdata.mM}</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>{rowdata.mC}</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB',elevation:5, width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>{rowdata.timeTaken}</Text>
-                        </View>
-                        <View style={{ height: responsiveHeight(5),elevation:5, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 0.4, borderRadius: 5, alignSelf: 'center' }}>
-                            <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>{rowdata.mainPoints}</Text>
-                        </View>
-                    </View>
+                    }
+
+
 
                 </View>
 
@@ -477,4 +466,4 @@ const AllQuestion = (props) => {
     )
 }
 
-export default AllQuestion
+export default MyQuestions

@@ -50,6 +50,7 @@ import Welcome from "./src/screens/Welcome";
 import Socketio from "./src/screens/Socketio";
 import InactiveLeaderBoard from "./src/screens/InactiveLeaderBoard";
 import { SocketProvider } from "./src/screens/Context/SocketContext";
+import MyQuestions from "./src/screens/MyQuestions";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -277,6 +278,11 @@ function Stacks() {
         <Stack.Screen
           name="InactiveLeaderBoard"
           component={InactiveLeaderBoard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MyQuestions"
+          component={MyQuestions}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
