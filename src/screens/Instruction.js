@@ -18,16 +18,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // import Socketio from "./Socketio";
 import { useSocket } from "./Context/SocketContext";
 
-const Instruction = ({ navigation }) => {
+const Instruction = ({ route,navigation }) => {
+const {times} = route.params
     const [lan, setLang] = useState(0);
     const [hit, setHit] = useState("HINDI");
     const [gameid, setGameid] = useState([]);
     const [userid, setUserid] = useState([]);
 
-    const [minutes, setMinutes] = useState(5);
-    const [seconds, setSeconds] = useState(0);
+    // const [minutes, setMinutes] = useState(5);
+    // const [seconds, setSeconds] = useState(0);
     const [lanslect, setlanslect] = useState()
+     // Initial time in minutes
+    const [minutes, setMinutes] = useState(times);
+    const [seconds, setSeconds] = useState(0);
+    
     useEffect(() => {
+
+
         const interval = setInterval(() => {
             if (minutes === 0 && seconds === 0) {
                 clearInterval(interval);
@@ -35,12 +42,12 @@ const Instruction = ({ navigation }) => {
             } else {
                 if (seconds === 0) {
                     setMinutes((prevMinutes) => prevMinutes - 1);
-                    setSeconds(9);
+                    setSeconds(59); // Set seconds to 59 when minutes decrement
                 } else {
                     setSeconds((prevSeconds) => prevSeconds - 1);
                 }
             }
-        }, 100);
+        }, 1000); // Adjusted to 1000 milliseconds (1 second)
 
         return () => clearInterval(interval);
     }, [minutes, seconds, navigation]);

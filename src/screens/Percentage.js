@@ -90,13 +90,13 @@ const Percentage = ({ navigation }) => {
             />
           </TouchableOpacity>
           <Image
-            source={require("../images/logo.png")}
+            source={require("../images/logomain.png")}
             style={{
               height: responsiveHeight(6),
               marginRight: 40,
-              width: responsiveWidth(26),
+              width: responsiveWidth(40),
               alignSelf: "center",
-              marginTop: 3,
+              marginTop: 5,
             }}
           />
 
