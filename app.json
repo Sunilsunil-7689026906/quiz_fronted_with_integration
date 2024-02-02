@@ -4,10 +4,10 @@
     "slug": "Pdowin",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,14 +19,21 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff",
-        "permissions": ["READ_EXTERNAL_STORAGE"]
+        "permissions": [
+          "READ_EXTERNAL_STORAGE"
+        ]
       },
       "package": "com.sunilkumar76.Pdowin"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3624e82a-204a-4cd7-9563-172fc1625def"
+      }
     }
   }
 }

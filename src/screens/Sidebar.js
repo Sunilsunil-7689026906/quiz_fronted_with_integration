@@ -68,7 +68,7 @@ const Sidebar = ({ navigation }) => {
                     <Text style={{ color: '#fff', fontWeight: '500', fontSize: 16, alignSelf: 'flex-start' }}>{names}</Text>
                     <Text style={{ color: '#fff', fontWeight: '400', alignSelf: 'center' }}>{email}</Text>
                 </View>
-                <Image source={require('../images/wcross.png')} style={{ height: responsiveHeight(2), width: responsiveWidth(5), borderRadius: 100, marginTop: 8 }} />
+                {/* <Image source={require('../images/wcross.png')} style={{ height: responsiveHeight(2), width: responsiveWidth(5), borderRadius: 100, marginTop: 8 }} /> */}
 
             </View>
 </TouchableOpacity>
@@ -115,7 +115,7 @@ const Sidebar = ({ navigation }) => {
                     <Text style={{ color: '#fff', fontWeight: '500', fontSize: 16, alignSelf: 'flex-start', marginLeft: 10 }}>Faq</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('HowtoPlay')} style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 30 }}
+                <TouchableOpacity onPress={() => navigation.navigate('Introduction')} style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 30 }}
                 >
                     <Image source={require('../images/play.png')} style={{ height: responsiveHeight(2.5), tintColor: '#fff', width: responsiveWidth(4.8), alignSelf: 'center', borderRadius: 100 }} />
 

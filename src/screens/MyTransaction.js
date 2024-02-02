@@ -7,6 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { base_url } from "./Base_url";
+import { formatTimestamp } from "./../utils/formatDate";
+
 
 const MyTransaction = ({ navigation }) => {
     const [widraw, setWidraw] = useState(0)
@@ -15,13 +17,19 @@ const MyTransaction = ({ navigation }) => {
     const [depositdata, setdepositdata] = useState([])
     const [quiseRewarddata, setquiseRewarddata] = useState([])
     const [mydata, setMydata] = useState([])
+    const [filterText, setFilterText] = useState("");
+    const [filterText2, setFilterText2] = useState("");
+    const [filterText3, setFilterText3] = useState("");
+    const [filterText4, setFilterText4] = useState("");
+
+
 
     function convertMillisecondsToDateTime(milliseconds) {
         const dateObject = new Date(milliseconds);
         return dateObject.toLocaleString();
-      }
+    }
 
-      let index = 1
+    let index = 1
 
 
     const Widrawal = async () => {
@@ -138,10 +146,13 @@ const MyTransaction = ({ navigation }) => {
     }
 
     useEffect(() => {
-        depositData()
-        quiseReward()
-        referhistoryApi()
-    }, [])
+        Widrawal({ name: filterText });
+        depositData({ name: filterText2 });
+        quiseReward({ name: filterText3 });
+        referhistoryApi({ name: filterText4 });
+    }, [filterText, filterText2, filterText3, filterText4])
+
+    console.log(filterText);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -185,7 +196,8 @@ const MyTransaction = ({ navigation }) => {
                             </View>
 
                             <View style={{ flex: 0.80, justifyContent: 'center', alignSelf: 'center' }}>
-                                <TextInput require placeholder='Search here..' placeholderTextColor={'#000'} style={{ color: '#000', marginLeft: 15, fontWeight: '400', fontSize: 17, fontFamily: 'Jaldi-Regular' }} />
+                                <TextInput require placeholder='Search here..'
+                                    onChangeText={(value) => setFilterText(value)} placeholderTextColor={'#000'} style={{ color: '#000', marginLeft: 15, fontWeight: '400', fontSize: 17, fontFamily: 'Jaldi-Regular' }} />
                             </View>
 
                         </View>
@@ -469,22 +481,22 @@ const MyTransaction = ({ navigation }) => {
                                     <ScrollView showsVerticalScrollIndicator={false}>
 
                                         {
-                                            mydata?.map((data,index) => {
+                                            mydata?.map((data, index) => {
                                                 console.log(data, 'inin');
                                                 return (
                                                     <>
 
                                                         <View style={{ flexDirection: 'row', height: responsiveHeight(9), width: responsiveWidth(95), paddingHorizontal: 10, borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
                                                             <Text style={{ alignSelf: 'center', color: '#000', flex: 0.2 }}>
-                                                                {index+1}
+                                                                {index + 1}
                                                             </Text>
                                                             <Text style={{ alignSelf: 'center', color: '#000', flex: 0.5, marginLeft: 10 }}>{data?.refUserId?.name}</Text>
                                                             <Text style={{ alignSelf: 'center', color: 'green', flex: 0.5, marginLeft: 25 }}>{data?.amount}</Text>
 
 
                                                             <View style={{ alignSelf: 'center' }}>
-                                                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{convertMillisecondsToDateTime(data?.createdAt)}</Text>
-                                                                {/* <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>10:00 AM</Text> */}
+                                                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(data.createdAt).toLocaleDateString()}</Text>
+                                                                <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '400', fontSize: 13 }}>{new Date(data.createdAt).toLocaleTimeString()}</Text>
                                                             </View>
 
 

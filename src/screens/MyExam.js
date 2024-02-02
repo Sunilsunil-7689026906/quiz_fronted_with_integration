@@ -42,6 +42,10 @@ const MyExam = ({ navigation }) => {
 
   const [question, setQuestion] = useState([]);
 
+  const [myUserid, setMyUserid] = useState([]);
+  const [myGameid, setMyGameid] = useState([]);
+const [times, settimes] = useState()
+
 
   function convertMillisecondsToDateTime(milliseconds) {
     const dateObject = new Date(milliseconds);
@@ -87,6 +91,10 @@ const MyExam = ({ navigation }) => {
     }
   }
 
+// alert(myGameid)
+// alert(myUserid)
+
+
   const myexamApi = async ({ name }) => {
     try {
       var myHeaders = new Headers();
@@ -106,8 +114,14 @@ const MyExam = ({ navigation }) => {
         .then(async (result) => {
           if (result.success == true) {
             // console.log(result.data.userGameList[0].Game, "userGameList")
-            // console.log(`${await AsyncStorage.getItem("token")}`, "token");
+            console.log(`${await AsyncStorage.getItem("token")}`, "token");
             setMydata(result.data.userGameList);
+
+            // alert(result.data.userGameList[0].gameId)
+            setMyGameid(result.data.userGameList[0].gameId)
+            setMyUserid(result.data.userGameList[0].userId)
+            // alert(result.data.userGameList[0].userId)
+
 
             // alert(result.data.userGameList.Game,"QIDDD");
             setQuestion(result.data.userGameList[0].Game[0].noOfQuestion)
@@ -133,12 +147,15 @@ const MyExam = ({ navigation }) => {
     const currentTimeInMilliseconds = new Date().getTime();
     let availableTime = times - currentTimeInMilliseconds
     const availableMinutes = Math.floor(availableTime / (1000 * 60));
+    settimes(availableMinutes)
     if (availableMinutes < 0) {
       alert("Expiration date ")
     }
     else if (availableMinutes <= 5) {
       navigation.navigate("Instruction", {
-        times: availableMinutes
+        times: availableMinutes,
+        g_id: myGameid,
+        u_id: myUserid
       });
     }
     else {
@@ -587,7 +604,7 @@ const MyExam = ({ navigation }) => {
                           </Text>
                         </View>
 
-                        <Text
+                        {/* <Text
                           style={{
                             color: "#000",
                             fontWeight: "500",
@@ -595,8 +612,8 @@ const MyExam = ({ navigation }) => {
                             marginTop: 5,
                           }}
                         >
-                          15 minutes left to exam start
-                        </Text>
+                          {times} minutes left to exam start
+                        </Text> */}
 
                         <TouchableOpacity
                           style={{

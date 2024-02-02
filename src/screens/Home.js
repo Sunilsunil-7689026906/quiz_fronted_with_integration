@@ -172,7 +172,10 @@ const Home = ({ navigation }) => {
     }
   }
 
-
+  function convertMillisecondsToDateTime(milliseconds) {
+    const dateObject = new Date(milliseconds);
+    return dateObject.toLocaleString();
+  }
   const handleLinkPress = (l) => {
     // alert(l)
     Linking.openURL(l);
@@ -186,7 +189,7 @@ const Home = ({ navigation }) => {
     examApi();
   }, []);
 
-  // console.log(myid,"myid");
+  console.log(imgdata,"imgdata");
 
   return (
     <>
@@ -472,7 +475,7 @@ const Home = ({ navigation }) => {
                             fontSize: 13,
                           }}
                         >
-                          {formatTimestamp(data?.schedule)}
+                          {convertMillisecondsToDateTime(data?.schedule)}
                         </Text>
                       </View>
 
@@ -523,6 +526,7 @@ const Home = ({ navigation }) => {
                             fontSize: 14,
                           }}
                         >
+                          {console.log(data.UserGame.length,"kkkjggy")}
                           Joined Member: {data.UserGame.length}
                         </Text>
                       </View>
@@ -570,8 +574,10 @@ const Home = ({ navigation }) => {
                           marginTop: 20,
                           backgroundColor: "#A9A3E9",
                           alignSelf: "flex-start",
+                          
                         }}
-                        onPress={() => navigation.navigate("QuizType")}
+                        disabled={data.isJoined}
+                        onPress={() => navigation.navigate("QuizType",{joinedMembers:data.UserGame.length,amount:data.noOfPrice})}
                       >
                         <Text
                           style={{

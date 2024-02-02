@@ -115,32 +115,31 @@ const UploadKyc = ({ navigation }) => {
 
 
     const uploadApi = async () => {
-
-        alert(selectedImage)
+        // alert(selectedImage)
         try {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
             // alert(`${await AsyncStorage.getItem("token")}`)
 
             var formdata = new FormData();
-            formdata.append("adhaar", {
+            formdata.append("adhaarFront", {
                 uri: selectedImage,
                 type: "image/jpeg",
                 name: "adhaarfront.jpg",
             });
-            formdata.append("pan", {
+            formdata.append("adhaarBack", {
                 uri: selectedImage2,
                 type: "image/jpeg",
                 name: "adhaarback.jpg" ,
             });
             // formdata.append("adhaarFront", fileInput.files[0], adhaarfront);
-            formdata.append("adhaarFront", {
+            formdata.append("panFront", {
                 uri: selectedImage3,
                 type: "image/jpeg",
                 name: "panFront.jpg",
             });
 
-            formdata.append("adhaarBack", {
+            formdata.append("panBack", {
                 uri: selectedImage4,
                 type: "image/jpeg",
                 name: "panback.jpg",

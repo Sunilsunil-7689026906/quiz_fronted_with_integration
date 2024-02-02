@@ -1,10 +1,47 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { } from 'react-native-gesture-handler';
+import { base_url } from './Base_url';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const Introduction = ({ navigation }) => {
+
+    const [imgData, setImgData] = useState("")
+
+    const playimgApi = async () => {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            fetch(`${base_url}/how-to-play`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success == true) {
+                        console.log(result.data.img)
+                        setImgData(result.data.img)
+                    }
+                })
+                .catch(error => console.log('error', error));
+
+        } catch (error) {
+
+        }
+    }
+
+    useEffect(() => {
+        playimgApi()
+    }, []);
+
+    console.log(imgData,"imgdata");
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <View style={{ height: responsiveHeight(13), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
@@ -21,7 +58,10 @@ const Introduction = ({ navigation }) => {
             <View>
 
                 <View style={{ borderWidth: 1, height: responsiveHeight(30), width: responsiveWidth(100), alignSelf: 'center' }}>
-                    <Image source={require('../images/inst.png')} style={{ borderWidth: 1, height: responsiveHeight(28), borderRadius: 10, marginTop: 15, width: responsiveWidth(90), alignSelf: 'center' }} />
+                    <Image source={{
+                        uri: `http://3.111.23.56:5059/uploads/${imgData}`,
+                    }}
+                        style={{ borderWidth: 1, height: responsiveHeight(28), borderRadius: 10, marginTop: 15, width: responsiveWidth(90), alignSelf: 'center',resizeMode:'center' }} />
                 </View>
 
                 <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row' }}>

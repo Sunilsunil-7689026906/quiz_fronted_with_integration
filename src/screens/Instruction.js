@@ -12,33 +12,45 @@ import {
     responsiveHeight,
     responsiveWidth,
 } from "react-native-responsive-dimensions";
+import io from 'socket.io-client';
+
 import { } from "react-native-gesture-handler";
 import { base_url } from "./Base_url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import Socketio from "./Socketio";
 import { useSocket } from "./Context/SocketContext";
+import { useRoute } from '@react-navigation/native';
 
-const Instruction = ({ route,navigation }) => {
-const {times} = route.params
+
+const Instruction = ({ route, navigation }) => {
+
+
+    const { times } = route.params
+    const { g_id } = route.params
+    const { u_id } = route.params
+
     const [lan, setLang] = useState(0);
     const [hit, setHit] = useState("HINDI");
-    const [gameid, setGameid] = useState([]);
-    const [userid, setUserid] = useState([]);
+    const [gameid, setGameid] = useState(g_id);
+    const [userid, setUserid] = useState(u_id);
+    // alert(userid)
 
-    // const [minutes, setMinutes] = useState(5);
-    // const [seconds, setSeconds] = useState(0);
+
     const [lanslect, setlanslect] = useState()
-     // Initial time in minutes
+    // Initial time in minutes
     const [minutes, setMinutes] = useState(times);
+
+
+
     const [seconds, setSeconds] = useState(0);
-    
+
     useEffect(() => {
 
 
         const interval = setInterval(() => {
             if (minutes === 0 && seconds === 0) {
                 clearInterval(interval);
-                navigation.navigate('MyLeaderBoard');
+                // navigation.navigate('MyLeaderBoard');
             } else {
                 if (seconds === 0) {
                     setMinutes((prevMinutes) => prevMinutes - 1);
@@ -52,26 +64,61 @@ const {times} = route.params
         return () => clearInterval(interval);
     }, [minutes, seconds, navigation]);
 
+    const socket = useSocket();
 
-    // useEffect(() => {
-    //     const timeoutId = setTimeout(() => {
-    //       navigation.navigate('MyLeaderBoard'); 
-    //     }, 3000); 
+    useEffect(()=>{
+        socket.on('connect',()=>{
+            console.log("connect success ! sk");
+        })
+        const joinGameData = {
+            gameId:gameid,
+            userId:userid
+        }
+        socket.emit('joinGame',joinGameData)
 
-    //     return () => clearTimeout(timeoutId);
-    //   }, [navigation])
-
-
-    // const socket = useSocket();
-
-    // console.log(socket, "socketttt");
-
-    // console.log(userid, "useridstate");
-
+        socket.on('message',(data)=>{
+            console.log("messgg serve",data);
+        })
+        socket.on('get-question', async (questionData) => {
+            try {
+            //   await setleft(questionData.q_left)
+            //   await setnoOfQuestion(questionData.noOfQuestion)
+            //   let leg = await AsyncStorage.getItem("lang")
+            //   if (leg == "ENGLISH") {
+      
+            //     await setQuestion(questionData.question.questionInEnglish);
+            //     await setoption(questionData.question.optionsInEnglish)
+            //     await setGetId(questionData.question._id)
+            //     await setMygameId(questionData.question.gameId)
+            //     await setMyanswer()
+      
+            //   } else {
+            //     await setQuestion(questionData.question.questionInHindi);
+            //     await setoption(questionData.question.optionsInHindi);
+            //     await setGetId(questionData.question._id)
+            //     await setMygameId(questionData.question.gameId)
+            //     await setMyanswer(questionData.question.optionsInEnglish[0].id)
+      
+      
+            //   }
+              // Update the component state with the received question
+              console.log('Received question from the server: jon', JSON.stringify(questionData));
+             
+                 
     
+                      navigation.navigate('MyLeaderBoard',{questionData:questionData,t:questionData.t})
+                  
+              
+            //   await setSelect("")
+            } catch (error) {
+              console.log(error);
+            }
+      
+          });
+    },[gameid,userid])
 
 
-    
+
     const langApi = async () => {
         // console.log(`${await AsyncStorage.getItem("_id2")}`, "ididididido");
 
@@ -106,7 +153,10 @@ const {times} = route.params
         } catch (error) { }
     };
 
+
+
     const gamelangApi = async () => {
+        // alert(await AsyncStorage.getItem("_id2"))
         try {
             var myHeaders = new Headers();
             myHeaders.append(
@@ -127,24 +177,30 @@ const {times} = route.params
                 .then((response) => response.json())
                 .then(async (result) => {
                     if (result.success == true) {
-                        // console.log(result, "if");
-                        // navigation.navigate("MyLeaderBoard");
-                        // console.log(result.data.myGame.type, "languageee");
-                        setUserid(result.data.myGame.userId);
-                        setGameid(result.data.myGame.gameId);
+
+                        // setUserid(result.data.myGame.userId);
+                        // alert(result.data.myGame.userId);
+
+                        // setGameid(result.data.myGame.gameId);
+                        // console.log(result.data.myGame.gameId, "result.data.myGame.gameId");
+
+                        // alert(AsyncStorage.getItem("_id2"));
+                        // console.log(AsyncStorage.getItem("_id2"));
 
 
                         // await AsyncStorage.setItem("gameid", result.data.myGame.gameId);
-                        await AsyncStorage.setItem("lang",result.data.myGame.type)
-                        if (result.data.myGame.type == "ENGLISH") {
+                        await AsyncStorage.setItem("lang", hit)
+                        if (hit == "ENGLISH") {
                             setLang(1);
-                        } else if (result.data.myGame.type == "HINDI") {
+                        } else {
                             setLang(0);
                         }
                     }
                 })
                 .catch((error) => console.log("error", error));
-        } catch (error) { }
+        } catch (error) {
+            console.log(error, "finalcatch error");
+        }
     };
 
     useEffect(() => {
@@ -215,7 +271,7 @@ const {times} = route.params
             </View>
 
             <ScrollView>
-                {lan == 0 ? (
+                {hit == "HINDI" ? (
                     <View>
                         <View
                             style={{
@@ -358,7 +414,7 @@ const {times} = route.params
                     </View>
                 ) : null}
 
-                {lan == 1 ? (
+                {hit == "ENGLISH" ? (
                     <View>
                         <View
                             style={{
@@ -546,7 +602,7 @@ const {times} = route.params
                                 alignSelf: "flex-start",
                             }}
                             onPress={() => {
-                                setLang(0), langApi();
+                                setLang(0),setHit("HINDI"), langApi();
                             }}
                         >
                             <Text

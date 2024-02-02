@@ -12,12 +12,16 @@ import { useSocket } from "./Context/SocketContext";
 import { disabled } from "deprecated-react-native-prop-types/DeprecatedTextPropTypes";
 import io from 'socket.io-client';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation, useIsFocused,useRoute } from '@react-navigation/native'
+
 
 //questionId,gameId,question,timeTaken,answer,rawPoints,rM,rC
 //type:"RIGHT" or "WRONG"
 
 
-const MyLeaderBoard = ({ navigation }) => {
+const MyLeaderBoard = ({ navigation,route }) => {
+
+  const { questionData,t } = route.params
 
   const [select, setSelect] = useState("");
   const [checked, setChecked] = useState("first");
@@ -37,6 +41,13 @@ const MyLeaderBoard = ({ navigation }) => {
 
 
   const socket = useSocket();
+  // const route = useRoute();
+
+
+  // const gameid = route.params?.idgame || null;
+  // const userid = route.params?.iduser || null;
+
+
 
   // console.log(socket, "myleaderboardsocket");
 
@@ -53,70 +64,54 @@ const MyLeaderBoard = ({ navigation }) => {
   const [getId, setGetId] = useState()
   const [mygameId,setMygameId] = useState()
   const [myanswer,setMyanswer] = useState()
+  const [hindiQseon, setHindiQseon] = useState("");
+  const [opsion, setOpsion] = useState([]);
+
+const [index, setIndex] = useState(0);
+  // useEffect(async() => {
+  //   const connectSockett = async () => {
+  //   const socket = io('http://3.111.23.56:5059');
+
+  //   // Event listener for connection success
+  //  // Event listener for receiving messages from the server
+  //   socket.on('message', (data) => {
+  //     console.log('Received message from the server: kkk', data);
+  //   });
+
+  //   // Event listener for receiving questions from the server
+  //   socket.on('get-question', async (questionData) => {
+  //     try {
+  //       await setleft(questionData.q_left)
+  //       await setnoOfQuestion(questionData.noOfQuestion)
+  //       let leg = await AsyncStorage.getItem("lang")
+  //       if (leg == "ENGLISH") {
+
+  //         await setQuestion(questionData.question.questionInEnglish);
+  //         await setoption(questionData.question.optionsInEnglish)
+  //         await setGetId(questionData.question._id)
+  //         await setMygameId(questionData.question.gameId)
+  //         await setMyanswer()
+
+  //       } else {
+  //         await setQuestion(questionData.question.questionInHindi);
+  //         await setoption(questionData.question.optionsInHindi);
+  //         await setGetId(questionData.question._id)
+  //         await setMygameId(questionData.question.gameId)
+  //         await setMyanswer(questionData.question.optionsInEnglish[0].id)
 
 
+  //       }
+  //       // Update the component state with the received question
+  //       console.log('Received question from the server: jon', JSON.stringify(questionData));
+  //       await setSelect("")
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
 
-  useEffect(() => {
-
-    const socket = io('http://3.111.23.56:5059');
-
-    // Event listener for connection success
-    socket.on('connect', () => {
-      console.log('Connected to the socket server');
-
-      // Emitting the joinGame event after connecting
-      const joinGameData = {
-        gameId: "659c3fdd9b22fdcebbdd7e88",
-        userId: "65ab8b6e9719dcb0ce2758ae",
-      };
-      socket.emit('joinGame', joinGameData);
-    });
-
-
-
-
-
-
-
-
-
-    // Event listener for receiving messages from the server
-    socket.on('message', (data) => {
-      console.log('Received message from the server: kkk', data);
-    });
-
-    // Event listener for receiving questions from the server
-    socket.on('get-question', async (questionData) => {
-      try {
-        await setleft(questionData.q_left)
-        await setnoOfQuestion(questionData.noOfQuestion)
-        let leg = await AsyncStorage.getItem("lang")
-        if (leg == "ENGLISH") {
-
-          await setQuestion(questionData.question.questionInEnglish);
-          await setoption(questionData.question.optionsInEnglish)
-          await setGetId(questionData.question._id)
-          await setMygameId(questionData.question.gameId)
-          await setMyanswer()
-
-        } else {
-          await setQuestion(questionData.question.questionInHindi);
-          await setoption(questionData.question.optionsInHindi);
-          await setGetId(questionData.question._id)
-          await setMygameId(questionData.question.gameId)
-          await setMyanswer(questionData.question.optionsInEnglish[0].id)
-
-
-        }
-        // Update the component state with the received question
-        console.log('Received question from the server: jon', JSON.stringify(questionData));
-        await setSelect("")
-      } catch (error) {
-        console.log(error);
-      }
-
-    });
-  }, []);
+  //   });
+  // };
+  // connectSockett();
+  // }, []);
 
   const right = 5.5;
   const wrong = 3.5;
@@ -149,12 +144,12 @@ const MyLeaderBoard = ({ navigation }) => {
 
     // Clear the interval when the component unmounts or when the timer is stopped
     return () => clearInterval(interval);
-  }, [seconds, isTimerRunning]);
+  }, [seconds, isTimerRunning,index]);
 
 
 
   const calculation = (a, b) => {
-    // alert(a)
+    console.log(a,"jj",b);
     let a1 = parseFloat(a);
     let a2 = parseFloat(b);
 
@@ -170,14 +165,21 @@ const MyLeaderBoard = ({ navigation }) => {
       sum2 += parseInt(tostr[i])
 
     }
+
+    
     setsumdata(parseFloat(`${sum2}.${arr[1]}`) + initialSeconds)
     // console.log(`${sum2}.${arr[1]}`)
     setsumdata2(`${sum2}.${arr[1]}`)
+    console.log(parseFloat(sumdata2),`${sum2}.${arr[1]}`)
+    return `${sum2}.${arr[1]}`
+
 
   }
 
+  console.log(initialSeconds,"initialSeconds");
+  console.log(sumdata2,"sumdata");
+  var count =0;
   const savebtn = () => {
-    // alert(parseFloat(sumdata2))
     // alert(parseFloat(parseFloat(initialSeconds)))
 
     let sum = parseFloat(parseFloat(sumdata2) + parseFloat(initialSeconds)).toFixed(2);
@@ -193,7 +195,10 @@ const MyLeaderBoard = ({ navigation }) => {
 
     }
     setallData(parseFloat(`${sum2}.${arr[1]}`).toFixed(1))
-
+    count++;
+    if(count===1){
+      savebtn();
+    }else return;
   }
   const handleStopTimer = async () => {
     setTimerRunning(false);
@@ -201,20 +206,53 @@ const MyLeaderBoard = ({ navigation }) => {
     // Store the remaining timer value in a variable
     await setInitialSeconds(seconds);
   };
+  const fetchData = async () => {
+    try {
+      console.log(index, "kkkk");
+      console.log(questionData, "jalo");
 
+      const lang = await AsyncStorage.getItem("lang");
+      const currentQuestions =
+        lang === "ENGLISH" ? questionData.QuestionEnglish : questionData.QuestionHindi;
+
+      if (index < currentQuestions.length) {
+        console.log(currentQuestions[index].optionH,"lohggj");
+        if (lang === "ENGLISH") {
+          setHindiQseon(currentQuestions[index].QuestionE);
+        }else{
+          setHindiQseon(currentQuestions[index].QuestionH);
+        }
+        
+        setOpsion(currentQuestions[index].optionH);
+        setIndex(index + 1);
+        setSelect("")
+        setSeconds(t)
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [questionData]);
+var interval;
+  useEffect(() => {
+    if(index===0 && questionData.length>0){
+      fetchData();
+    }
+   else if(index<=3){
+     interval = setInterval(() => {
+      fetchData(); // Assuming fetchData is a function to fetch questions
+    }, 25000);
+   }
+
+    return () => clearInterval(interval); // Clear the interval on unmount
+
+  }, [index,questionData]);
 
 
   const sendData = async () => {
-    // alert(allData)
-    console.log(getId,"getId");
-    console.log(mygameId,"mygameId");
-    console.log(question,"question");
-    console.log(initialSeconds,"initialSeconds");
-    console.log(select,"select");
-    console.log(allData,"allData");
-    console.log(mainValuerl,"mainValuerl");
-    console.log(correct,"correct");
-
+    
 
     const socket = io('http://3.111.23.56:5059');
     socket.emit("give_answer", {
@@ -301,6 +339,11 @@ const MyLeaderBoard = ({ navigation }) => {
           </View>
         </View>
 
+        {/* <Text style={{ fontSize: 15, alignSelf: 'center' }}>receiveData : {JSON.stringify(gameid)}</Text>
+        <Text style={{ fontSize: 15, alignSelf: 'center' }}>receiveData : {JSON.stringify(userid)}</Text> */}
+
+
+
         <View
           style={{
             height: responsiveHeight(32),
@@ -322,11 +365,11 @@ const MyLeaderBoard = ({ navigation }) => {
               color: "#000",
             }}
           >
-            Q. {question}
+            Q.{index} {hindiQseon}
           </Text>
 
           {
-            option?.map((res) => {
+            opsion?.map((res) => {
               return (
                 <>
                   <View
@@ -493,7 +536,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => { setCorrect(0), savebtn(), calculation(mainValuerl, 0) }}
+              onPress={() => { calculation(mainValuerl, 0),setCorrect(0) }}
             // onPress={() => { setChecked("second"); setmainValuerl(3.5) }}
 
             >
@@ -518,7 +561,7 @@ const MyLeaderBoard = ({ navigation }) => {
                 borderWidth: 1,
                 borderRadius: 5,
               }}
-              onPress={() => { setCorrect(1), calculation(mainValuerl, 1) }}
+              onPress={() => { calculation(mainValuerl, 1),setCorrect(1) }}
             >
               <Text
                 style={{
@@ -1111,7 +1154,7 @@ const MyLeaderBoard = ({ navigation }) => {
 
                 {/* {mainValuerl}+{initialSeconds} */}
 
-                {allData}
+                {allData?allData:0}
 
 
               </Text>
@@ -1215,7 +1258,7 @@ const MyLeaderBoard = ({ navigation }) => {
                   backgroundColor: "#6A5AE0",
                 }}
                 // onPress={() =>  setSave(true)}
-                onPress={() => { handleStopTimer(), savebtn(), setConfirm(1), sendData() }}
+                onPress={() => { handleStopTimer(), sendData(),savebtn() }}
 
               >
                 <Text
@@ -1226,10 +1269,7 @@ const MyLeaderBoard = ({ navigation }) => {
                     fontSize: 16,
                   }}
                 >
-                  {
-                    confirm == 0 ? <><Text>Save</Text></> :
-                      <><Text>Confirm</Text></>
-                  }
+                  <><Text>Save</Text></>
 
                 </Text>
               </TouchableOpacity>

@@ -33,18 +33,18 @@ const Help = ({ navigation }) => {
                     </TouchableOpacity>
 
                     <TouchableOpacity>
-                        <Image source={require('../images/watsapp.png')} style={{backgroundColor:'#fff', height: responsiveHeight(4), width: responsiveWidth(8), alignSelf: 'center' }} />
-                        <Text style={{color:'#fff'}}>Message</Text>
+                        <Image source={require('../images/watsapp.png')} style={{backgroundColor:'#fff', height: responsiveHeight(4), width: responsiveWidth(8), alignSelf: 'center',borderRadius:20 }} />
+                        <Text style={{color:'#fff'}}>WhatsApp</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity>
-                        <Image source={require('../images/fb.png')} style={{backgroundColor:'#fff', height: responsiveHeight(4), width: responsiveWidth(8), alignSelf: 'center' }} />
-                        <Text style={{color:'#fff'}}>Message</Text>
+                        <Image source={require('../images/fb.png')} style={{backgroundColor:'#fff',borderRadius:20, height: responsiveHeight(4), width: responsiveWidth(8), alignSelf: 'center' }} />
+                        <Text style={{color:'#fff'}}>facebook</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity>
                         <Image source={require('../images/google.png')} style={{ height: responsiveHeight(4.5), width: responsiveWidth(9), marginTop: -3, alignSelf: 'center' }} />
-                        <Text style={{color:'#fff'}}>Message</Text>
+                        <Text style={{color:'#fff'}}>Google</Text>
                     </TouchableOpacity>
 
 

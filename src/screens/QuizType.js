@@ -14,7 +14,8 @@ import { base_url } from './Base_url';
 import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
 
 
-const QuizType = ({ navigation }) => {
+const QuizType = ({ navigation,route }) => {
+    const {joinedMembers,amount} =route.params
     const [lodings, setlodings] = useState(true)
     const [sliderValue, setSliderValue] = useState(0);
     const [win, setWin] = useState(0);
@@ -64,6 +65,8 @@ const QuizType = ({ navigation }) => {
     }
 
     useEffect(() => {
+        console.log(joinedMembers);
+        console.log(amount);
         quizApi();
     }, [])
 
@@ -155,7 +158,7 @@ const QuizType = ({ navigation }) => {
             </View>
 
             {
-                mydata.length > 0 ? (mydata.map((item) => {
+                mydata?.length > 0 ? (mydata?.map((item) => {
                     // console.log(item, "datainline");
 
                     return (
@@ -163,10 +166,10 @@ const QuizType = ({ navigation }) => {
                             <View>
                                 <View>
                                     <Text style={{ color: '#000', fontSize: 16, marginHorizontal: 20, marginTop: 10, color: '#8A8A8A' }}>Prize Pool</Text>
-                                    <Text style={{ color: '#000', marginHorizontal: 20 }}>{formatTimestamp(item.schedule)}</Text>
+                                    {/* <Text style={{ color: '#000', marginHorizontal: 20 }}>{formatTimestamp(item.schedule)}</Text> */}
 
 
-                                    <Text style={{ color: '#000', fontSize: 20, marginHorizontal: 20, marginTop: 7, color: '#000', fontWeight: '500' }}>₹ {item.pricePool}</Text>
+                                    <Text style={{ color: '#000', fontSize: 20, marginHorizontal: 20, marginTop: 7, color: '#000', fontWeight: '500' }}>₹ {amount*joinedMembers}</Text>
 
 
                                     <View style={{ backgroundColor: 'fff', justifyContent: 'center', alignItems: 'center' }}>
@@ -177,8 +180,9 @@ const QuizType = ({ navigation }) => {
                                             minimumTrackTintColor='#516AC4'
                                             maximumTrackTintColor='#516AC4'
                                             step={1}
-                                            maximumValue={100}
-                                            value={sliderValue}
+                                            maximumValue={item?.pricePool}
+                                            value={amount*joinedMembers}
+                                            disabled
                                             onValueChange={(value) => setSliderValue(value)}
                                         />
 
@@ -189,13 +193,13 @@ const QuizType = ({ navigation }) => {
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
 
-                                        <Text style={{ color: 'red', fontWeight: '500' }}>{item.noOfParticipation - item.UserGame.length} Seat left</Text>
+                                        <Text style={{ color: 'red', fontWeight: '500' }}>{item?.noOfParticipation - item?.UserGame?.length} Seat left</Text>
 
                                     </View>
 
                                     <TouchableOpacity style={{ height: responsiveHeight(6), width: responsiveWidth(80), marginTop: '5%', backgroundColor: '#6A5AE0', borderRadius: 10, alignSelf: 'center', justifyContent: 'center' }}
                                     onPress={()=>{joingameApi()}}>
-                                        <Text style={{ fontSize: 18, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>JOIN ₹{item.entranceAmount}</Text>
+                                        <Text style={{ fontSize: 18, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>JOIN ₹{item?.entranceAmount}</Text>
                                     </TouchableOpacity>
                                 </View>
 
@@ -238,8 +242,8 @@ const QuizType = ({ navigation }) => {
                                                         return (
                                                             <>
                                                                 <View style={{ marginHorizontal: 10, flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
-                                                                    <Text style={{ fontSize: 14, fontWeight: '400', marginLeft: 10 }}>{res.from}</Text>
-                                                                    <Text style={{ fontSize: 14, fontWeight: '400', marginRight: 10 }}>₹{res.amount}</Text>
+                                                                    <Text style={{ fontSize: 14, fontWeight: '400', marginLeft: 10 }}>{res?.from}</Text>
+                                                                    <Text style={{ fontSize: 14, fontWeight: '400', marginRight: 10 }}>₹{res?.amount}</Text>
                                                                 </View>
                                                             </>
                                                         )
@@ -267,13 +271,13 @@ const QuizType = ({ navigation }) => {
                                                 <View style={{ borderBottomWidth: 0.6, marginHorizontal: 10, marginTop: 7, marginBottom: 1, borderColor: '#8A8A8A' }}></View>
 
                                                 {
-                                                    item.UserGame[0].User?.map((res) => {
+                                                    item?.UserGame[0]?.User?.map((res) => {
                                                         return (
                                                             <>
                                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginHorizontal: 20 }}>
                                                                     <Image source={require('../images/quiz_banner.jpeg')} style={{ height: responsiveHeight(6), marginRight: '17%', width: responsiveWidth(12), borderRadius: 100, alignSelf: 'flex-start', marginHorizontal: 20, marginTop: 3 }} />
-                                                                    <Text style={{ alignSelf: 'center', marginLeft: 20, flex: 0.8 }}>{res.name}</Text>
-                                                                    <Text style={{ alignSelf: 'center', marginLeft: 20 }}>{res.id}</Text>
+                                                                    <Text style={{ alignSelf: 'center', marginLeft: 20, flex: 0.8 }}>{res?.name}</Text>
+                                                                    <Text style={{ alignSelf: 'center', marginLeft: 20 }}>{res?.id}</Text>
 
                                                                 </View>
                                                             </>
