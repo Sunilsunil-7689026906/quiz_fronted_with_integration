@@ -21,14 +21,14 @@ import { useNavigation, useIsFocused,useRoute } from '@react-navigation/native'
 
 const MyLeaderBoard = ({ navigation,route }) => {
 
-  const { questionData,t } = route.params
+  const { questionData,t,gameId } = route.params
 
   const [select, setSelect] = useState("");
   const [checked, setChecked] = useState("first");
-  const [correct, setCorrect] = useState({});
+  const [correct, setCorrect] = useState(0);
   const [save, setSave] = useState(false);
   const [confirm, setConfirm] = useState(0)
-
+const [no_qu, setno_qu] = useState(0)
   const [final,] = useState('')
 
   const [mysocket, setMySocket] = useState(null);
@@ -39,7 +39,7 @@ const MyLeaderBoard = ({ navigation,route }) => {
 
   const [activeanalysis, setActiveanalysis] = useState(false);
 
-
+      const [btndisebal, setbtndisebal] = useState(false)
   const socket = useSocket();
   // const route = useRoute();
 
@@ -66,8 +66,10 @@ const MyLeaderBoard = ({ navigation,route }) => {
   const [myanswer,setMyanswer] = useState()
   const [hindiQseon, setHindiQseon] = useState("");
   const [opsion, setOpsion] = useState([]);
-
+const [questionID, setquestionID] = useState("")
 const [index, setIndex] = useState(0);
+const [leftQustion, setleftQustion] = useState(0)
+
   // useEffect(async() => {
   //   const connectSockett = async () => {
   //   const socket = io('http://3.111.23.56:5059');
@@ -176,9 +178,31 @@ const [index, setIndex] = useState(0);
 
   }
 
-  console.log(initialSeconds,"initialSeconds");
-  console.log(sumdata2,"sumdata");
+  // console.log(initialSeconds,"initialSeconds");
+  // console.log(sumdata2,"sumdata");
   var count =0;
+
+  const sendData = async (rcd) => {
+    const socket = io('http://3.111.23.56:5059');
+    if (!select) {
+      return alert("select answer")
+    }
+    setTimeout(async()=>{
+      socket.emit("give_answer", {
+
+        questionId: await questionID,
+        gameId: await gameId,
+        question: await hindiQseon,
+        timeTaken: await initialSeconds,
+        answer: await select,
+        userId:await AsyncStorage.getItem("user_id"),
+        rawPoints: await rcd,
+        rM: await mainValuerl,
+        rC: await correct
+      })
+    },1000)
+    setbtndisebal(true)
+  }
   const savebtn = () => {
     // alert(parseFloat(parseFloat(initialSeconds)))
 
@@ -195,10 +219,11 @@ const [index, setIndex] = useState(0);
 
     }
     setallData(parseFloat(`${sum2}.${arr[1]}`).toFixed(1))
-    count++;
-    if(count===1){
-      savebtn();
-    }else return;
+    sendData(parseFloat(`${sum2}.${arr[1]}`).toFixed(1))
+    // count++;
+    // if(count===1){
+    //   savebtn();
+    // }else return;
   }
   const handleStopTimer = async () => {
     setTimerRunning(false);
@@ -207,6 +232,7 @@ const [index, setIndex] = useState(0);
     await setInitialSeconds(seconds);
   };
   const fetchData = async () => {
+    setleftQustion(leftQustion +1)
     try {
       console.log(index, "kkkk");
       console.log(questionData, "jalo");
@@ -219,14 +245,30 @@ const [index, setIndex] = useState(0);
         console.log(currentQuestions[index].optionH,"lohggj");
         if (lang === "ENGLISH") {
           setHindiQseon(currentQuestions[index].QuestionE);
+          setquestionID(currentQuestions[index].questionId)
+          setno_qu(currentQuestions[index].q_no)
         }else{
           setHindiQseon(currentQuestions[index].QuestionH);
+          setquestionID(currentQuestions[index].questionId)
+          setno_qu(currentQuestions[index].q_no)
         }
-        
+        console.log('====================================');
+        console.log('====================================');
         setOpsion(currentQuestions[index].optionH);
         setIndex(index + 1);
         setSelect("")
+        setbtndisebal(false)
+        setTimerRunning(true);
+        setleft(left+1)
         setSeconds(t)
+        setTimeout(async()=>{
+          if (index == parseInt(currentQuestions.length)-1) {
+            await AsyncStorage.setItem("g_id",gameId)
+          navigation.navigate("Successful")
+          }
+        },25000)
+      }else{
+        
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -235,12 +277,12 @@ const [index, setIndex] = useState(0);
   useEffect(() => {
     fetchData();
   }, [questionData]);
-var interval;
   useEffect(() => {
+    var interval;
     if(index===0 && questionData.length>0){
       fetchData();
     }
-   else if(index<=3){
+   else if(index<= no_qu){
      interval = setInterval(() => {
       fetchData(); // Assuming fetchData is a function to fetch questions
     }, 25000);
@@ -251,22 +293,7 @@ var interval;
   }, [index,questionData]);
 
 
-  const sendData = async () => {
-    
-
-    const socket = io('http://3.111.23.56:5059');
-    socket.emit("give_answer", {
-
-      questionId: await getId,
-      gameId: await mygameId,
-      question: await question,
-      timeTaken: await initialSeconds,
-      answer: await select,
-      rawPoints: await allData,
-      rM: await mainValuerl,
-      rC: await correct
-    })
-  }
+  
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -333,7 +360,7 @@ var interval;
                   fontSize: 16,
                 }}
               >
-                {left}/{noOfQuestion}
+                {left}/{no_qu}
               </Text>
             </TouchableOpacity>
           </View>
@@ -1248,6 +1275,7 @@ var interval;
 
             <View>
               <TouchableOpacity
+              disabled={btndisebal}
                 style={{
                   height: responsiveHeight(5),
                   marginTop: "30%",
@@ -1257,8 +1285,9 @@ var interval;
                   width: responsiveWidth(22),
                   backgroundColor: "#6A5AE0",
                 }}
+                
                 // onPress={() =>  setSave(true)}
-                onPress={() => { handleStopTimer(), sendData(),savebtn() }}
+                onPress={() => { handleStopTimer(),savebtn() }}
 
               >
                 <Text

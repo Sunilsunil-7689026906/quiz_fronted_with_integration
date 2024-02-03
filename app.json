@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Pdowin",
-    "slug": "Pdowin",
+    "slug": "santoshkumarsharma",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -32,8 +32,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "3624e82a-204a-4cd7-9563-172fc1625def"
+        "projectId": "621e8ac6-40c0-434a-af70-9034facb2926"
       }
-    }
+    },
+    "owner": "ramsks"
   }
 }

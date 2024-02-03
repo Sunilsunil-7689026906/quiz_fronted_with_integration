@@ -106,7 +106,7 @@ const Instruction = ({ route, navigation }) => {
              
                  
     
-                      navigation.navigate('MyLeaderBoard',{questionData:questionData,t:questionData.t})
+                      navigation.navigate('MyLeaderBoard',{questionData:questionData,t:questionData.t,gameId:questionData.gameId,quid:questionData._id,no_qu:questionData.noOfQuestion})
                   
               
             //   await setSelect("")

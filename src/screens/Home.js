@@ -38,6 +38,7 @@ const Home = ({ navigation }) => {
   const [ylink, setylink] = useState("")
   const [tlink, settlink] = useState("")
   const [elink, setelink] = useState("")
+  const [imgs, setimgs] = useState("")
   function FormatDateTime() {
     const milliseconds = 1642958701000; // Example timestamp in milliseconds
     const formattedDateTime = convertMillisecondsToDateTime(milliseconds);
@@ -73,7 +74,37 @@ const Home = ({ navigation }) => {
     }
   }
 
-  
+  const profileApi = async () => {
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+        // alert(`${await AsyncStorage.getItem("token")}`)
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`${base_url}/getProfile`, requestOptions)
+            .then(response => response.json())
+            .then(async result => {
+                console.log(JSON.stringify(result),"koojhgg");
+                // alert(result.data.user[0].state)
+                if (result.success == true) {
+                    await AsyncStorage.setItem("pr",`http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
+                    await AsyncStorage.setItem("names",result.data.user[0].name)
+                    await AsyncStorage.setItem("email",result.data.user[0].email)
+                    await AsyncStorage.setItem("user_id",result.data.user[0]._id)
+                    setimgs(`http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
+                }
+            })
+            .catch(error => console.log('error', error));
+
+    } catch (error) {
+
+    }
+}
   const sliderApi =async () => {
     try {
       var myHeaders = new Headers();
@@ -183,6 +214,7 @@ const Home = ({ navigation }) => {
 
 
   useEffect(() => {
+    profileApi()
     logoApi()
     Linkings()
     sliderApi();
@@ -225,7 +257,7 @@ const Home = ({ navigation }) => {
           >
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
-                source={require("../images/user.jpg")}
+                source={{uri: imgs}}
                 style={{
                   height: responsiveHeight(6),
                   width: responsiveWidth(12),
