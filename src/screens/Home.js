@@ -272,16 +272,30 @@ const Home = ({ navigation }) => {
             }}
           >
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
-              <Image
-                source={{ uri: imgs }}
-                style={{
-                  height: responsiveHeight(6),
-                  width: responsiveWidth(12),
-                  borderRadius: 100,
-                  alignSelf: "center",
-                  marginTop: 3,
-                }}
-              />
+              {
+                imgs ?
+                  <Image
+                    source={{ uri: imgs }}
+                    style={{
+                      height: responsiveHeight(6),
+                      width: responsiveWidth(12),
+                      borderRadius: 100,
+                      alignSelf: "center",
+                      marginTop: 3,
+                    }}
+                  /> :
+                  <Image
+                    source={require('../images/user.jpg')}
+                    style={{
+                      height: responsiveHeight(6),
+                      width: responsiveWidth(12),
+                      borderRadius: 100,
+                      alignSelf: "center",
+                      marginTop: 3,
+                    }}
+                  />
+              }
+
             </TouchableOpacity>
             <Image
               source={{
@@ -387,7 +401,7 @@ const Home = ({ navigation }) => {
           </View>
         </View>
 
-        
+
 
 
         <ScrollView style={{ height: responsiveHeight(100) }}>
