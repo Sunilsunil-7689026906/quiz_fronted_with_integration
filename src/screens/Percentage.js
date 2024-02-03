@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  RefreshControl
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -24,6 +25,9 @@ const Percentage = ({ navigation }) => {
   const [data, setdata] = useState([])
   const [filterText, setFilterText] = useState("");
   const [logodata, setLogodata] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [imgs, setimgs] = useState("")
+
 
 
   const logoApi = async () => {
@@ -84,10 +88,27 @@ const Percentage = ({ navigation }) => {
     }
   }
 
-  useEffect(() => {
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      correctApi()
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  // useEffect(async () => {
+  //   setimgs(await AsyncStorage.getItem("pr"))
+  //   // alert(avatar)
+
+  // }, [])
+
+
+  useEffect(async() => {
+    setimgs(await AsyncStorage.getItem("pr"))
     logoApi()
     correctApi({ name: filterText })
   }, [filterText]);
+
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar
@@ -113,7 +134,8 @@ const Percentage = ({ navigation }) => {
         >
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Image
-              source={require("../images/user.jpg")}
+              // source={require("../images/user.jpg")}
+              source={{ uri: imgs }}
               style={{
                 height: responsiveHeight(6),
                 width: responsiveWidth(12),
@@ -309,7 +331,9 @@ const Percentage = ({ navigation }) => {
 
 
       <View style={{ height: responsiveHeight(66), marginBottom: 0 }}>
-        <ScrollView >
+        <ScrollView refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
 
           {
             data?.map((res) => {

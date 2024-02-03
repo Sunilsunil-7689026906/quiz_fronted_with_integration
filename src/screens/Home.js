@@ -7,9 +7,12 @@ import {
   TouchableOpacity,
   Linking,
   FlatList,
+  RefreshControl
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import loding from "../images/loding.gif"
+import Modal from "react-native-modal";
+
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -30,6 +33,10 @@ import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 const Home = ({ navigation }) => {
   const [imgdata, setImgData] = useState([]);
   const [logodata, setLogodata] = useState([]);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+
 
   const [mydata, setMydata] = useState([]);
   const [myid, setMyid] = useState([{}]);
@@ -76,36 +83,36 @@ const Home = ({ navigation }) => {
 
   const profileApi = async () => {
     try {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
-        // alert(`${await AsyncStorage.getItem("token")}`)
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+      // alert(`${await AsyncStorage.getItem("token")}`)
 
-        var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
 
-        fetch(`${base_url}/getProfile`, requestOptions)
-            .then(response => response.json())
-            .then(async result => {
-                console.log(JSON.stringify(result),"koojhgg");
-                // alert(result.data.user[0].state)
-                if (result.success == true) {
-                    await AsyncStorage.setItem("pr",`http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
-                    await AsyncStorage.setItem("names",result.data.user[0].name)
-                    await AsyncStorage.setItem("email",result.data.user[0].email)
-                    await AsyncStorage.setItem("user_id",result.data.user[0]._id)
-                    setimgs(`http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
-                }
-            })
-            .catch(error => console.log('error', error));
+      fetch(`${base_url}/getProfile`, requestOptions)
+        .then(response => response.json())
+        .then(async result => {
+          console.log(JSON.stringify(result), "koojhgg");
+          // alert(result.data.user[0].state)
+          if (result.success == true) {
+            await AsyncStorage.setItem("pr", `http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
+            await AsyncStorage.setItem("names", result.data.user[0].name)
+            await AsyncStorage.setItem("email", result.data.user[0].email)
+            await AsyncStorage.setItem("user_id", result.data.user[0]._id)
+            setimgs(`http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
+          }
+        })
+        .catch(error => console.log('error', error));
 
     } catch (error) {
 
     }
-}
-  const sliderApi =async () => {
+  }
+  const sliderApi = async () => {
     try {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -119,8 +126,8 @@ const Home = ({ navigation }) => {
       fetch(`${base_url}/slide-list`, requestOptions)
         .then(response => response.json())
         .then(result => {
-          if (result.success==true) {
-            console.log(result.data.slides,"slslslsd")
+          if (result.success == true) {
+            console.log(result.data.slides, "slslslsd")
             setImgData(result.data.slides)
           }
         })
@@ -170,6 +177,14 @@ const Home = ({ navigation }) => {
     }
   };
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      examApi()
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
 
   const Linkings = async () => {
     // alert("jk")
@@ -214,6 +229,7 @@ const Home = ({ navigation }) => {
 
 
   useEffect(() => {
+    onRefresh()
     profileApi()
     logoApi()
     Linkings()
@@ -221,7 +237,7 @@ const Home = ({ navigation }) => {
     examApi();
   }, []);
 
-  console.log(imgdata,"imgdata");
+  console.log(imgdata, "imgdata");
 
   return (
     <>
@@ -257,7 +273,7 @@ const Home = ({ navigation }) => {
           >
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
-                source={{uri: imgs}}
+                source={{ uri: imgs }}
                 style={{
                   height: responsiveHeight(6),
                   width: responsiveWidth(12),
@@ -371,6 +387,7 @@ const Home = ({ navigation }) => {
           </View>
         </View>
 
+        
 
 
         <ScrollView style={{ height: responsiveHeight(100) }}>
@@ -408,7 +425,7 @@ const Home = ({ navigation }) => {
                                   width: responsiveWidth(90),
                                   alignSelf: "center",
                                   borderRadius: 15,
-                                  resizeMode:'center'
+                                  resizeMode: 'center'
                                 }}
                               />
                             </TouchableOpacity>
@@ -435,7 +452,9 @@ const Home = ({ navigation }) => {
           </Text>
 
 
-          <ScrollView>
+          <ScrollView refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
             {mydata.length > 0 ? (
               mydata.map((data) => {
                 console.log(data, "datamydata");
@@ -558,7 +577,7 @@ const Home = ({ navigation }) => {
                             fontSize: 14,
                           }}
                         >
-                          {console.log(data.UserGame.length,"kkkjggy")}
+                          {console.log(data.UserGame.length, "kkkjggy")}
                           Joined Member: {data.UserGame.length}
                         </Text>
                       </View>
@@ -586,7 +605,7 @@ const Home = ({ navigation }) => {
                         </Text>
                       </View>
 
-                      <Text
+                      {/* <Text
                         style={{
                           color: "#000",
                           fontWeight: "500",
@@ -595,7 +614,7 @@ const Home = ({ navigation }) => {
                         }}
                       >
                         15 minutes left to exam start
-                      </Text>
+                      </Text> */}
 
                       <TouchableOpacity
                         style={{
@@ -606,10 +625,10 @@ const Home = ({ navigation }) => {
                           marginTop: 20,
                           backgroundColor: "#A9A3E9",
                           alignSelf: "flex-start",
-                          
+
                         }}
-                        disabled={data.isJoined}
-                        onPress={() => navigation.navigate("QuizType",{joinedMembers:data.UserGame.length,amount:data.noOfPrice})}
+                        // disabled={data.isJoined}
+                        onPress={() => navigation.navigate("QuizType", { joinedMembers: data.UserGame.length, amount: data.noOfPrice })}
                       >
                         <Text
                           style={{
@@ -670,7 +689,7 @@ const Home = ({ navigation }) => {
             <Image
               source={require("../images/yt.webp")}
               style={{
-                tintColor:'#A9A9A9',
+                tintColor: '#A9A9A9',
                 height: responsiveHeight(2.4),
                 width: responsiveWidth(5.8),
                 alignSelf: "center",

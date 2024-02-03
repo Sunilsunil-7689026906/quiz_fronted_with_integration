@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  RefreshControl
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -32,6 +33,9 @@ const MyExam = ({ navigation }) => {
 
   const [live, setLive] = useState(0);
   const [logodata, setLogodata] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [imgs, setimgs] = useState("")
+
 
 
   const [hit, setHit] = useState("LIVE");
@@ -44,7 +48,7 @@ const MyExam = ({ navigation }) => {
 
   const [myUserid, setMyUserid] = useState([]);
   const [myGameid, setMyGameid] = useState([]);
-const [times, settimes] = useState()
+  const [times, settimes] = useState()
 
 
   function convertMillisecondsToDateTime(milliseconds) {
@@ -91,9 +95,12 @@ const [times, settimes] = useState()
     }
   }
 
-// alert(myGameid)
-// alert(myUserid)
+  // alert(myGameid)
+  // alert(myUserid)
 
+  
+
+// alert(imgs)
 
   const myexamApi = async ({ name }) => {
     try {
@@ -166,16 +173,25 @@ const [times, settimes] = useState()
     }
 
   }
-  useEffect(() => {
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      myexamApi()
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  
+
+  useEffect(async() => {
+    setimgs (await AsyncStorage.getItem("pr"))
+    onRefresh()
     logoApi()
     myexamApi({ name: filterText })
   }, [filterText]);
 
-  // console.log(mydata, "mydataaa");
-  // console.log(JSON.stringify(completedata), "uuuuuuuu");
-  // console.log(question, "questionss");
 
-  // alert(seduleTime,"SeduleTime")
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -202,7 +218,8 @@ const [times, settimes] = useState()
         >
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Image
-              source={require("../images/user.jpg")}
+              // source={require("../images/user.jpg")}
+              source={{ uri: imgs }}
               style={{
                 height: responsiveHeight(6),
                 width: responsiveWidth(12),
@@ -457,7 +474,9 @@ const [times, settimes] = useState()
       </View>
 
       <View style={{ height: responsiveHeight(59) }}>
-        <ScrollView>
+        <ScrollView refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
           {live == 0 ? (
             <View>
               {mydata?.length > 0 ? (
@@ -826,7 +845,7 @@ const [times, settimes] = useState()
                               marginTop: 20,
                               backgroundColor: "#6A5AE0",
                             }}
-                            onPress={() => navigation.navigate("LeaderboardRank",{ QuestionNo: question })}
+                            onPress={() => navigation.navigate("LeaderboardRank", { QuestionNo: question })}
                           >
                             <Text
                               style={{
@@ -908,7 +927,7 @@ const [times, settimes] = useState()
           <Image
             source={require("../images/yt.webp")}
             style={{
-              tintColor:'#A9A9A9',
+              tintColor: '#A9A9A9',
               height: responsiveHeight(2.4),
               width: responsiveWidth(5.8),
               alignSelf: "center",
@@ -921,23 +940,23 @@ const [times, settimes] = useState()
         </TouchableOpacity>
 
         <TouchableOpacity
-            style={{ alignSelf: "center" }}
-            onPress={() => { handleLinkPress(tlink) }}
-          >
-            <Image
-              source={require("../images/gram.webp")}
-              style={{
-                tintColor: "#A9A9A9",
-                height: responsiveHeight(2.5),
-                width: responsiveWidth(5.2),
-                alignSelf: "center",
-              }}
-            />
+          style={{ alignSelf: "center" }}
+          onPress={() => { handleLinkPress(tlink) }}
+        >
+          <Image
+            source={require("../images/gram.webp")}
+            style={{
+              tintColor: "#A9A9A9",
+              height: responsiveHeight(2.5),
+              width: responsiveWidth(5.2),
+              alignSelf: "center",
+            }}
+          />
 
-            <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
-              Telegram
-            </Text>
-          </TouchableOpacity>
+          <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
+            Telegram
+          </Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={{ alignSelf: "center" }}

@@ -173,9 +173,9 @@ const MyBalance = ({ navigation }) => {
                     <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹ {data?.winBalance}</Text>
                 </View>
 
-                <TouchableOpacity style={{ height: responsiveHeight(4), width: responsiveWidth(20), marginTop: '8%', backgroundColor: '#6A5AE0',marginRight:'10%', borderRadius: 7, alignSelf: 'center', justifyContent: 'center' }}
+                <TouchableOpacity style={{ height: responsiveHeight(4.5), width: responsiveWidth(24), marginTop: '8%', backgroundColor: '#6A5AE0',marginRight:'10%', borderRadius: 7, alignSelf: 'center', justifyContent: 'center' }}
                     onPress={() => { addBalance() }} >
-                    <Text style={{ fontSize: 14, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Widrawal</Text>
+                    <Text style={{ fontSize: 14, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Withdrawal</Text>
                 </TouchableOpacity>
 
             </View>

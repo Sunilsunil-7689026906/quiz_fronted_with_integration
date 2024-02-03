@@ -14,7 +14,7 @@ const Faq = ({ navigation }) => {
     
 
     const faqApi = (n) => {
-        alert(n)
+        // alert(n)
         try {
 
             var requestOptions = {

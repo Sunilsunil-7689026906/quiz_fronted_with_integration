@@ -5,7 +5,8 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  Linking
+  Linking,
+  RefreshControl
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -27,6 +28,11 @@ const Winner = ({ navigation }) => {
   const [lodings, setlodings] = useState(true)
   const [filterText, setFilterText] = useState("");
   const [logodata, setLogodata] = useState([]);
+  const [imgs, setimgs] = useState("")
+
+
+  const [refreshing, setRefreshing] = useState(false);
+
 
   const logoApi = async () => {
     try {
@@ -56,7 +62,7 @@ const Winner = ({ navigation }) => {
     }
   }
 
-  const api = async ({ name }) => {
+  const winnerApi = async ({ name }) => {
     try {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -86,10 +92,25 @@ const Winner = ({ navigation }) => {
     // Linking.openURL("https://www.youtube.com/channel/UCT9zcQNlyht7fRlcjmflRSA");
   };
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      winnerApi()
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
-  useEffect(() => {
+  // useEffect(async () => {
+  //   setimgs(await AsyncStorage.getItem("pr"))
+  //   // alert(avatar)
+
+  // }, [])
+
+  useEffect(async() => {
+    setimgs(await AsyncStorage.getItem("pr"))
+    onRefresh()
     logoApi()
-    api({ name: filterText })
+    winnerApi({ name: filterText })
   }, [filterText]);
 
   return (
@@ -128,7 +149,9 @@ const Winner = ({ navigation }) => {
             >
               <TouchableOpacity onPress={() => navigation.openDrawer()}>
                 <Image
-                  source={require("../images/user.jpg")}
+                  // source={require("../images/user.jpg")}
+                  source={{ uri: imgs }}
+
                   style={{
                     height: responsiveHeight(6),
                     width: responsiveWidth(12),
@@ -324,7 +347,9 @@ const Winner = ({ navigation }) => {
 
 
           <View style={{ height: responsiveHeight(66) }}>
-            <ScrollView style={{ height: responsiveHeight(66) }}>
+            <ScrollView refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
               {data?.map((res) => {
                 return (
                   <>
@@ -498,7 +523,7 @@ const Winner = ({ navigation }) => {
               <Image
                 source={require("../images/yt.webp")}
                 style={{
-                  tintColor:'#A9A9A9',
+                  tintColor: '#A9A9A9',
                   height: responsiveHeight(2.4),
                   width: responsiveWidth(5.8),
                   alignSelf: "center",
@@ -512,23 +537,23 @@ const Winner = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-            style={{ alignSelf: "center" }}
-            onPress={() => { handleLinkPress(tlink) }}
-          >
-            <Image
-              source={require("../images/gram.webp")}
-              style={{
-                tintColor: "#A9A9A9",
-                height: responsiveHeight(2.4),
-                width: responsiveWidth(5),
-                alignSelf: "center",
-              }}
-            />
+              style={{ alignSelf: "center" }}
+              onPress={() => { handleLinkPress(tlink) }}
+            >
+              <Image
+                source={require("../images/gram.webp")}
+                style={{
+                  tintColor: "#A9A9A9",
+                  height: responsiveHeight(2.4),
+                  width: responsiveWidth(5),
+                  alignSelf: "center",
+                }}
+              />
 
-            <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
-              Telegram
-            </Text>
-          </TouchableOpacity>
+              <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
+                Telegram
+              </Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
               style={{ alignSelf: "center" }}

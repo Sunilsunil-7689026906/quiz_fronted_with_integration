@@ -162,6 +162,8 @@ const UploadKyc = ({ navigation }) => {
                         navigation.navigate('Home')
                     }
                     else {
+                        navigation.navigate('Home')
+
                         console.log(result.message, "else")
 
                     }

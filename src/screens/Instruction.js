@@ -321,7 +321,7 @@ const Instruction = ({ route, navigation }) => {
                             <Text style={{ marginRight: 5 }}>👉</Text>
                             <Text>
                                 सही option select करने पर 5.5 point और गलत option select करने पर
-                                3.3 point मिलते हैं।
+                                3.5 point मिलते हैं।
                             </Text>
                         </View>
 
