@@ -15,13 +15,18 @@ import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 
 
 const QuizType = ({ navigation,route }) => {
-    const {joinedMembers,amount} =route.params
+    const {joinedMembers,amount,g_idd,tsedule} =route.params
     const [lodings, setlodings] = useState(true)
     const [sliderValue, setSliderValue] = useState(0);
     const [win, setWin] = useState(0);
     const [mydata, setMydata] = useState([]);
-    const [myid, setMyid] = useState('');
+    const [mygameid, setMygameId] = useState(g_idd);
+    const [myamount,setMyamount] = useState(amount)
+    const [timesedule,setTimesedule] = useState(tsedule)
 
+
+console.log(mygameid,"quiztypegameidd....");
+// console.log(timesedule,"quizetimesedule");
 
     const quizApi = async () => {
         // alert(await AsyncStorage.getItem('_id'))
@@ -42,9 +47,7 @@ const QuizType = ({ navigation,route }) => {
                 redirect: 'follow'
             };
 
-            fetch(`${base_url}/join-page?_id=${await AsyncStorage.getItem('_id')}`, requestOptions)
-
-
+            fetch(`${base_url}/join-page?_id=${mygameid}`, requestOptions)
 
                 .then(response => response.json())
                 .then(result => {
@@ -67,6 +70,10 @@ const QuizType = ({ navigation,route }) => {
     useEffect(() => {
         console.log(joinedMembers);
         console.log(amount);
+        // console.log(g_idd,"g_iddg_idd");
+        // console.log(id_game,"id_game");
+        // alert(id_game);
+
         quizApi();
     }, [])
 
@@ -77,9 +84,9 @@ const QuizType = ({ navigation,route }) => {
             myHeaders.append("Content-Type", "application/json");
 
             var raw = JSON.stringify({
-                "_id": `${await AsyncStorage.getItem('_id')}`,
-                "amount": 20,
-                "schedule": 1704738781611
+                "_id": `${mygameid}`,
+                "amount": `${myamount}`,
+                "schedule": `${timesedule}`
             });
 
             var requestOptions = {

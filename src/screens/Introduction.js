@@ -41,7 +41,7 @@ const Introduction = ({ navigation }) => {
         playimgApi()
     }, []);
 
-    console.log(imgData,"imgdata");
+    // console.log(imgData,"imgdata");
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <View style={{ height: responsiveHeight(13), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
@@ -59,7 +59,7 @@ const Introduction = ({ navigation }) => {
 
                 <View style={{ borderWidth: 1, height: responsiveHeight(30), width: responsiveWidth(100), alignSelf: 'center' }}>
                     <Image source={{
-                        uri: `http://3.111.23.56:5059/uploads/${imgData}`,
+                        uri: `https://quiz.metablocktechnologies.org/uploads/${imgData}`,
                     }}
                         style={{ borderWidth: 1, height: responsiveHeight(28), borderRadius: 10, marginTop: 15, width: responsiveWidth(90), alignSelf: 'center',resizeMode:'center' }} />
                 </View>

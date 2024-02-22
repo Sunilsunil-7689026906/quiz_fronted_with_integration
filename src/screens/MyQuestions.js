@@ -152,7 +152,7 @@ const MyQuestions = ({ navigation, props }) => {
 
             <ScrollView showsVerticalScrollIndicator={false} >
 
-                {/* <Text style={{ fontSize: 15, alignSelf: 'center' }}>receiveData : {JSON.stringify(noOfQue)}</Text> */}
+                <Text style={{ fontSize: 15, alignSelf: 'center' }}>receiveData : {JSON.stringify(noOfQue)}</Text>
 
 
                 <ScrollView style={{ flexDirection: 'row' }} horizontal showsHorizontalScrollIndicator={false} >

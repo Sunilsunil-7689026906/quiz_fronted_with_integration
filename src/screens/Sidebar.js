@@ -37,41 +37,61 @@ const Sidebar = ({ navigation }) => {
             console.log(error);
         }
     }
-    const imgget = async()=>{
+    const imgget = async () => {
         setimg(await AsyncStorage.getItem("pr"))
         setimg(await AsyncStorage.getItem("pr"))
         setnames(await AsyncStorage.getItem("names"))
         setemail(await AsyncStorage.getItem("email"))
     }
-    useEffect(async()=>{
+    useEffect(async () => {
         try {
-            
+
             setimg(await AsyncStorage.getItem("pr"))
             setnames(await AsyncStorage.getItem("names"))
             setemail(await AsyncStorage.getItem("email"))
         } catch (error) {
             console.log(error);
         }
-        
-    },[])
+
+    }, [])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#6A5AE0' }}>
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
 
-<TouchableOpacity onPress={imgget} >
+            <TouchableOpacity onPress={imgget} >
 
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginHorizontal: 20, marginTop: 40 }}>
-                <Image source={{
-                                  uri: img,
-                                }} style={{ height: responsiveHeight(5), width: responsiveWidth(10), borderRadius: 100, alignSelf: 'center', marginTop: 3 }} />
-                <View style={{ justifyContent: 'center', marginLeft: 20 }}>
-                    <Text style={{ color: '#fff', fontWeight: '500', fontSize: 16, alignSelf: 'flex-start' }}>{names}</Text>
-                    <Text style={{ color: '#fff', fontWeight: '400', alignSelf: 'center' }}>{email}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginHorizontal: 20, marginTop: 40 }}>
+                {
+              img ?
+                <Image
+                  source={{ uri: img }}
+                  style={{
+                    height: responsiveHeight(6),
+                    width: responsiveWidth(12),
+                    borderRadius: 100,
+                    alignSelf: "center",
+                    marginTop: 3,
+                  }}
+                /> :
+                <Image
+                  source={require('../images/user.jpg')}
+                  style={{
+                    height: responsiveHeight(6),
+                    width: responsiveWidth(12),
+                    borderRadius: 100,
+                    alignSelf: "center",
+                    marginTop: 3,
+                  }}
+                />
+            }
+                    <View style={{ justifyContent: 'center', marginLeft: 20 }}>
+                        <Text style={{ color: '#fff', fontWeight: '500', fontSize: 16, alignSelf: 'flex-start' }}>{names}</Text>
+                        <Text style={{ color: '#fff', fontWeight: '400', alignSelf: 'center' }}>{email}</Text>
+                    </View>
+                    {/* <Image source={require('../images/wcross.png')} style={{ height: responsiveHeight(2), width: responsiveWidth(5), borderRadius: 100, marginTop: 8 }} /> */}
+
                 </View>
-                {/* <Image source={require('../images/wcross.png')} style={{ height: responsiveHeight(2), width: responsiveWidth(5), borderRadius: 100, marginTop: 8 }} /> */}
-
-            </View>
-</TouchableOpacity>
+            </TouchableOpacity>
 
             <View style={{ marginTop: 40, marginHorizontal: 20 }}>
 

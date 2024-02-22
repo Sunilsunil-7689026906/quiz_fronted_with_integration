@@ -10,7 +10,7 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("http://3.111.23.56:5059");
+    const newSocket = io("https://quiz.metablocktechnologies.org");
     // const newSocket = io("http://192.168.1.16:5050");
 
     setSocket(newSocket);

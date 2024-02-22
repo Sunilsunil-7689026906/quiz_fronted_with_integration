@@ -31,7 +31,7 @@ const LeaderboardRank = ({ navigation, props }) => {
 
   const noOfQue = route.params?.QuestionNo || null;
 
-  
+  console.log(noOfQue,"noOfQuenoOfQue");
 
   const [mydata, setMydata] = useState([])
   const [filterText, setFilterText] = useState("");

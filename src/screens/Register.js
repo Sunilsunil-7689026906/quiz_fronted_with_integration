@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StatusBar, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -8,6 +8,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { base_url } from './Base_url'
 import Modal from "react-native-modal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+
 
 
 
@@ -17,6 +19,11 @@ const Register = ({ navigation }) => {
     const [hidepass2, sethidepass2] = useState(true);
     const [tkn, setTkn] = useState(true);
     const [otp, setOtp] = useState(true);
+
+    const [indicator2, setIndicator2] = useState(true)
+    const [indicator3, setIndicator3] = useState(true)
+
+
 
 
 
@@ -51,6 +58,8 @@ const Register = ({ navigation }) => {
 
     const registerApi1 = () => {
         try {
+            setIndicator2(false)
+
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
 
@@ -77,19 +86,37 @@ const Register = ({ navigation }) => {
                             console.log('message', result.message);
                             console.log("open modal");
                             openModal1();
+                            setIndicator2(true)
 
+                            Toast.show({
+                                type: 'success',
+                                text1: `${result.message}`,
+                                visibilityTime: 2000,
+                                autoHide: true,
+                            });
                             setTkn(result.data.resetToken)
                             console.log(result.data.resetToken, "resetToken");
                         }
 
 
+                    } else {
+                        Toast.show({
+                            type: 'error',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
+                        setIndicator2(true)
+                        console.log(result.message)
+
                     }
-                    console.log(result.message)
                 })
                 .catch(error => console.log('error', error));
 
         } catch (error) {
 
+        } finally {
+            setIndicator2(false);
         }
     }
 
@@ -98,6 +125,8 @@ const Register = ({ navigation }) => {
 
     const resetApi = () => {
         try {
+            setIndicator3(false)
+
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
 
@@ -120,6 +149,14 @@ const Register = ({ navigation }) => {
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
+                        setIndicator3(true)
+
+                        Toast.show({
+                            type: 'success',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
                         console.log(result.message);
                         navigation.navigate("Login")
                         closeModal1();
@@ -129,6 +166,14 @@ const Register = ({ navigation }) => {
                         setF4('');
                     }
                     else {
+                        Toast.show({
+                            type: 'error',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
+                        setIndicator3(true)
+
                         console.log(result.message, "else");
                         console.log(tkn, "in");
 
@@ -138,6 +183,9 @@ const Register = ({ navigation }) => {
                 .catch(error => console.log('error', error));
 
         } catch (error) {
+
+        } finally {
+            setIndicator2(false);
 
         }
     }
@@ -210,6 +258,10 @@ const Register = ({ navigation }) => {
 
             </View>
 
+            <Toast email={(email) => Toast.email(email)} />
+
+
+
             <Text style={{ fontSize: 18, fontWeight: '500', color: '#000', marginTop: 20, marginHorizontal: 20 }}>Full Name</Text>
 
             <View style={{ borderWidth: 1, height: responsiveHeight(6), alignSelf: 'center', borderRadius: 5, borderColor: '#A0A0A0', width: responsiveWidth(90), marginTop: 5 }}>
@@ -264,14 +316,18 @@ const Register = ({ navigation }) => {
 
                 <Text style={{ alignSelf: 'center', color: '#A0A0A0' }}>I agree with </Text>
 
-                <TouchableOpacity style={{ alignSelf: 'center' }}>
+                <TouchableOpacity style={{ alignSelf: 'center' }} onPress={()=>navigation.navigate("TermCondition")}>
                     <Text style={{ alignSelf: 'center', color: 'blue', fontWeight: '500' }}>Term & Conditions</Text>
                 </TouchableOpacity>
             </View>
 
             <TouchableOpacity style={{ height: responsiveHeight(6), width: responsiveWidth(90), marginTop: '10%', backgroundColor: '#6A5AE0', borderRadius: 10, alignSelf: 'center', justifyContent: 'center' }}
-                onPress={() => { registerApi1() }} >
-                <Text style={{ fontSize: 18, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Register</Text>
+                onPress={indicator2 == true ? () => registerApi1() : <>null</>} >
+                {
+                    indicator2 == true ? <Text style={{ fontSize: 18, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Register</Text> :
+                        <ActivityIndicator size={30} color={'#fff'} style={{ justifyContent: 'center' }} />
+                }
+
             </TouchableOpacity>
 
 
@@ -280,7 +336,7 @@ const Register = ({ navigation }) => {
                 <Text style={{ alignSelf: 'center', color: '#A0A0A0' }}>Already have an account?</Text>
 
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                    <Text style={{ alignSelf: 'center', color: 'blue', borderBottomWidth: 1, borderColor: 'blue' }}>Login now</Text>
+                    <Text style={{fontSize:18, alignSelf: 'center', color: 'blue', borderBottomWidth: 1, borderColor: 'blue' }}>  Login now</Text>
                 </TouchableOpacity>
             </View>
 
@@ -290,6 +346,8 @@ const Register = ({ navigation }) => {
                 animationType="slide"
                 onRequestClose={closeModal1}
             >
+                <Toast f1={(f1) => Toast.f1(f1)} />
+
                 <View style={{
                     width: responsiveWidth(100), position: 'absolute', marginBottom: 0, bottom: 0, backgroundColor: '#fff',
                     borderTopLeftRadius: 20, borderTopRightRadius: 20, height: responsiveHeight(54), flex: 1
@@ -437,8 +495,13 @@ const Register = ({ navigation }) => {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={{ height: responsiveHeight(6.3), width: responsiveWidth(89), backgroundColor: '#6A5AE0', justifyContent: 'center', borderRadius: 10, alignSelf: 'center', marginTop: 20 }}
-                        onPress={() => { resetApi() }} >
-                        <Text style={{ fontSize: responsiveFontSize(2), fontWeight: '600', color: 'white', textAlign: 'center' }}>Submit</Text>
+                        onPress={indicator3 == true ? () => resetApi() : <>null</>} >
+                        {
+                            indicator3 == true ? <Text style={{ fontSize: responsiveFontSize(2), fontWeight: '600', color: 'white', textAlign: 'center' }}>Submit</Text> :
+                                <ActivityIndicator size={30} color={'#fff'} style={{ justifyContent: 'center' }} />
+
+                        }
+
                     </TouchableOpacity>
 
                 </View>

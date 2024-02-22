@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, Image, StatusBar, ScrollView, TextInput } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
   responsiveHeight,
@@ -16,6 +16,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { base_url } from "./Base_url";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BarChart } from 'react-native-chart-kit';
+import PieChart from 'react-native-pie-chart';
+
 
 
 
@@ -27,15 +29,30 @@ import { BarChart } from 'react-native-chart-kit';
 
 const MyLeaderBoard = ({ navigation, route }) => {
 
-  const { questionData, t, gameId } = route.params
+  const { questionData, t, gameId, no_qu, userid } = route.params
 
   const [select, setSelect] = useState("");
+  const [select2, setSelect2] = useState('');
+
   const [checked, setChecked] = useState("first");
   const [correct, setCorrect] = useState(0);
   const [save, setSave] = useState(false);
   const [confirm, setConfirm] = useState(0)
-  const [no_qu, setno_qu] = useState(0)
+  // const [no_qu, setno_qu] = useState(0)
   const [final,] = useState('')
+
+  const [chartdata, setChartdata] = useState([])
+  const [attempte, setAttempte] = useState([])
+  const [rowdata, setRowdata] = useState([])
+  const [mydata, setMydata] = useState("")
+  const [question1, setquestion1] = useState([])
+
+
+  const widthAndHeight2 = 180;
+  const series2 = [`${attempte.correctPercnt}`, `${attempte.wrongPercnt}`];
+  const sliceColor2 = ['#0085FF', '#A8A8A8'];
+
+
 
   const [mysocket, setMySocket] = useState(null);
 
@@ -61,14 +78,7 @@ const MyLeaderBoard = ({ navigation, route }) => {
   const series = [123, 321, 123, 789, 537];
   const sliceColor = ['#6A5AE0', '#ffb300', '#ff9100', '#ff6c00', '#ff3c00'];
 
-  const data = {
-    labels: ['A', 'B', 'C', 'D'],
-    datasets: [
-      {
-        data: [28, 45, 15, 35],
-      },
-    ],
-  };
+
 
 
   // const gameid = route.params?.idgame || null;
@@ -88,6 +98,9 @@ const MyLeaderBoard = ({ navigation, route }) => {
   const [sumdata2, setsumdata2] = useState(0)
   const [allData, setallData] = useState()
 
+  const [rankdata, setRankdata] = useState([])
+
+
   const [getId, setGetId] = useState()
   const [mygameId, setMygameId] = useState()
   const [myanswer, setMyanswer] = useState()
@@ -97,6 +110,8 @@ const MyLeaderBoard = ({ navigation, route }) => {
   const [index, setIndex] = useState(0);
   const [leftQustion, setleftQustion] = useState(0)
   const [modelVive, setmodelVive] = useState(false)
+  const [modaldata, setModaldata] = useState([])
+
   // useEffect(async() => {
   //   const connectSockett = async () => {
   //   const socket = io('http://3.111.23.56:5059');
@@ -134,7 +149,7 @@ const MyLeaderBoard = ({ navigation, route }) => {
   //       console.log('Received question from the server: jon', JSON.stringify(questionData));
   //       await setSelect("")
   //     } catch (error) {
-  //       console.log(error);
+  // console.log(error);
   //     }
 
   //   });
@@ -210,7 +225,9 @@ const MyLeaderBoard = ({ navigation, route }) => {
   var count = 0;
 
   const sendData = async (rcd) => {
-    const socket = io('http://3.111.23.56:5059');
+    // const socket = io('http://3.111.23.56:5059');
+    const socket = io('https://quiz.metablocktechnologies.org');
+
     if (!select) {
       return alert("select answer")
     }
@@ -222,10 +239,11 @@ const MyLeaderBoard = ({ navigation, route }) => {
         question: await hindiQseon,
         timeTaken: await initialSeconds,
         answer: await select,
-        userId: await AsyncStorage.getItem("user_id"),
+        userId: await userid,
         rawPoints: await rcd,
         rM: await mainValuerl,
-        rC: await correct
+        rC: await correct,
+        type: "RIGHT" / "WRONG"
       })
     }, 1000)
     setbtndisebal(true)
@@ -274,11 +292,12 @@ const MyLeaderBoard = ({ navigation, route }) => {
         if (lang === "ENGLISH") {
           setHindiQseon(currentQuestions[index].QuestionE);
           setquestionID(currentQuestions[index].questionId)
-          setno_qu(currentQuestions[index].q_no)
+          // console.log(currentQuestions[index].q_no,"nnnnnnnn")
+          // setno_qu(currentQuestions[index].q_no)
         } else {
           setHindiQseon(currentQuestions[index].QuestionH);
           setquestionID(currentQuestions[index].questionId)
-          setno_qu(currentQuestions[index].q_no)
+          // setno_qu(currentQuestions[index].q_no)
         }
         console.log('====================================');
         console.log('====================================');
@@ -324,6 +343,7 @@ const MyLeaderBoard = ({ navigation, route }) => {
   }, [index, questionData]);
 
 
+
   const upleaderboardApi = async () => {
     try {
       var myHeaders = new Headers();
@@ -346,6 +366,8 @@ const MyLeaderBoard = ({ navigation, route }) => {
         .then(result => {
           if (result.success == true) {
             console.log(result.data, "inactive leaderboard")
+            console.log(result.data.gameLeadership[0].UserGame[0], "hghghghg")
+            setModaldata(result.data.gameLeadership[0].UserGame)
             openModal7()
           }
         })
@@ -357,7 +379,8 @@ const MyLeaderBoard = ({ navigation, route }) => {
   }
 
 
-  const AnalysisApi = async () => {
+  const AnalysisApi = async (questionID) => {
+    // alert(questionID)
     try {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
@@ -368,12 +391,66 @@ const MyLeaderBoard = ({ navigation, route }) => {
         redirect: 'follow'
       };
 
-      fetch(`${base_url}/quiz-result`, requestOptions)
+      fetch(`${base_url}/quiz-result?Q_Id=${questionID}`, requestOptions)
         .then(response => response.json())
         .then(result => {
-          if (result.success==true) {
+          if (result.success == true) {
+            setRankdata(result.data.gameQuestion[0].questionleaderShip)
+
+            setChartdata(result.data.gameQuestion[0].ContestMembers)
+            // setRowdata(result.data.gameQuestion[0].UserQuestion)
+            const rowdata = result.data.gameQuestion[0].UserQuestion;
+
+            setRowdata(rowdata)
+            setMydata(result.data.gameQuestion[0].question)
+            setquestion1(result.data.gameQuestion[0].options)
+            setAttempte(result.data.gameQuestion[0])
+
             console.log(result.data)
             openModal8()
+
+            if (rowdata.rM > 4) {
+              setChecked("first");
+            } else {
+              setChecked("second");
+            }
+
+
+            if (rowdata.rC == 0) {
+              setCorrect(0)
+            }
+            else if (rowdata.rC == 1) {
+              setCorrect(1)
+            }
+            else if (rowdata.rC == 2) {
+              setCorrect(2)
+            }
+            else if (rowdata.rC == 3) {
+              setCorrect(3)
+            }
+            else if (rowdata.rC == 4) {
+              setCorrect(4)
+            }
+            else if (rowdata.rC == 5) {
+              setCorrect(5)
+            }
+            else if (rowdata.rC == 6) {
+              setCorrect(6)
+            }
+            else if (rowdata.rC == 7) {
+              setCorrect(7)
+            }
+            else if (rowdata.rC == 8) {
+              setCorrect(8)
+            }
+            else if (rowdata.rC == 9) {
+              setCorrect(9)
+            }
+            else {
+              setCorrect(null)
+            }
+
+
           }
         })
         .catch(error => console.log('error', error));
@@ -381,6 +458,17 @@ const MyLeaderBoard = ({ navigation, route }) => {
       console.log(error);
     }
   }
+
+  const data = {
+    labels: ['A', 'B', 'C', 'D'],
+    datasets: [
+      {
+        data: [`${chartdata.A}`, `${chartdata.B}`, `${chartdata.C}`, `${chartdata.D}`],
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // Default color for all bars
+        barColors: ['red', 'green', 'blue', 'purple']
+      },
+    ],
+  };
 
 
 
@@ -398,14 +486,14 @@ const MyLeaderBoard = ({ navigation, route }) => {
           }}
         >
           <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
+            style={{ flexDirection: "row", justifyContent: 'space-evenly' }}
           >
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={{ justifyContent: "center", alignSelf: "center" }}
             >
               <AntDesign name="arrowleft" size={24} color="white" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <TouchableOpacity
               style={{
@@ -414,7 +502,7 @@ const MyLeaderBoard = ({ navigation, route }) => {
                 borderRadius: 10,
                 backgroundColor: save == true ? "#EDEAFB" : "#6A5AE0",
                 justifyContent: "center",
-                marginLeft: "15%",
+                marginLeft: "21%",
               }}
               // onPress={() => navigation.navigate("InactiveLeaderBoard")}
               onPress={() => { upleaderboardApi() }}
@@ -425,6 +513,7 @@ const MyLeaderBoard = ({ navigation, route }) => {
                   fontSize: 20,
                   fontWeight: "500",
                   alignSelf: "center",
+                  marginLeft: '15%',
                   color: save == true ? "#6A5AE0" : "#fff",
                 }}
               >
@@ -451,7 +540,7 @@ const MyLeaderBoard = ({ navigation, route }) => {
                   fontSize: 16,
                 }}
               >
-                {left}/{no_qu}
+                {no_qu}/{leftQustion}
               </Text>
             </TouchableOpacity>
           </View>
@@ -1560,339 +1649,1028 @@ const MyLeaderBoard = ({ navigation, route }) => {
           >
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                height: responsiveHeight(6),
-                width: responsiveWidth(90),
-                borderRadius: 2,
-                marginTop: 10,
+                height: responsiveHeight(42),
+                width: responsiveWidth(95),
+                marginBottom: 10,
+                paddingHorizontal: 20,
                 backgroundColor: "#fff",
                 alignSelf: "center",
+                borderBottomLeftRadius: 8,
+                borderBottomRightRadius: 8,
+
               }}
             >
-              <Text
-                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-              >
-                Rank
-              </Text>
-              <Text
+              <View
                 style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  height: responsiveHeight(6),
+                  width: responsiveWidth(90),
+                  borderRadius: 2,
+                  marginTop: 10,
+                  backgroundColor: "#fff",
                   alignSelf: "center",
-                  color: "#000",
-                  fontWeight: "500",
-                  marginLeft: 20,
                 }}
               >
-                Name
-              </Text>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  color: "#000",
-                  fontWeight: "500",
-                  marginLeft: 20,
-                }}
-              >
-                Option
-              </Text>
-              <View>
                 <Text
-                  style={{
-                    alignSelf: "center",
-                    color: "#000",
-                    fontWeight: "500",
-                    marginLeft: 10,
-                  }}
+                  style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
                 >
-                  Time
+                  Rank
                 </Text>
+
                 <Text
                   style={{
                     alignSelf: "center",
                     color: "#000",
                     fontWeight: "500",
                     marginLeft: 10,
+                    marginRight: 30
                   }}
                 >
-                  taken
+                  Name
+                </Text>
+
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    color: "#000",
+                    fontWeight: "500",
+                    marginRight: 10,
+                  }}
+                >
+                  Id
+                </Text>
+
+
+                <Text
+                  style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
+                >
+                  Point
                 </Text>
               </View>
-              <Text
-                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-              >
-                %
-              </Text>
 
-              <Text
-                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-              >
-                Point
-              </Text>
+              {
+                modaldata?.map((res) => {
+                  // console.log(res);
+                  return (
+                    <>
+                      <TouchableOpacity
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          height: responsiveHeight(6),
+                          width: responsiveWidth(90),
+                          paddingHorizontal: 10,
+                          borderRadius: 2,
+                          marginTop: 5,
+                          backgroundColor: "#EDEAFB",
+                          alignSelf: "center",
+                        }}
+                      // onPress={() => navigation.navigate("AllQuestion", { id: (res.User[0].id) })}
+                      >
+                        <Text style={{ alignSelf: "center", color: "#6A5AE0", flex: 0.25 }}>{res?.rank}</Text>
+                        <Text style={{ alignSelf: "center", color: "#000", flex: 0.25 }}>{res.User[0].name}</Text>
+                        <Text style={{ alignSelf: "center", color: "green", flex: 0.25 }}>{res.User[0].id}</Text>
+
+
+                        <Text
+                          style={{ alignSelf: "center", color: "#000", fontWeight: "500", flex: 0.10 }}
+                        >
+                          {res?.mainPoints}
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  )
+                })
+              }
+
+
+
+
+
+
             </View>
 
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                height: responsiveHeight(6),
-                width: responsiveWidth(90),
-                paddingHorizontal: 10,
-                borderRadius: 2,
-                marginTop: 5,
-                backgroundColor: "#EDEAFB",
-                alignSelf: "center",
-              }}
-            >
-              <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-              <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
 
-              <Text
-                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-              >
-                7.5
-              </Text>
-            </View>
 
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingHorizontal: 10,
-                height: responsiveHeight(6),
-                width: responsiveWidth(90),
-                borderRadius: 2,
-                marginTop: 5,
-                backgroundColor: "#fff",
-                elevation: 10,
-                alignSelf: "center",
-              }}
-            >
-              <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-              <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
-
-              <Text
-                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-              >
-                7.5
-              </Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingHorizontal: 10,
-                height: responsiveHeight(6),
-                width: responsiveWidth(90),
-                borderRadius: 2,
-                marginTop: 5,
-                backgroundColor: "#fff",
-                elevation: 5,
-                alignSelf: "center",
-              }}
-            >
-              <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-              <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
-
-              <Text
-                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-              >
-                7.5
-              </Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingHorizontal: 10,
-                height: responsiveHeight(6),
-                width: responsiveWidth(90),
-                borderRadius: 2,
-                marginTop: 5,
-                backgroundColor: "#fff",
-                elevation: 5,
-                alignSelf: "center",
-              }}
-            >
-              <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-              <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
-
-              <Text
-                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-              >
-                7.5
-              </Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingHorizontal: 10,
-                height: responsiveHeight(6),
-                width: responsiveWidth(90),
-                borderRadius: 2,
-                marginTop: 5,
-                backgroundColor: "#fff",
-                elevation: 5,
-                alignSelf: "center",
-              }}
-            >
-              <Text style={{ alignSelf: "center", color: "#6A5AE0" }}>#1</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>Kamal ka..</Text>
-              <Text style={{ alignSelf: "center", color: "green" }}>5 sec</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>B</Text>
-              <Text style={{ alignSelf: "center", color: "#000" }}>7</Text>
-
-              <Text
-                style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
-              >
-                7.5
-              </Text>
-            </View>
           </View>
         </SafeAreaView>
       </Modal>
 
-      <Modal style={{ width: '100%', marginLeft: 0, marginBottom: 0, height: '100%', marginTop: 0 }}
+      <Modal style={{ width: '100%', marginLeft: 0, top: 0, height: responsiveHeight(100), backgroundColor: '#fff' }}
         visible={modalVisible8}
         animationType="slide"
         onRequestClose={closeModal8}
 
       >
-        <SafeAreaView>
-          <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={'#6A5AE0'} />
+        <View style={{ top: 0, flex: 1, backgroundColor: '#fff', bottom: 0, height: responsiveHeight(100), marginBottom: -30 }}>
 
-          <View style={{ height: responsiveHeight(7), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
+          <View style={{ height: responsiveHeight(7), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20, marginTop: -30 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-              <TouchableOpacity onPress={() => navigation.goBack()} style={{ justifyContent: 'center', alignSelf: 'flex-start', marginTop: 15 }}>
+              <TouchableOpacity onPress={closeModal8} style={{ justifyContent: 'center', alignSelf: 'flex-start', marginTop: 15 }}>
                 <AntDesign name="arrowleft" size={24} color="white" />
               </TouchableOpacity>
 
               <Text style={{ color: '#fff', fontSize: 20, fontWeight: '500', alignSelf: 'center', marginTop: 15, marginLeft: '30%' }}>Analysis</Text>
             </View>
           </View>
+          <ScrollView>
 
-          <View style={{ height: responsiveHeight(40), flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'center', paddingHorizontal: 10, width: responsiveWidth(90), marginBottom: 10, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
+            <View style={{ height: responsiveHeight(32), width: responsiveWidth(90), marginBottom: 10, paddingHorizontal: 20, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
+              <Text style={{ marginTop: 20, fontSize: 17, fontWeight: '500', color: '#000' }}>Q. {mydata}</Text>
 
-            <View style={{ alignSelf: 'center', marginTop: 30 }}>
-              <BarChart
-                data={data}
-                width={300}
-                height={200}
-                color={'red'}
-                yAxisLabel=""
-                chartConfig={{
-                  backgroundColor: '#fff',
-                  backgroundGradientFrom: '#fff',
-                  backgroundGradientTo: '#fff',
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                  style: {
-                    borderRadius: 16,
-                  },
-                }}
+              {question1?.map((res) => {
+                return (
+                  <>
+                    <View style={{ marginTop: 10, flexDirection: 'row', marginRight: 20 }}>
+                      <TouchableOpacity style={{ height: responsiveHeight(3.5), marginRight: 10, backgroundColor: select2 == 0 ? '#6A5AE0' : '#fff', width: responsiveWidth(7), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
+                        onPress={() => setSelect2(0)}>
+                        <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: select2 == 0 ? '#fff' : '#6A5AE0' }}>{res.id}</Text>
+                      </TouchableOpacity>
+
+                      <Text style={{ alignSelf: 'center', fontSize: 13 }}>{res.answer}</Text>
+
+                    </View>
+                  </>
+                )
+              })
+
+              }
+
+            </View>
+
+
+
+            <View
+              style={{
+                height: responsiveHeight(8),
+                flexDirection: "row",
+                width: responsiveWidth(90),
+                marginBottom: 10,
+                paddingHorizontal: 20,
+                backgroundColor: "#fff",
+                alignSelf: "center",
+                marginTop: 7,
+                borderRadius: 5,
+                elevation: 5,
+              }}
+            >
+              <View
                 style={{
-                  marginVertical: 8,
-                  borderRadius: 16,
+                  justifyContent: "flex-start",
+                  flexDirection: "row",
+                  marginTop: 5,
+                  marginHorizontal: 20,
+                  height: responsiveHeight(7),
+                  borderRadius: 10,
                 }}
-              />
-            </View>
+              >
+                <View style={{ justifyContent: "center" }}>
+                  <RadioButton
+                    color="#0085FF"
+                    uncheckedColor="#B9C3CC"
+                    value="first"
+                    status={checked === "first" ? "checked" : "unchecked"}
+                  // onPress={() => { setChecked("first"); setmainValuerl(5.5) }}
+                  />
+                </View>
 
-          </View>
+                <View style={{ marginLeft: 5, justifyContent: "center" }}>
+                  <Text style={{ fontWeight: "500", fontSize: 16 }}>Right</Text>
+                </View>
 
+                <Image
+                  source={require("../images/right2.png")}
+                  style={{
+                    height: responsiveHeight(2.6),
+                    width: responsiveWidth(5.2),
+                    alignSelf: "center",
+                    marginLeft: 5,
+                  }}
+                />
+              </View>
 
-          <View style={{ height: responsiveHeight(46), alignSelf: 'center', justifyContent: 'center', width: responsiveWidth(90), marginBottom: 10, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
-            <View style={{ height: responsiveHeight(6), justifyContent: 'center', width: responsiveWidth(85), borderWidth: 1, borderRadius: 10, alignSelf: 'center' }}>
-              <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0', fontWeight: '500' }}>Row Point Table</Text>
-            </View>
+              <View
+                style={{
+                  justifyContent: "flex-start",
+                  flexDirection: "row",
+                  marginTop: 5,
+                  marginHorizontal: 20,
+                  height: responsiveHeight(7),
+                  borderRadius: 10,
+                }}
+              >
+                <View style={{ justifyContent: "center", marginLeft: 5 }}>
+                  <RadioButton
+                    color="#0085FF"
+                    uncheckedColor="#B9C3CC"
+                    value="second"
+                    status={checked === "second" ? "checked" : "unchecked"}
+                  // onPress={() => { setChecked("second"); setmainValuerl(3.5) }}
+                  />
+                </View>
 
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 11, marginTop: 10 }}>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>M</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>C</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>T</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>Total</Text>
-              </View>
-            </View>
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 11 }}>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>2.5</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>6</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0' }}>7</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>9.5</Text>
-              </View>
-            </View>
-
-            <View style={{ height: responsiveHeight(6), justifyContent: 'center', width: responsiveWidth(85), borderWidth: 1, marginTop: 20, borderRadius: 10, alignSelf: 'center' }}>
-              <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6A5AE0', fontWeight: '500' }}>Main Point Table</Text>
-            </View>
-
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 11, marginTop: 10 }}>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', backgroundColor: '#EDEAFB', justifyContent: 'center', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>M</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>C</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>T</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>Total</Text>
-              </View>
-            </View>
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 11 }}>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>2.5</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>6</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#EDEAFB', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: '#000' }}>7</Text>
-              </View>
-              <View style={{ height: responsiveHeight(5), flexDirection: 'row', justifyContent: 'center', backgroundColor: '#fff', width: responsiveWidth(19), borderWidth: 1, borderRadius: 5, alignSelf: 'center' }}>
-                <Text style={{ alignSelf: 'center', fontSize: 16, color: 'green' }}>9.5</Text>
+                <View style={{ marginLeft: 5, justifyContent: "center" }}>
+                  <Text style={{ fontWeight: "500", fontSize: 16 }}>Wrong</Text>
+                </View>
+                <Image
+                  source={require("../images/wrong.png")}
+                  style={{
+                    height: responsiveHeight(4),
+                    width: responsiveWidth(8),
+                    alignSelf: "center",
+                    marginTop: 4,
+                    marginLeft: 5,
+                  }}
+                />
               </View>
             </View>
 
-          </View>
+
+            <View
+              style={{
+                height: responsiveHeight(15),
+                width: responsiveWidth(90),
+                marginBottom: 10,
+                paddingHorizontal: 20,
+                backgroundColor: "#fff",
+                alignSelf: "center",
+                marginTop: 7,
+                borderRadius: 5,
+                elevation: 5,
+              }}
+            >
+              <Text
+                style={{
+                  marginTop: 10,
+                  fontSize: 18,
+                  fontWeight: "500",
+                  color: "#000",
+                }}
+              >
+                Correct %
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 10,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    backgroundColor: correct == 0 ? "#000" : "#fff",
+                    justifyContent: "center",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { calculation(mainValuerl, 0), setCorrect(0) }}
+                // onPress={() => { setChecked("second"); setmainValuerl(3.5) }}
+
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 0 ? "#fff" : "#000",
+                    }}
+                  >
+                    {A}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    justifyContent: "center",
+                    backgroundColor: correct == 1 ? "#000" : "#fff",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { calculation(mainValuerl, 1), setCorrect(1) }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 1 ? "#fff" : "#000",
+                    }}
+                  >
+                    {B}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    justifyContent: "center",
+                    backgroundColor: correct == 2 ? "#000" : "#fff",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { setCorrect(2), calculation(mainValuerl, 2) }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 2 ? "#fff" : "#000",
+                    }}
+                  >
+                    {C}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    justifyContent: "center",
+                    backgroundColor: correct == 3 ? "#000" : "#fff",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { setCorrect(3), calculation(mainValuerl, 3) }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 3 ? "#fff" : "#000",
+                    }}
+                  >
+                    {D}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    justifyContent: "center",
+                    backgroundColor: correct == 4 ? "#000" : "#fff",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { setCorrect(4), calculation(mainValuerl, 4) }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 4 ? "#fff" : "#000",
+                    }}
+                  >
+                    {E}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 12,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    justifyContent: "center",
+                    backgroundColor: correct == 5 ? "#000" : "#fff",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { setCorrect(5), calculation(mainValuerl, 5) }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 5 ? "#fff" : "#000",
+                    }}
+                  >
+                    {F}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    justifyContent: "center",
+                    backgroundColor: correct == 6 ? "#000" : "#fff",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { setCorrect(6), calculation(mainValuerl, 6) }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 6 ? "#fff" : "#000",
+                    }}
+                  >
+                    {G}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    justifyContent: "center",
+                    backgroundColor: correct == 7 ? "#000" : "#fff",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { setCorrect(7), calculation(mainValuerl, 7) }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 7 ? "#fff" : "#000",
+                    }}
+                  >
+                    {H}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    justifyContent: "center",
+                    backgroundColor: correct == 8 ? "#000" : "#fff",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { setCorrect(8), calculation(mainValuerl, 8) }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 8 ? "#fff" : "#000",
+                    }}
+                  >
+                    {I}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3),
+                    justifyContent: "center",
+                    backgroundColor: correct == 9 ? "#000" : "#fff",
+                    width: responsiveWidth(6),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                // onPress={() => { setCorrect(9), calculation(mainValuerl, 9) }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                      color: correct == 9 ? "#fff" : "#000",
+                    }}
+                  >
+                    {J}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+
+            <View
+              style={{
+                height: responsiveHeight(40),
+                elevation: 10,
+                borderRadius: 10,
+                width: responsiveWidth(90),
+                backgroundColor: "#fff",
+                alignSelf: 'center'
+              }}
+            >
+              <Text
+                style={{
+                  alignSelf: "center",
+                  marginTop: 12,
+                  fontSize: 14,
+                  fontWeight: "500",
+                }}
+              >
+                Row point Panel
+              </Text>
+
+              <View style={{ borderBottomWidth: 0.6, padding: 4 }}></View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 7,
+                  justifyContent: "space-between",
+                  marginHorizontal: 20,
+                }}
+              >
+                <View>
+                  <Text style={{ fontWeight: "500", fontSize: 15 }}>M</Text>
+
+                  <Text
+                    style={{
+                      fontWeight: "500",
+                      fontSize: 15,
+                      alignSelf: "center",
+                      marginTop: 5,
+                    }}
+                  >
+                    {rowdata.rM}
+                  </Text>
+                </View>
+
+                <View>
+                  <Text style={{ fontWeight: "500", fontSize: 15 }}>C%</Text>
+                  <Text
+                    style={{
+                      fontWeight: "500",
+                      fontSize: 15,
+                      alignSelf: "center",
+                      marginTop: 5,
+                    }}
+                  >
+                    {rowdata.rC}
+                  </Text>
+
+                </View>
+
+
+
+                <View>
+                  <Text style={{ fontWeight: "500", fontSize: 15 }}>T(Time)</Text>
+                  <Text
+                    style={{
+                      fontWeight: "500",
+                      fontSize: 15,
+                      alignSelf: "center",
+                      marginTop: 5,
+                    }}
+                  >
+                    {rowdata.timeTaken}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ borderBottomWidth: 0.6, marginTop: 4 }}></View>
+
+
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginLeft: 20, marginTop: 5 }}>
+                <View style={{ transform: [{ rotate: '47deg' }] }}>
+                  <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(16) }} />
+                </View>
+
+                <View style={{ transform: [{ rotate: '130deg' }] }}>
+                  <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(14), marginRight: 20 }} />
+                </View>
+
+                <View style={{ transform: [{ rotate: '38deg' }], marginTop: 5 }}>
+                  <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(22) }} />
+                </View>
+
+                <View style={{ transform: [{ rotate: '130deg' }] }}>
+                  <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(16), marginRight: 20 }} />
+                </View>
 
 
 
 
-        </SafeAreaView>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 5,
+                  justifyContent: 'space-evenly',
+                  marginHorizontal: 20, marginLeft: 10
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3.5),
+                    justifyContent: "center",
+                    width: responsiveWidth(11),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                    }}
+                  >
+                    {rowdata.rawPoints}
+
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3.5),
+                    justifyContent: "center",
+                    width: responsiveWidth(8),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                    }}
+                  >
+                    +
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(3.5),
+                    justifyContent: "center",
+                    width: responsiveWidth(8),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "center",
+                      fontWeight: "600",
+                      fontSize: 15,
+                    }}
+                  >
+                    {rowdata.timeTaken}
+                  </Text>
+
+                </TouchableOpacity>
+              </View>
+
+              <View style={{ flexDirection: 'row', justifyContent: 'center', marginLeft: 0, marginTop: 10 }}>
+                <View style={{ transform: [{ rotate: '47deg' }] }}>
+                  <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(20) }} />
+                </View>
+
+                <View style={{ transform: [{ rotate: '130deg' }] }}>
+                  <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(20), marginRight: 20 }} />
+                </View>
+              </View>
+
+              <TouchableOpacity
+                style={{
+                  height: responsiveHeight(4),
+                  alignSelf: "center",
+                  marginTop: 15,
+                  justifyContent: "center",
+                  width: responsiveWidth(28),
+                  borderWidth: 1,
+                  borderRadius: 5,
+                }}
+              >
+                <Text
+                  style={{ alignSelf: "center", fontWeight: "600", fontSize: 15 }}
+                >9</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ height: responsiveHeight(87), borderRadius: 10, elevation: 10, marginBottom: 20, marginTop: 20, width: responsiveWidth(90), backgroundColor: '#fff', alignSelf: 'center' }}>
+              <Text style={{ alignSelf: 'center', fontSize: 20, marginTop: 10, fontWeight: '500' }}>Answer Analysis</Text>
+
+              <View style={{ height: responsiveHeight(10), elevation: 10, marginTop: 20, width: responsiveWidth(90), borderRadius: 10, backgroundColor: '#fff', alignSelf: 'center' }}>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                  <Text style={{ fontSize: 15, marginTop: 10, marginHorizontal: 20 }}>Currect Answer    : -</Text>
+                  <View style={{ alignSelf: 'center', marginTop: 10, height: responsiveHeight(3), width: responsiveWidth(7), borderWidth: 0.5, borderRadius: 5 }}>
+                    <Text style={{ alignSelf: 'center' }}>{attempte.answer}</Text>
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                  <Text style={{ fontSize: 15, marginTop: 10, marginHorizontal: 20 }}>Your Answer         : -</Text>
+                  <View style={{ alignSelf: 'center', marginTop: 10, height: responsiveHeight(3), width: responsiveWidth(7), borderWidth: 0.5, borderRadius: 5 }}>
+                    <Text style={{ alignSelf: 'center' }}>{rowdata.answer}</Text>
+                  </View>
+                </View>
+
+              </View>
+
+              <View
+                style={{
+                  height: responsiveHeight(40),
+                  elevation: 10,
+                  borderRadius: 10,
+                  width: responsiveWidth(90),
+                  backgroundColor: "#fff",
+                  alignSelf: 'center',
+                  marginTop: 10
+                }}
+              >
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 12,
+                    fontSize: 14,
+                    fontWeight: "500",
+                  }}
+                >
+                  main point Panel
+                </Text>
+
+                <View style={{ borderBottomWidth: 0.6, padding: 4 }}></View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginTop: 7,
+                    justifyContent: "space-between",
+                    marginHorizontal: 20,
+                  }}
+                >
+                  <View>
+                    <Text style={{ fontWeight: "500", fontSize: 15 }}>M</Text>
+
+                    <Text
+                      style={{
+                        fontWeight: "500",
+                        fontSize: 15,
+                        alignSelf: "center",
+                        marginTop: 5,
+                      }}
+                    >
+                      {rowdata.mM}
+                    </Text>
+                  </View>
+
+                  <View>
+                    <Text style={{ fontWeight: "500", fontSize: 15 }}>C%</Text>
+                    <Text
+                      style={{
+                        fontWeight: "500",
+                        fontSize: 15,
+                        alignSelf: "center",
+                        marginTop: 5,
+                      }}
+                    >
+                      {rowdata.mC}
+                    </Text>
+
+                  </View>
+
+
+
+                  <View>
+                    <Text style={{ fontWeight: "500", fontSize: 15 }}>T(Time)</Text>
+                    <Text
+                      style={{
+                        fontWeight: "500",
+                        fontSize: 15,
+                        alignSelf: "center",
+                        marginTop: 5,
+                      }}
+                    >
+                      {rowdata.timeTaken}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={{ borderBottomWidth: 0.6, marginTop: 4 }}></View>
+
+                {/* <View style={{ transform: [{ rotate: '140deg'}] }}>
+                            <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(34),marginRight:20,zIndex:1,position:'absolute'}} />
+                        </View> */}
+
+
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginLeft: 20, marginTop: 5 }}>
+                  <View style={{ transform: [{ rotate: '47deg' }] }}>
+                    <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(16) }} />
+                  </View>
+
+
+                  <View style={{ transform: [{ rotate: '130deg' }] }}>
+                    <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(14), marginRight: 20 }} />
+                  </View>
+
+                  <View style={{ transform: [{ rotate: '38deg' }], marginTop: 5 }}>
+                    <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(22) }} />
+                  </View>
+
+                  <View style={{ transform: [{ rotate: '130deg' }] }}>
+                    <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(16), marginRight: 20 }} />
+                  </View>
+
+
+
+
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginTop: 5,
+                    justifyContent: 'space-evenly',
+                    marginHorizontal: 20, marginLeft: 10
+                  }}
+                >
+                  <TouchableOpacity
+                    style={{
+                      height: responsiveHeight(3.5),
+                      justifyContent: "center",
+                      width: responsiveWidth(11),
+                      borderWidth: 1,
+                      borderRadius: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        fontSize: 15,
+                      }}
+                    >
+                      {rowdata.mainPoints}
+
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={{
+                      height: responsiveHeight(3.5),
+                      justifyContent: "center",
+                      width: responsiveWidth(8),
+                      borderWidth: 1,
+                      borderRadius: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        fontSize: 15,
+                      }}
+                    >
+                      +
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={{
+                      height: responsiveHeight(3.5),
+                      justifyContent: "center",
+                      width: responsiveWidth(8),
+                      borderWidth: 1,
+                      borderRadius: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        fontSize: 15,
+                      }}
+                    >
+                      {rowdata.timeTaken}
+                    </Text>
+
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginLeft: 0, marginTop: 10 }}>
+                  <View style={{ transform: [{ rotate: '47deg' }] }}>
+                    <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(20) }} />
+                  </View>
+
+                  <View style={{ transform: [{ rotate: '130deg' }] }}>
+                    <Image source={require('../images/line.png')} style={{ height: responsiveHeight(5), width: responsiveWidth(20), marginRight: 20 }} />
+                  </View>
+                </View>
+
+                <TouchableOpacity
+                  style={{
+                    height: responsiveHeight(4),
+                    alignSelf: "center",
+                    marginTop: 15,
+                    justifyContent: "center",
+                    width: responsiveWidth(28),
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text
+                    style={{ alignSelf: "center", fontWeight: "600", fontSize: 15 }}
+                  >7</Text>
+                </TouchableOpacity>
+              </View>
+
+
+              <View style={{ height: responsiveHeight(35), alignSelf: 'center', width: responsiveWidth(90), marginBottom: 10, backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 8, elevation: 10 }}>
+
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginHorizontal: 10 }}>
+
+                  <View style={{ marginTop: 30, alignSelf: 'center' }}>
+                    <PieChart
+                      widthAndHeight={widthAndHeight2}
+                      series={series2}
+                      sliceColor={sliceColor2}
+                      coverRadius={0.45}
+                      coverFill={'#FFF'}
+                    />
+                  </View>
+
+                </View>
+
+                {
+                  attempte.correctPercnt <= attempte.wrongPercnt ? (
+
+                    <Text style={{ fontSize: 14, position: 'absolute', color: '#000', fontWeight: '500', top: '20%', right: '33%' }}>{((attempte.correctPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(1)}%</Text>
+                  ) :
+                    (
+                      <>
+                        <Text style={{ fontSize: 14, position: 'absolute', color: '#000', fontWeight: '500', top: '20%', right: '33%' }}>{((attempte.correctPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(1)}%</Text>
+                      </>
+                    )
+                }
+
+                {
+                  attempte.correctPercnt >= attempte.wrongPercnt ? (
+                    <Text style={{ fontSize: 14, position: 'absolute', top: '20%', fontWeight: '500', right: '54%', color: '#0085FF' }}>{((attempte.wrongPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(1)}%
+
+                    </Text>
+                  ) :
+                    (
+                      <>
+                        <Text style={{ fontSize: 14, position: 'absolute', top: '20%', fontWeight: '500', right: '54%', color: '#0085FF' }}>{((attempte.wrongPercnt) / (attempte.wrongPercnt + attempte.correctPercnt) * 100).toFixed(1)}%
+
+                        </Text>
+                      </>
+                    )
+                }
+
+
+
+
+                <View style={{ marginTop: '5%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 50 }}>
+
+                  <View>
+
+                    <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+                      <View style={{ height: responsiveHeight(1.9), width: responsiveWidth(3.8), backgroundColor: '#0085FF', alignSelf: 'center' }}>
+
+                      </View>
+
+                      <Text style={{ fontSize: 13, marginRight: 10, marginLeft: 10 }}>{attempte.correctPercnt} Correct</Text>
+                    </View>
+                  </View>
+
+                  <View style={{ flexDirection: 'row' }}>
+                    <View style={{ height: responsiveHeight(1.9), width: responsiveWidth(3.8), backgroundColor: '#A8A8A8', alignSelf: 'center' }}>
+
+                    </View>
+
+                    <Text style={{ fontSize: 13, marginLeft: 10 }}>{attempte.wrongPercnt} Incorrect</Text>
+                  </View>
+
+
+
+
+
+                </View>
+              </View>
+
+            </View>
+
+          </ScrollView>
+
+        </View>
 
       </Modal>
 

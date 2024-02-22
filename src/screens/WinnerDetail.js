@@ -11,7 +11,7 @@ import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 
 
 
-const WinnerDetail = ({ navigation }) => {
+const WinnerDetail = ({ navigation,route }) => {
     const [select, setSelect] = useState('')
     const [number, setNumber] = useState(1)
     const [filterText, setFilterText] = useState("");
@@ -20,16 +20,28 @@ const WinnerDetail = ({ navigation }) => {
     const [mydata, setMydata] = useState([])
     const [lodings, setlodings] = useState(true)
 
+    const under = route.params?.gameid || null;
+    const noOfQue = route.params?.noOfQue || null;
+
+    console.log(noOfQue, "noofquestion");
+    console.log(under, "underscoredd");
+
+
+
+    const [gamid,setGamid] = useState(under)
+    const [queNo,setQueNo] = useState(noOfQue)
+
+
     const leadershipApi = async ({ name }) => {
         try {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
             myHeaders.append("Content-Type", "application/json");
 
-            console.log(`${await AsyncStorage.getItem("g_id")}`);
+            // console.log(`${await AsyncStorage.getItem("g_id")}`);
 
             var raw = JSON.stringify({
-                "gameId": `${await AsyncStorage.getItem("g_id")}`
+                "gameId": `${gamid}`
             });
 
             var requestOptions = {
@@ -47,8 +59,8 @@ const WinnerDetail = ({ navigation }) => {
                         setMydata(result.data.gameLeadership[0].UserGame)
 
                     }
-                    else{
-                        console.log(result.message,"elsee");
+                    else {
+                        console.log(result.message, "elsee");
                     }
                 })
                 .catch(error => console.log('error', error)).finally(() => { setlodings(false) });
@@ -204,6 +216,8 @@ const WinnerDetail = ({ navigation }) => {
                                 Name
                             </Text>
 
+                           
+
                             <Text
                                 style={{
                                     alignSelf: "center",
@@ -215,6 +229,16 @@ const WinnerDetail = ({ navigation }) => {
                                 Id
                             </Text>
 
+                            <Text
+                                style={{
+                                    alignSelf: "center",
+                                    color: "#000",
+                                    fontWeight: "500",
+                                    marginRight: 10,
+                                }}
+                            >
+                                Price
+                            </Text>
 
                             <Text
                                 style={{ alignSelf: "center", color: "#000", fontWeight: "500" }}
@@ -225,6 +249,8 @@ const WinnerDetail = ({ navigation }) => {
 
                         {
                             mydata?.map((res) => {
+                                // console.log(res,"rom");
+                                // console.log(res.User[0].id,"resId");
                                 return (
                                     <>
                                         <TouchableOpacity
@@ -239,11 +265,13 @@ const WinnerDetail = ({ navigation }) => {
                                                 backgroundColor: "#EDEAFB",
                                                 alignSelf: "center",
                                             }}
-                                            onPress={() => navigation.navigate("AllQuestion", { id: (res.User[0].id) })}
+                                            onPress={() => navigation.navigate("AllQuestion", { id: (res.User[0].id),queNo:queNo })}
                                         >
                                             <Text style={{ alignSelf: "center", color: "#6A5AE0", flex: 0.25 }}>{res?.rank}</Text>
                                             <Text style={{ alignSelf: "center", color: "#000", flex: 0.25 }}>{res.User[0].name}</Text>
-                                            <Text style={{ alignSelf: "center", color: "green", flex: 0.25 }}>{res.User[0].id}</Text>
+                                            <Text style={{ alignSelf: "center", color: "#000", flex: 0.25,marginRight:10 }}>{res.User[0].id}</Text>
+
+                                            <Text style={{ alignSelf: "center", color: "green", flex: 0.20 }}>{res.wonAmount}</Text>
 
 
                                             <Text

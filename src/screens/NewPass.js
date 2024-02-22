@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StatusBar, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -7,6 +7,8 @@ import CheckBox from '@react-native-community/checkbox';
 import { AntDesign } from '@expo/vector-icons';
 import { base_url } from './Base_url'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+
 
 
 
@@ -17,11 +19,15 @@ const NewPass = ({ navigation }) => {
 
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
+    const [indicator2, setIndicator2] = useState(true)
+
 
 
 
     const newpassApi = async () => {
         try {
+            setIndicator2(false)
+
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
             // alert(`${await AsyncStorage.getItem("token")}`)
@@ -44,12 +50,28 @@ const NewPass = ({ navigation }) => {
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
-                        console.log(result.message,"if")
+                        setIndicator2(true)
+                        Toast.show({
+                            type: 'success',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
+
+                        console.log(result.message, "if")
                         // console.log(token, "tokennnnn")
                         navigation.navigate('Login')
                     }
                     else {
-                        console.log(result.message,"else")
+                        setIndicator2(true)
+                        Toast.show({
+                            type: 'error',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
+
+                        // console.log(result.message, "else")
 
                     }
 
@@ -58,6 +80,8 @@ const NewPass = ({ navigation }) => {
 
         } catch (error) {
 
+        } finally {
+            setIndicator2(false);
         }
     }
 
@@ -78,6 +102,11 @@ const NewPass = ({ navigation }) => {
                     <Text style={{ color: '#fff', fontSize: 21, fontWeight: '600', alignSelf: 'center', marginLeft: '5%' }}>Create new Password</Text>
                 </View>
             </View>
+
+            <Toast password={(password) => Toast.password(password)} />
+            <Toast confirmPass={(confirmPass) => Toast.confirmPass(confirmPass)} />
+
+
 
             <Text style={{ fontSize: 15, alignSelf: 'center', fontWeight: '400', color: '#000', marginTop: 20, marginHorizontal: 20 }}>Your new password must be diffrent from</Text>
             <Text style={{ fontSize: 15, alignSelf: 'center', fontWeight: '400', color: '#000', marginHorizontal: 20 }}>previously used passwords.</Text>
@@ -115,8 +144,13 @@ const NewPass = ({ navigation }) => {
 
 
             <TouchableOpacity style={{ height: responsiveHeight(7), width: responsiveWidth(80), marginTop: '15%', backgroundColor: '#6A5AE0', borderRadius: 5, alignSelf: 'center', justifyContent: 'center' }}
-                onPress={() => { newpassApi() }} >
-                <Text style={{ fontSize: 18, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Reset Password</Text>
+                onPress={indicator2 == true ? () => newpassApi() : <>null</>} >
+                {
+                    indicator2 == true ? <Text style={{ fontSize: 18, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Reset Password</Text> :
+                        <ActivityIndicator size={30} color={'#fff'} style={{ justifyContent: 'center' }} />
+
+                }
+
             </TouchableOpacity>
 
 

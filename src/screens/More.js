@@ -18,7 +18,7 @@ const More = ({ navigation }) => {
                 </View>
             </View>
 
-            <TouchableOpacity style={{ height: responsiveHeight(6),marginTop:10, width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}
+            <TouchableOpacity style={{ height: responsiveHeight(6),marginTop:20, width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}
             onPress={()=>navigation.navigate('AboutUs')}>
                 <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
                     <Image source={require('../images/about.png')} style={{height:responsiveHeight(3),marginRight:15,width:responsiveWidth(6),tintColor:'#fff'}} />
@@ -26,7 +26,7 @@ const More = ({ navigation }) => {
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ height: responsiveHeight(6),marginTop:10, width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}
+            <TouchableOpacity style={{ height: responsiveHeight(6),marginTop:20, width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}
            onPress={()=>navigation.navigate('Policy')}>
                 <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
                     <Image source={require('../images/about.png')} style={{height:responsiveHeight(3),marginRight:15,width:responsiveWidth(6),tintColor:'#fff'}} />
@@ -34,7 +34,7 @@ const More = ({ navigation }) => {
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ height: responsiveHeight(6),marginTop:10, width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}
+            <TouchableOpacity style={{ height: responsiveHeight(6),marginTop:20, width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}
             onPress={()=>navigation.navigate('TermCondition')}>
                 <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
                     <Image source={require('../images/about.png')} style={{height:responsiveHeight(3),marginRight:15,width:responsiveWidth(6),tintColor:'#fff'}} />
@@ -42,7 +42,7 @@ const More = ({ navigation }) => {
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ height: responsiveHeight(6),marginTop:10, width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}
+            <TouchableOpacity style={{ height: responsiveHeight(6),marginTop:20, width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}
             onPress={()=>navigation.navigate('Refund')}>
                 <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
                     <Image source={require('../images/about.png')} style={{height:responsiveHeight(3),marginRight:15,width:responsiveWidth(6),tintColor:'#fff'}} />

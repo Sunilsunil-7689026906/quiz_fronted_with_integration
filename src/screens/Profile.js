@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -9,10 +9,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { Permissions } from 'expo';
 import { base_url } from './Base_url';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+
 
 
 const Profile = ({ navigation }) => {
     const [selectedImage, setSelectedImage] = useState(null);
+
+    const [indicator2, setIndicator2] = useState(true)
 
     const [myname, setMyname] = useState(null);
     const [registration, setRegistration] = useState(null);
@@ -22,7 +26,9 @@ const Profile = ({ navigation }) => {
     const [city, setCity] = useState(null)
     const [state, setState] = useState(null)
     const [pincode, setPincode] = useState(null)
-const [imgs, setimgs] = useState("")
+    const [imgs, setimgs] = useState("")
+    const [status, setStatus] = useState("")
+
 
 
     async function getPermissions() {
@@ -52,9 +58,11 @@ const [imgs, setimgs] = useState("")
 
     const update = async () => {
         try {
+            setIndicator2(false)
+
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
-    
+
             var formdata = new FormData();
             formdata.append("avatar", {
                 uri: selectedImage,
@@ -62,23 +70,47 @@ const [imgs, setimgs] = useState("")
                 type: "image/jpeg", // Adjust the file type if needed
             });
             formdata.append("name", myname);
-    
+
             var requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
                 body: formdata,
                 redirect: 'follow'
             };
-    
+
             fetch(`${base_url}/create-profile`, requestOptions)
-                .then(response => response.text())
-                .then(result => console.log(result))
-                .catch(error => console.log('error', error));
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success == true) {
+                        // console.log(result.data,"profile data");
+                        Toast.show({
+                            type: 'success',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
+                        setIndicator2(true)
+
+
+                    } else {
+                        Toast.show({
+                            type: 'error',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
+                        setIndicator2(true)
+
+                    }
+                })
+                .catch(error => console.log('error', error), setIndicator2(false));
         } catch (error) {
             console.log(error);
+        } finally {
+            setIndicator2(false);
         }
     };
-    
+
     const profileApi = async () => {
         try {
             var myHeaders = new Headers();
@@ -106,9 +138,10 @@ const [imgs, setimgs] = useState("")
                         setState(result.data.user[0].state)
                         setPincode(result.data.user[0].pincode)
                         setimgs(result.data.user[0].avatar)
-                        await AsyncStorage.setItem("pr",`http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
-                        await AsyncStorage.setItem("names",result.data.user[0].name)
-                        await AsyncStorage.setItem("email",result.data.user[0].email)
+                        setStatus(result.data.user[0].isVerified)
+                        await AsyncStorage.setItem("pr", `https://quiz.metablocktechnologies.org/uploads/${result.data.user[0].avatar}`)
+                        await AsyncStorage.setItem("names", result.data.user[0].name)
+                        await AsyncStorage.setItem("email", result.data.user[0].email)
                     }
                 })
                 .catch(error => console.log('error', error));
@@ -119,10 +152,11 @@ const [imgs, setimgs] = useState("")
     }
 
     // console.log(myname,'myname');
+    // alert(status)
 
-useEffect(()=>{
-    profileApi()
-},[])
+    useEffect(() => {
+        profileApi()
+    }, [])
     return (
         <SafeAreaView>
 
@@ -136,16 +170,19 @@ useEffect(()=>{
                 </View>
             </View>
 
+            <Toast ref={(ref) => Toast.setRef(ref)} />
+
+
             <ScrollView style={{ marginBottom: 20, height: responsiveHeight(90) }}>
 
-                <TouchableOpacity style={{ marginTop: 20 }}  onPress={pickImage}>
+                <TouchableOpacity style={{ marginTop: 20 }} onPress={pickImage}>
 
                     {selectedImage ? <Image source={{ uri: selectedImage }} style={{ height: responsiveHeight(8), width: responsiveWidth(16), borderRadius: 100, alignSelf: 'center', marginTop: 3 }} /> :
                         <TouchableOpacity onPress={pickImage} style={{ borderWidth: 2.5, borderColor: '#000', height: responsiveHeight(9), width: responsiveWidth(18), borderRadius: 100, alignSelf: 'center' }}
-                           >
-                            <Image  source={{
-                                  uri: `http://3.111.23.56:5059/uploads/${imgs}`,
-                                }} style={{ height: responsiveHeight(8), width: responsiveWidth(16), borderRadius: 100, alignSelf: 'center', marginTop: 3 }} />
+                        >
+                            <Image source={{
+                                uri: `http://3.111.23.56:5059/uploads/${imgs}`,
+                            }} style={{ height: responsiveHeight(8), width: responsiveWidth(16), borderRadius: 100, alignSelf: 'center', marginTop: 3 }} />
 
                             <View style={{ backgroundColor: '#6A5AE0', height: responsiveHeight(3), borderRadius: 100, justifyContent: 'center', width: responsiveWidth(6), zIndex: 1, marginTop: -20, marginLeft: 50 }}>
                                 <Image source={require('../images/gallery.png')} style={{ height: responsiveHeight(2.5), width: responsiveWidth(5), borderRadius: 100, tintColor: '#fff', alignSelf: 'center' }} />
@@ -212,7 +249,11 @@ useEffect(()=>{
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 }}>
                     <TouchableOpacity style={{ height: responsiveHeight(4.8), justifyContent: 'center', borderRadius: 25, width: responsiveWidth(48), marginTop: 20, backgroundColor: '#EDEAFB' }}
                     >
-                        <Text style={{ color: '#6A5AE0', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Kyc Status : Pending</Text>
+                        {
+                            status == true ? <Text style={{ color: '#6A5AE0', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Kyc Status : Pending </Text> :
+                                <Text style={{ color: '#6A5AE0', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Kyc Status : incomplete</Text>
+                        }
+
                     </TouchableOpacity>
 
                     <TouchableOpacity style={{ height: responsiveHeight(4.8), justifyContent: 'center', borderRadius: 5, width: responsiveWidth(38), marginTop: 20, backgroundColor: '#6A5AE0' }}
@@ -223,8 +264,13 @@ useEffect(()=>{
                 </View>
 
                 <TouchableOpacity style={{ height: responsiveHeight(6), justifyContent: 'center', alignSelf: 'center', borderRadius: 5, width: responsiveWidth(90), marginTop: 20, backgroundColor: '#6A5AE0' }}
-                    onPress={() => { update() }}>
-                    <Text style={{ color: '#fff', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Update</Text>
+                    onPress={indicator2 == true ? () => update() : <>null</>}>
+                    {
+                        indicator2 == true ? <Text style={{ color: '#fff', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Update</Text> :
+                            <ActivityIndicator size={30} color={'#fff'} style={{ justifyContent: 'center' }} />
+
+                    }
+
                 </TouchableOpacity>
 
             </ScrollView>

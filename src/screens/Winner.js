@@ -106,7 +106,7 @@ const Winner = ({ navigation }) => {
 
   // }, [])
 
-  useEffect(async() => {
+  useEffect(async () => {
     setimgs(await AsyncStorage.getItem("pr"))
     onRefresh()
     logoApi()
@@ -148,22 +148,33 @@ const Winner = ({ navigation }) => {
               }}
             >
               <TouchableOpacity onPress={() => navigation.openDrawer()}>
-                <Image
-                  // source={require("../images/user.jpg")}
-                  source={{ uri: imgs }}
-
-                  style={{
-                    height: responsiveHeight(6),
-                    width: responsiveWidth(12),
-                    borderRadius: 100,
-                    alignSelf: "center",
-                    marginTop: 3,
-                  }}
-                />
+                {
+                  imgs ?
+                    <Image
+                      source={{ uri: imgs }}
+                      style={{
+                        height: responsiveHeight(6),
+                        width: responsiveWidth(12),
+                        borderRadius: 100,
+                        alignSelf: "center",
+                        marginTop: 3,
+                      }}
+                    /> :
+                    <Image
+                      source={require('../images/user.jpg')}
+                      style={{
+                        height: responsiveHeight(6),
+                        width: responsiveWidth(12),
+                        borderRadius: 100,
+                        alignSelf: "center",
+                        marginTop: 3,
+                      }}
+                    />
+                }
               </TouchableOpacity>
               <Image
                 source={{
-                  uri: `http://3.111.23.56:5059/uploads/${logodata}`,
+                  uri: `https://quiz.metablocktechnologies.org/uploads/${logodata}`,
                 }}
                 style={{
                   height: responsiveHeight(4),
@@ -350,7 +361,11 @@ const Winner = ({ navigation }) => {
             <ScrollView refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
+
+
               {data?.map((res) => {
+                console.log(res, "winnerres");
+
                 return (
                   <>
                     <View
@@ -385,6 +400,7 @@ const Winner = ({ navigation }) => {
                         }}
                       >
                         Rank : #{res.rank}
+                        {/* {res._id} */}
                       </Text>
 
                       <View style={{ borderBottomWidth: 0.6, marginTop: 10 }}></View>
@@ -487,7 +503,9 @@ const Winner = ({ navigation }) => {
                           marginTop: 20,
                           backgroundColor: "#6A5AE0",
                         }}
-                        onPress={() => navigation.navigate("WinnerDetail")}
+                          // {/* const noOfQue = route.params?.QuestionNo || null; */}
+                          // {/* onPress={() => navigation.navigate("LeaderboardRank", { QuestionNo: (item?.Game[0].noOfQuestion) })} */}
+                        onPress={() => navigation.navigate("WinnerDetail",{gameid:res?._id,noOfQue:res?.noOfQuestion})}
                       >
                         <Text
                           style={{

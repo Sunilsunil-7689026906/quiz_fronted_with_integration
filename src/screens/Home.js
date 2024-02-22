@@ -12,6 +12,8 @@ import {
 import React, { useEffect, useState } from "react";
 import loding from "../images/loding.gif"
 import Modal from "react-native-modal";
+import Toast from 'react-native-toast-message';
+
 
 import {
   responsiveFontSize,
@@ -36,6 +38,14 @@ const Home = ({ navigation }) => {
 
   const [refreshing, setRefreshing] = useState(false);
 
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      position: 'bottom',
+      text1: 'Successfully Joined game',
+      visibilityTime: 3000, // Duration of the toast
+    });
+  };
 
 
   const [mydata, setMydata] = useState([]);
@@ -46,10 +56,12 @@ const Home = ({ navigation }) => {
   const [tlink, settlink] = useState("")
   const [elink, setelink] = useState("")
   const [imgs, setimgs] = useState("")
+  
+
   function FormatDateTime() {
     const milliseconds = 1642958701000; // Example timestamp in milliseconds
     const formattedDateTime = convertMillisecondsToDateTime(milliseconds);
-    console.log(formattedDateTime);
+    // console.log(formattedDateTime);
     return formattedDateTime
   }
 
@@ -69,7 +81,7 @@ const Home = ({ navigation }) => {
         .then(response => response.json())
         .then(result => {
           if (result.success == true) {
-            console.log(result.data.logo, "logoimg")
+            // console.log(result.data.logo, "logoimg")
             setLogodata(result.data.logo)
           }
         })
@@ -96,14 +108,15 @@ const Home = ({ navigation }) => {
       fetch(`${base_url}/getProfile`, requestOptions)
         .then(response => response.json())
         .then(async result => {
-          console.log(JSON.stringify(result), "koojhgg");
+          // console.log(JSON.stringify(result), "koojhgg");
           // alert(result.data.user[0].state)
           if (result.success == true) {
-            await AsyncStorage.setItem("pr", `http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
+            await AsyncStorage.setItem("pr", `https://quiz.metablocktechnologies.org/uploads/${result.data.user[0].avatar}`)
             await AsyncStorage.setItem("names", result.data.user[0].name)
             await AsyncStorage.setItem("email", result.data.user[0].email)
             await AsyncStorage.setItem("user_id", result.data.user[0]._id)
-            setimgs(`http://3.111.23.56:5059/uploads/${result.data.user[0].avatar}`)
+            setimgs(`https://quiz.metablocktechnologies.org/uploads/${result.data.user[0].avatar}`)
+            
           }
         })
         .catch(error => console.log('error', error));
@@ -112,6 +125,8 @@ const Home = ({ navigation }) => {
 
     }
   }
+
+
   const sliderApi = async () => {
     try {
       var myHeaders = new Headers();
@@ -127,7 +142,7 @@ const Home = ({ navigation }) => {
         .then(response => response.json())
         .then(result => {
           if (result.success == true) {
-            console.log(result.data.slides, "slslslsd")
+            // console.log(result.data.slides, "slslslsd")
             setImgData(result.data.slides)
           }
         })
@@ -160,14 +175,13 @@ const Home = ({ navigation }) => {
         .then((response) => response.json())
         .then(async (result) => {
           if (result.success == true) {
-            console.log(result.message, "if");
-            console.log(result.data.upcomingGames, "myApidata");
+           
             setMydata(result.data.upcomingGames);
-            // setMyid(result.data.upcomingGames[0]._id)
-            // console.log(myid, "myid");
+            
             await AsyncStorage.setItem("_id", result.data?.upcomingGames[0]._id);
             // console.log(result.data.upcomingGames[0]._id, "_id");
           } else {
+           
             console.log(result.message, "else");
           }
         })
@@ -237,7 +251,7 @@ const Home = ({ navigation }) => {
     examApi();
   }, []);
 
-  console.log(imgdata, "imgdata");
+  // console.log(imgdata, "imgdata");
 
   return (
     <>
@@ -299,7 +313,7 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
             <Image
               source={{
-                uri: `http://3.111.23.56:5059/uploads/${logodata}`,
+                uri: `https://quiz.metablocktechnologies.org/uploads/${logodata}`,
               }}
               style={{
                 height: responsiveHeight(4),
@@ -338,6 +352,9 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
+
+          <Toast ref={(ref) => Toast.setRef(ref)} />
+
 
           <View
             style={{
@@ -431,7 +448,7 @@ const Home = ({ navigation }) => {
                             <TouchableOpacity style={{ flexDirection: "row" }}>
                               <Image
                                 source={{
-                                  uri: `http://3.111.23.56:5059/uploads/${data.img}`,
+                                  uri: `https://quiz.metablocktechnologies.org/uploads/${data.img}`,
                                 }}
                                 style={{
                                   backgroungColor: "green",
@@ -470,8 +487,10 @@ const Home = ({ navigation }) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
             {mydata.length > 0 ? (
-              mydata.map((data) => {
-                console.log(data, "datamydata");
+              mydata.map((data,index) => {
+                // console.log(data, "datamydata");
+                // console.log(data._id,"inline_id");
+                // console.log(data?.schedule,"inlinedata?.schedule");
 
                 // setMyid(data._id)
                 return (
@@ -498,6 +517,7 @@ const Home = ({ navigation }) => {
                           marginTop: 15,
                         }}
                       >
+                        {/* {index} */}
                         {data.gameNameInEnglish}
                       </Text>
                       {/* <Text style={{ color: '#6A5ADF', fontWeight: '500', fontSize: 16, marginTop: 15 }}>{data._id}</Text> */}
@@ -591,7 +611,7 @@ const Home = ({ navigation }) => {
                             fontSize: 14,
                           }}
                         >
-                          {console.log(data.UserGame.length, "kkkjggy")}
+                          {/* {console.log(data.UserGame.length, "kkkjggy")} */}
                           Joined Member: {data.UserGame.length}
                         </Text>
                       </View>
@@ -642,7 +662,7 @@ const Home = ({ navigation }) => {
 
                         }}
                         // disabled={data.isJoined}
-                        onPress={() => navigation.navigate("QuizType", { joinedMembers: data.UserGame.length, amount: data.noOfPrice })}
+                        onPress={() => navigation.navigate("QuizType", { joinedMembers: data.UserGame.length, amount: data.noOfPrice,g_idd:data._id,tsedule:data.schedule })}
                       >
                         <Text
                           style={{

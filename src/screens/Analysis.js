@@ -1,12 +1,15 @@
-import { View, Text, StatusBar, StyleSheet, Image, ScrollView, TextInput, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-import { } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native-gesture-handler'
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
 import PieChart from 'react-native-pie-chart';
 import { BarChart } from 'react-native-chart-kit';
+import { useNavigation, useIsFocused, useRoute } from '@react-navigation/native'
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { base_url } from "./Base_url";
 
 
 

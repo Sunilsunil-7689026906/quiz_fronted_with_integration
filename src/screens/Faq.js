@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView,RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -11,10 +11,13 @@ const Faq = ({ navigation }) => {
     const [open3, setOpen3] = useState(false);
 
     const [mydata, setMydata] = useState([{}])
+
+    const [refreshing, setRefreshing] = useState(false);
+
     
 
     const faqApi = (n) => {
-        // alert(n)
+        alert(n)
         try {
 
             var requestOptions = {
@@ -37,8 +40,18 @@ const Faq = ({ navigation }) => {
         }
     }
 
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            faqApi()
+          setRefreshing(false);
+        }, 2000);
+      }, []);
+
     useEffect(() => {
+        onRefresh
         faqApi();
+       
     }, [])
 
     console.log(mydata, 'mydata');
@@ -57,14 +70,16 @@ const Faq = ({ navigation }) => {
 
             
 
-            <ScrollView style={{marginBottom:20}}>
+            <ScrollView style={{marginBottom:20}} refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
 
                 {
-                    mydata?.length > 0 ? (mydata.map((data) => {
+                    mydata?.length > 0 ? (mydata.map((data,n) => {
                         console.log(data, 'datatata');
                         return (
                             <>
-                                <TouchableOpacity  style={{ height: open == 0 ? responsiveHeight(9) : responsiveHeight(30), width: responsiveWidth(90), borderColor: '#6A5AE0', borderWidth: 1, borderRadius: 5, alignSelf: 'center', marginTop: 20 }}
+                                <TouchableOpacity  style={{ height: open == 0 ? responsiveHeight(9) : responsiveHeight(30), width: responsiveWidth(90), borderColor: '#6A5AE0', borderWidth: 1,paddingHorizontal:10, borderRadius: 5, alignSelf: 'center', marginTop: 20 }}
                                     onPress={() => setOpen(!open)}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginTop: '6%' }}>
                                         <Text style={{ alignSelf: 'center', fontWeight: '500' }}>{data?.question}</Text>

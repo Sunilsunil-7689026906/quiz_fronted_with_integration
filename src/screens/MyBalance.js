@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -7,6 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { base_url } from "./Base_url"
 import { useToast } from "react-native-toast-notifications";
+import Toast from 'react-native-toast-message';
+
 // import RazorpayCheckout from 'react-native-razorpay';
 import RazorpayCheckout from 'react-native-razorpay';
 const MyBalance = ({ navigation }) => {
@@ -14,8 +16,13 @@ const MyBalance = ({ navigation }) => {
     const [data, setdata] = useState({})
     const toast = useToast();
 
+    const [indicator2, setIndicator2] = useState(true)
+
+
+    const [wbalance, setWbalance] = useState('')
+
     const getBalance = async () => {
-        console.log(await AsyncStorage.getItem('token'));
+        // console.log(await AsyncStorage.getItem('token'));
         try {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
@@ -60,7 +67,7 @@ const MyBalance = ({ navigation }) => {
             fetch(`${base_url}/addWallet`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
-                    console.log(result, "mmm");
+                    // console.log(result, "mmm");
 
                     if (result.success == true) {
 
@@ -81,7 +88,7 @@ const MyBalance = ({ navigation }) => {
                         }
                         RazorpayCheckout.open(options).then(async (data) => {
                             // handle success
-                            console.log(data, "kkk");
+                            // console.log(data, "kkk");
                             var myHeaders = new Headers();
                             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
                             myHeaders.append("Content-Type", "application/json");
@@ -120,10 +127,117 @@ const MyBalance = ({ navigation }) => {
         }
     }
 
+    console.log(wbalance, "wbalance");
+
+    const withdrawalApi = async () => {
+        try {
+            setIndicator2(false)
+
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+            myHeaders.append("Content-Type", "application/json");
+
+            var raw = JSON.stringify({
+                "balance": `${wbalance}`
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch(`${base_url}/withdraw-balance`, requestOptions)
+                .then(response => response.json())
+                .then(async (result) => {
+                    // alert('ok')
+                    if (await result.success == true) {
+                        console.log(result.message)
+                        setIndicator2(true)
+                        Toast.show({
+                            type: 'success',
+                            text1: `${result.message}`,
+                            visibilityTime: 3000,
+                            autoHide: true,
+                        });
+                        setWbalance("");
+
+                    }
+                    else {
+                        console.log(result.message)
+                        setIndicator2(true)
+                        Toast.show({
+                            type: 'error',
+                            text1: `${result.message}`,
+                            visibilityTime: 3000,
+                            autoHide: true,
+                        });
+
+                    }
+                })
+                .catch(error => console.log('erasror', error), setIndicator2(false));
+
+            
+        } catch (error) {
+            console.log(error, "rtrt");
+
+        } finally {
+            setIndicator2(false);
+
+        }
+    }
+
+    // const withdrawalApi = async () => {
+    //     try {
+    //         var myHeaders = new Headers();
+    //         myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+    //         myHeaders.append("Content-Type", "application/json");
+
+    //         var raw = JSON.stringify({
+    //             "balance": wbalance
+    //         });
+
+    //         var requestOptions = {
+    //             method: 'POST',
+    //             headers: myHeaders,
+    //             body: raw,
+    //             redirect: 'follow'
+    //         };
+    //         fetch(`${base_url}/withdraw-balance`, requestOptions)
+    //             .then(response => {
+    //                 if (!response.ok) {
+    //                     throw new Error('Network response was not ok');
+    //                 }
+    //                 return response.text(); 
+    //             })
+    //             .then(text => {
+    //                 console.log('Response body:', text); // Log the response body
+    //                 return JSON.parse(text); // Parse the response body as JSON
+    //             })
+    //             .then(result => {
+    //                 if (result.success == true) {
+    //                     console.log(result.message, "if");
+    //                 } else {
+    //                     console.log(result.message, "else");
+    //                 }
+    //             })
+    //             .catch(error => console.error('Fetch error:', error));
+
+    //     } catch (error) {
+    //         console.log(error, "wwerror");
+    //         wbalance('')
+    //     }
+    // }
+
+
+
+
 
     useEffect(() => {
         getBalance()
     }, [])
+
     return (
         <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
             <View style={{ height: responsiveHeight(8), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
@@ -136,8 +250,11 @@ const MyBalance = ({ navigation }) => {
                 </View>
             </View>
 
+            <Toast wbalance={(wbalance) => Toast.wbalance(wbalance)} />
+
+
             <View style={{ height: responsiveHeight(20), width: responsiveWidth(90), backgroundColor: '#fff', alignSelf: 'center', marginTop: 10, borderRadius: 10, elevation: 10 }}>
-                <TextInput placeholder='₹0' value={balance} onChangeText={(e) => { setbalance(e) }} style={{ alignSelf: 'center', marginTop: 25, color: '#8A8A8A', fontSize: 22, fontWeight: '500' }} inputMode={"numeric"} />
+                <TextInput placeholder='₹0' value={balance} onChangeText={(e) => { setbalance(e) }} style={{ alignSelf: 'center', marginTop: 25, color: '#000', paddingHorizontal: 20, fontSize: 22, fontWeight: '500' }} inputMode={"numeric"} />
 
                 <TouchableOpacity style={{ height: responsiveHeight(6), width: responsiveWidth(50), marginTop: '10%', backgroundColor: '#6A5AE0', borderRadius: 7, alignSelf: 'center', justifyContent: 'center' }}
                     onPress={() => { addBalance() }} >
@@ -162,7 +279,7 @@ const MyBalance = ({ navigation }) => {
             <View style={{ borderBottomWidth: 0.4, marginHorizontal: 20, marginTop: 20, borderColor: '#8A8A8A' }}></View>
 
 
-            <View style={{ flexDirection: 'row',justifyContent:'space-between' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 
                 <View>
                     <View style={{ flexDirection: 'row', marginTop: 15, justifyContent: 'flex-start', marginHorizontal: 20 }}>
@@ -171,12 +288,34 @@ const MyBalance = ({ navigation }) => {
 
                     </View>
                     <Text style={{ marginHorizontal: 20, marginTop: 5, color: '#000', fontSize: 20, fontWeight: '500' }}>₹ {data?.winBalance}</Text>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <View style={{ borderWidth: 0.5, marginTop: 10, marginHorizontal: 20, borderRadius: 7, height: responsiveHeight(5), width: responsiveWidth(50) }}>
+                            <TextInput style={{ alignSelf: 'center', paddingHorizontal: 10, marginTop: 5 }}
+                                placeholder="Enter withdrawal amount"
+                                onChangeText={text => setWbalance(text)}
+                                value={wbalance}
+                            />
+                        </View>
+
+                        <TouchableOpacity style={{ height: responsiveHeight(5), width: responsiveWidth(24), marginTop: '3%', backgroundColor: '#6A5AE0', marginRight: '5%', borderRadius: 7, alignSelf: 'center', justifyContent: 'center' }}
+
+                            onPress={indicator2 == true ? () => withdrawalApi() : <>null</>} >
+
+                            {
+                                indicator2 == true ? <Text style={{ fontSize: 14, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Withdrawal</Text> :
+                                    <ActivityIndicator size={30} color={'#fff'} style={{ justifyContent: 'center' }} />
+
+                            }
+
+                        </TouchableOpacity>
+
+                    </View>
+
                 </View>
 
-                <TouchableOpacity style={{ height: responsiveHeight(4.5), width: responsiveWidth(24), marginTop: '8%', backgroundColor: '#6A5AE0',marginRight:'10%', borderRadius: 7, alignSelf: 'center', justifyContent: 'center' }}
-                    onPress={() => { addBalance() }} >
-                    <Text style={{ fontSize: 14, color: '#fff', textAlign: 'center', fontFamily: 'Jaldi-Bold' }}>Withdrawal</Text>
-                </TouchableOpacity>
+
+
 
             </View>
 

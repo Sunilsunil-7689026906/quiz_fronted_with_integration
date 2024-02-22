@@ -103,7 +103,7 @@ const Percentage = ({ navigation }) => {
   // }, [])
 
 
-  useEffect(async() => {
+  useEffect(async () => {
     setimgs(await AsyncStorage.getItem("pr"))
     logoApi()
     correctApi({ name: filterText })
@@ -133,30 +133,42 @@ const Percentage = ({ navigation }) => {
           }}
         >
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <Image
-              // source={require("../images/user.jpg")}
-              source={{ uri: imgs }}
-              style={{
-                height: responsiveHeight(6),
-                width: responsiveWidth(12),
-                borderRadius: 100,
-                alignSelf: "center",
-                marginTop: 3,
-              }}
-            />
+            {
+              imgs ?
+                <Image
+                  source={{ uri: imgs }}
+                  style={{
+                    height: responsiveHeight(6),
+                    width: responsiveWidth(12),
+                    borderRadius: 100,
+                    alignSelf: "center",
+                    marginTop: 3,
+                  }}
+                /> :
+                <Image
+                  source={require('../images/user.jpg')}
+                  style={{
+                    height: responsiveHeight(6),
+                    width: responsiveWidth(12),
+                    borderRadius: 100,
+                    alignSelf: "center",
+                    marginTop: 3,
+                  }}
+                />
+            }
           </TouchableOpacity>
           <Image
-                source={{
-                  uri: `http://3.111.23.56:5059/uploads/${logodata}`,
-                }}
-                style={{
-                  height: responsiveHeight(4),
-                  marginRight: 10,
-                  width: responsiveWidth(40),
-                  alignSelf: "center",
-                  marginTop: 5,
-                }}
-              />
+            source={{
+              uri: `https://quiz.metablocktechnologies.org/uploads/${logodata}`,
+            }}
+            style={{
+              height: responsiveHeight(4),
+              marginRight: 10,
+              width: responsiveWidth(40),
+              alignSelf: "center",
+              marginTop: 5,
+            }}
+          />
 
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -337,6 +349,7 @@ const Percentage = ({ navigation }) => {
 
           {
             data?.map((res) => {
+              console.log(res,"percentress");
               return (
                 <>
                   <View
@@ -475,7 +488,9 @@ const Percentage = ({ navigation }) => {
                           marginTop: 20,
                           backgroundColor: "#6A5AE0",
                         }}
-                        onPress={() => navigation.navigate("WinnerDetail")}
+                        // onPress={() => navigation.navigate("WinnerDetail",{gameid:res?._id,noOfQue:res?.noOfQuestion})}
+
+                        onPress={() => navigation.navigate("WinnerDetail",{gameid:res?._id,noOfQue:res?.noOfQuestion})}
                       >
                         <Text
                           style={{
@@ -498,7 +513,7 @@ const Percentage = ({ navigation }) => {
                           marginTop: 20,
                           backgroundColor: "#6A5AE0",
                         }}
-                        onPress={() => navigation.navigate("AllLeaderboard")}
+                        onPress={() => navigation.navigate("AllLeaderboard",{gameid:res?._id,noOfQue:res?.noOfQuestion})}
                       >
                         <Text
                           style={{
@@ -538,7 +553,7 @@ const Percentage = ({ navigation }) => {
           <Image
             source={require("../images/yt.webp")}
             style={{
-              tintColor:'#A9A9A9',
+              tintColor: '#A9A9A9',
               height: responsiveHeight(2.4),
               width: responsiveWidth(5.8),
               alignSelf: "center",
@@ -552,23 +567,23 @@ const Percentage = ({ navigation }) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-            style={{ alignSelf: "center" }}
-            onPress={() => { handleLinkPress(tlink) }}
-          >
-            <Image
-              source={require("../images/gram.webp")}
-              style={{
-                tintColor: "#A9A9A9",
-                height: responsiveHeight(2.4),
-                width: responsiveWidth(5),
-                alignSelf: "center",
-              }}
-            />
+          style={{ alignSelf: "center" }}
+          onPress={() => { handleLinkPress(tlink) }}
+        >
+          <Image
+            source={require("../images/gram.webp")}
+            style={{
+              tintColor: "#A9A9A9",
+              height: responsiveHeight(2.4),
+              width: responsiveWidth(5),
+              alignSelf: "center",
+            }}
+          />
 
-            <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
-              Telegram
-            </Text>
-          </TouchableOpacity>
+          <Text style={{ color: "#A9A9A9", fontWeight: "400", fontSize: 12 }}>
+            Telegram
+          </Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={{ alignSelf: "center" }}

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -8,6 +8,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { Permissions } from 'expo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { base_url } from './Base_url';
+import Toast from 'react-native-toast-message';
+
 
 
 const UploadKyc = ({ navigation }) => {
@@ -17,6 +19,7 @@ const UploadKyc = ({ navigation }) => {
     const [selectedImage3, setSelectedImage3] = useState(null);
     const [selectedImage4, setSelectedImage4] = useState(null);
 
+    const [indicator2, setIndicator2] = useState(true)
 
 
     // const [selectPan, setSelectPan] = useState(null);
@@ -34,6 +37,9 @@ const UploadKyc = ({ navigation }) => {
     const [adharback, setAdharback] = useState('')
     const [panFront, setPanfront] = useState('')
     const [panback, setPanback] = useState('')
+
+    const [already, setAlready] = useState(false)
+
 
 
 
@@ -117,6 +123,8 @@ const UploadKyc = ({ navigation }) => {
     const uploadApi = async () => {
         // alert(selectedImage)
         try {
+            setIndicator2(false)
+
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
             // alert(`${await AsyncStorage.getItem("token")}`)
@@ -130,7 +138,7 @@ const UploadKyc = ({ navigation }) => {
             formdata.append("adhaarBack", {
                 uri: selectedImage2,
                 type: "image/jpeg",
-                name: "adhaarback.jpg" ,
+                name: "adhaarback.jpg",
             });
             // formdata.append("adhaarFront", fileInput.files[0], adhaarfront);
             formdata.append("panFront", {
@@ -158,36 +166,68 @@ const UploadKyc = ({ navigation }) => {
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
-                        console.log(result.message, "if");
+                        Toast.show({
+                            type: 'success',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
                         navigation.navigate('Home')
+                        setIndicator2(true)
+
+                    }
+                    else if (result.success == false) {
+                        setAlready(true)
+                        Toast.show({
+                            type: 'success',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
                     }
                     else {
+                        Toast.show({
+                            type: 'error',
+                            text1: `${result.message}`,
+                            visibilityTime: 2000,
+                            autoHide: true,
+                        });
                         navigation.navigate('Home')
+                        setIndicator2(true)
 
                         console.log(result.message, "else")
 
                     }
                 })
-                .catch(error => console.log('error', error));
+                .catch(error => Toast.show({
+                    type: 'error',
+                    text1: 'somthing went wrong',
+                    visibilityTime: 2000,
+                    autoHide: true,
+                }));
+            setIndicator2(false)
+
 
         } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'somthing went wrong',
+                visibilityTime: 2000,
+                autoHide: true,
+            });
+            setIndicator2(false)
+
             console.log(error);
+        } finally {
+            setIndicator2(false);
         }
     }
-
-    console.log(adhaar, "adhar");
-    console.log(pan, "pan");
-    console.log(adhaarfront, "adhaarfront");
-    console.log(adharback, "adharback");
-    console.log(panFront, "panfront");
-    console.log(panback, "panback");
-
-
 
 
 
     return (
         <SafeAreaView>
+
 
             <ScrollView style={{ height: responsiveHeight(90) }}>
                 <View style={{ height: responsiveHeight(8), width: responsiveWidth(100), justifyContent: 'center', backgroundColor: '#6A5AE0', paddingHorizontal: 20 }}>
@@ -199,6 +239,9 @@ const UploadKyc = ({ navigation }) => {
                         <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', alignSelf: 'center', marginLeft: '5%' }}>Upload Kyc</Text>
                     </View>
                 </View>
+
+                <Toast ref={(ref) => Toast.setRef(ref)} />
+
 
 
 
@@ -298,8 +341,14 @@ const UploadKyc = ({ navigation }) => {
             </ScrollView>
 
             <TouchableOpacity style={{ height: responsiveHeight(6), justifyContent: 'center', alignSelf: 'center', borderRadius: 5, width: responsiveWidth(90), marginTop: 20, backgroundColor: '#6A5AE0' }}
-                onPress={() => { uploadApi() }}>
-                <Text style={{ color: '#fff', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Submit</Text>
+                disabled={already == false}
+                onPress={indicator2 == true ? () => uploadApi() : <>null</>}>
+                {
+                    indicator2 == true ? <Text style={{ color: '#fff', fontWeight: '500', alignSelf: 'center', fontSize: 16 }}>Submit</Text> :
+                        <ActivityIndicator size={30} color={'#fff'} style={{ justifyContent: 'center' }} />
+
+                }
+
             </TouchableOpacity>
 
 

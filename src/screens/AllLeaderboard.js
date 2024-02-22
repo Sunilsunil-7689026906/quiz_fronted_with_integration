@@ -12,8 +12,9 @@ import { base_url } from './Base_url';
 
 
 
-const AllLeaderboard = ({ navigation }) => {
+const AllLeaderboard = ({ navigation,route }) => {
     const [select, setSelect] = useState('')
+    
     const [number, setNumber] = useState(1)
     const [mydata, setMydata] = useState("")
 
@@ -27,9 +28,20 @@ const AllLeaderboard = ({ navigation }) => {
     const [attempte, setAttempte] = useState([])
     const [rankdata, setRankdata] = useState([])
 
+    const under = route.params?.gameid || null;
+    const noOfQue = route.params?.noOfQue || null;
+
+    console.log(noOfQue, "noofquestion");
+    console.log(under, "underscoredd");
 
 
-    const resultApi = async () => {
+
+    const [gamid,setGamid] = useState(under)
+    const [queNo,setQueNo] = useState(noOfQue)
+
+
+    const resultApi = async (n) => {
+        // alert(n)
         try {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `${await AsyncStorage.getItem("token")}`);
@@ -40,12 +52,13 @@ const AllLeaderboard = ({ navigation }) => {
                 redirect: 'follow'
             };
 
-            fetch(`${base_url}/quiz-result`, requestOptions)
+            fetch(`${base_url}/quiz-result?q_no=${n}`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success == true) {
                         console.log(result.data.gameQuestion[0].questionleaderShip, "rcc")
-                        setRankdata(result.data.gameQuestion.questionleaderShip)
+                        setRankdata(result.data.gameQuestion[0].questionleaderShip)
+                        
 
                         setAttempte(result.data.gameQuestion[0])
 
@@ -64,6 +77,48 @@ const AllLeaderboard = ({ navigation }) => {
             console.log(error, "ghgh");
         }
     }
+
+
+
+    const renderButtons = () => {
+        const buttons = [];
+
+        for (let i = 1; i <= noOfQue; i++) {
+            buttons.push(
+                <TouchableOpacity
+                    key={i}
+                    style={{
+                        height: responsiveHeight(4.8),
+                        marginRight: 10,
+                        backgroundColor: number === i ? '#6A5AE0' : '#fff',
+                        width: responsiveWidth(10),
+                        borderWidth: 1,
+                        borderRadius: 100,
+                        justifyContent: 'center',
+                    }}
+                    onPress={() => {
+                        setNumber(i);
+                        resultApi(i);
+                    }}
+                >
+                    <Text
+                        style={{
+                            alignSelf: 'center',
+                            fontWeight: '600',
+                            fontSize: 18,
+                            color: number === i ? '#fff' : '#6A5AE0',
+                        }}
+                    >
+                        {i}
+                    </Text>
+                </TouchableOpacity>
+            );
+        }
+
+        return buttons;
+    };
+
+
 
     const widthAndHeight = 150;
     const series = [`${attempte.attempted}`, `${attempte.not_attempted}`];
@@ -109,84 +164,15 @@ const AllLeaderboard = ({ navigation }) => {
 
 
 
-                <ScrollView style={{ flexDirection: 'row' }} horizontal showsHorizontalScrollIndicator={false} >
+            <ScrollView style={{ flexDirection: 'row' }} horizontal showsHorizontalScrollIndicator={false} >
                     <View style={{ flexDirection: 'row', marginTop: 15, marginHorizontal: 20 }}>
 
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 1 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
+                        {/* <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 1 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
                             onPress={() => setNumber(1)}>
                             <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 1 ? '#fff' : '#6A5AE0' }}>1</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 2 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(2)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 2 ? '#fff' : '#6A5AE0' }}>2</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 3 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(3)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 3 ? '#fff' : '#6A5AE0' }}>3</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 4 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(4)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 4 ? '#fff' : '#6A5AE0' }}>4</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 5 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(5)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 5 ? '#fff' : '#6A5AE0' }}>5</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 6 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(6)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 6 ? '#fff' : '#6A5AE0' }}>6</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 7 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(7)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 7 ? '#fff' : '#6A5AE0' }}>7</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 8 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(8)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 8 ? '#fff' : '#6A5AE0' }}>8</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 9 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(9)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 9 ? '#fff' : '#6A5AE0' }}>9</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 10 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(10)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 10 ? '#fff' : '#6A5AE0' }}>10</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 11 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(11)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 11 ? '#fff' : '#6A5AE0' }}>11</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 12 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(12)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 12 ? '#fff' : '#6A5AE0' }}>12</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 13 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(13)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 13 ? '#fff' : '#6A5AE0' }}>13</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 14 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(14)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 14 ? '#fff' : '#6A5AE0' }}>14</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: responsiveHeight(4.8), marginRight: 10, backgroundColor: number == 15 ? '#6A5AE0' : '#fff', width: responsiveWidth(10), borderWidth: 1, borderRadius: 100, justifyContent: 'center' }}
-                            onPress={() => setNumber(15)}>
-                            <Text style={{ alignSelf: 'center', fontWeight: '600', fontSize: 18, color: number == 15 ? '#fff' : '#6A5AE0' }}>15</Text>
-                        </TouchableOpacity>
-
+                        {renderButtons()}
 
 
 
@@ -442,10 +428,10 @@ const AllLeaderboard = ({ navigation }) => {
 
                             return (
                                 <>
-                                    <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
-                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>#{item?.rank}</Text>
-                                        <Text style={{ alignSelf: 'center', color: '#000' }}>{item?.User?.name}</Text>
-                                        <Text style={{ alignSelf: 'center', color: 'green' }}>{item?.userId}</Text>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, height: responsiveHeight(6), width: responsiveWidth(86), borderRadius: 2, marginTop: 5, backgroundColor: '#EDEAFB', alignSelf: 'center' }}>
+                                        <Text style={{ alignSelf: 'center', color: '#6A5AE0' }}>#{item?.UserQuestion.rank}a</Text>
+                                        <Text style={{ alignSelf: 'center', color: '#000' }}>{item?.UserQuestion.User?.name}</Text>
+                                        <Text style={{ alignSelf: 'center', color: 'green' }}>{item?.UserQuestion.User._id}</Text>
                                         <Text style={{ alignSelf: 'center', color: '#000', fontWeight: '500' }}>7.5</Text>
                                     </View>
                                 </>

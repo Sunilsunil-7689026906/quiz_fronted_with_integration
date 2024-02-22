@@ -35,19 +35,23 @@ const MyExam = ({ navigation }) => {
   const [logodata, setLogodata] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [imgs, setimgs] = useState("")
+  
 
 
 
   const [hit, setHit] = useState("LIVE");
   const [mydata, setMydata] = useState([]);
+  // console.log(mydata[0]?.gameId,"hi");
   const [completedata, setCompletedata] = useState([]);
   const [seduleTime, setSeduleTime] = useState([]);
   const [filterText, setFilterText] = useState("");
 
   const [question, setQuestion] = useState([]);
 
-  const [myUserid, setMyUserid] = useState([]);
-  const [myGameid, setMyGameid] = useState([]);
+  const [myUserid, setMyUserid] = useState();
+  console.log(myUserid,"userIdoutline");
+  const [myGameid, setMyGameid] = useState();
+
   const [times, settimes] = useState()
 
 
@@ -68,6 +72,7 @@ const MyExam = ({ navigation }) => {
   }
 
   const logoApi = async () => {
+    console.log(`${await AsyncStorage.getItem("token")}`,"token");
     try {
 
       var myHeaders = new Headers();
@@ -83,7 +88,7 @@ const MyExam = ({ navigation }) => {
         .then(response => response.json())
         .then(result => {
           if (result.success == true) {
-            console.log(result.data.logo, "logoimg")
+            // console.log(result.data.logo, "logoimg")
             setLogodata(result.data.logo)
           }
         })
@@ -98,11 +103,16 @@ const MyExam = ({ navigation }) => {
   // alert(myGameid)
   // alert(myUserid)
 
-  
+  console.log(myUserid,"userIdoutline");
+  console.log(myGameid,"gameidOutline");
 
-// alert(imgs)
 
-  const myexamApi = async ({ name }) => {
+
+
+
+  // alert(imgs)
+
+  const myexamApi = async ({ name,index }) => {
     try {
       var myHeaders = new Headers();
       myHeaders.append(
@@ -120,22 +130,19 @@ const MyExam = ({ navigation }) => {
         .then((response) => response.json())
         .then(async (result) => {
           if (result.success == true) {
-            // console.log(result.data.userGameList[0].Game, "userGameList")
             console.log(`${await AsyncStorage.getItem("token")}`, "token");
+            console.log(result.data.userGameList,"popop");
             setMydata(result.data.userGameList);
 
-            // alert(result.data.userGameList[0].gameId)
-            setMyGameid(result.data.userGameList[0].gameId)
-            setMyUserid(result.data.userGameList[0].userId)
-            // alert(result.data.userGameList[0].userId)
+            // setMyGameid(result.data.userGameList[0].gameId)
+            
+            // setMyUserid(result.data.userGameList[0].userId)
 
 
-            // alert(result.data.userGameList.Game,"QIDDD");
-            setQuestion(result.data.userGameList[0].Game[0].noOfQuestion)
+            // setQuestion(result.data.userGameList[0].Game[0].noOfQuestion)
 
-            setSeduleTime(result.data.userGameList[0].schedule - 300000);
-            // console.log(JSON.stringify(result.data.userGameList), "completedataaaa");
-            setCompletedata(result.data.userGameList);
+            // setSeduleTime(result.data.userGameList[0].schedule - 300000);
+            // setCompletedata(result.data.userGameList);
             // console.log(result.data.userGameList[0]._id, "jjjjjjjjjj");
             await AsyncStorage.setItem("_id2", result.data.userGameList[0]._id);
           } else {
@@ -148,9 +155,10 @@ const MyExam = ({ navigation }) => {
     }
   };
 
-  // alert(question)
+  // alert(myGameid)
+  // console.log(myGameid,'gghghghghgbbb');
 
-  function navigetLo(times) {
+  async function navigetLo(times) {
     const currentTimeInMilliseconds = new Date().getTime();
     let availableTime = times - currentTimeInMilliseconds
     const availableMinutes = Math.floor(availableTime / (1000 * 60));
@@ -160,9 +168,10 @@ const MyExam = ({ navigation }) => {
     }
     else if (availableMinutes <= 5) {
       navigation.navigate("Instruction", {
-        times: availableMinutes,
-        g_id: myGameid,
-        u_id: myUserid
+        times:await availableMinutes,
+        g_id:await myGameid,
+        u_id:await myUserid,
+
       });
     }
     else {
@@ -182,10 +191,10 @@ const MyExam = ({ navigation }) => {
     }, 2000);
   }, []);
 
-  
 
-  useEffect(async() => {
-    setimgs (await AsyncStorage.getItem("pr"))
+
+  useEffect(async () => {
+    setimgs(await AsyncStorage.getItem("pr"))
     onRefresh()
     logoApi()
     myexamApi({ name: filterText })
@@ -217,21 +226,33 @@ const MyExam = ({ navigation }) => {
           }}
         >
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <Image
-              // source={require("../images/user.jpg")}
-              source={{ uri: imgs }}
-              style={{
-                height: responsiveHeight(6),
-                width: responsiveWidth(12),
-                borderRadius: 100,
-                alignSelf: "center",
-                marginTop: 3,
-              }}
-            />
+            {
+              imgs ?
+                <Image
+                  source={{ uri: imgs }}
+                  style={{
+                    height: responsiveHeight(6),
+                    width: responsiveWidth(12),
+                    borderRadius: 100,
+                    alignSelf: "center",
+                    marginTop: 3,
+                  }}
+                /> :
+                <Image
+                  source={require('../images/user.jpg')}
+                  style={{
+                    height: responsiveHeight(6),
+                    width: responsiveWidth(12),
+                    borderRadius: 100,
+                    alignSelf: "center",
+                    marginTop: 3,
+                  }}
+                />
+            }
           </TouchableOpacity>
           <Image
             source={{
-              uri: `http://3.111.23.56:5059/uploads/${logodata}`,
+              uri: `https://quiz.metablocktechnologies.org/uploads/${logodata}`,
             }}
             style={{
               height: responsiveHeight(4),
@@ -480,8 +501,12 @@ const MyExam = ({ navigation }) => {
           {live == 0 ? (
             <View>
               {mydata?.length > 0 ? (
-                mydata.map((data) => {
+                mydata.filter(item => item.isCompleted === true).map((data,index) => {
                   // console.log(data, 'data');
+                  // console.log(data?.userId,"inlineUseriddd..");
+                  // console.log(data?.isCompleted,"isCompleted..");
+
+                  
                   return (
                     <>
                       <View
@@ -573,7 +598,7 @@ const MyExam = ({ navigation }) => {
                               fontSize: 13,
                             }}
                           >
-                            {data?.Game[0].noOfQuestion} Questions | Time {millisToMinutesAndSeconds(data?.Game[0].duration)} mins
+                            {data?.Game[0].noOfQuestion} Questions | Time {millisToMinutesAndSeconds(data?.Game[0].duration)} minss
                           </Text>
                         </View>
 
@@ -644,7 +669,7 @@ const MyExam = ({ navigation }) => {
                             backgroundColor: "#A9A3E9",
                             alignSelf: "flex-start",
                           }}
-                          onPress={() => {
+                          onPress={() => {setMyGameid(data?.gameId),setMyUserid(data?.userId),
                             navigetLo(data?.schedule)
                           }}
                         >
@@ -687,9 +712,11 @@ const MyExam = ({ navigation }) => {
 
           {live == 1 ? (
             <View>
-              {completedata?.length > 0 ? (
-                completedata.map((item) => {
-                  // console.log(item, "inlinedata");
+              {mydata?.length > 0 ? (
+                mydata.filter(item => item.isCompleted === true).map((item) => {
+                  // console.log(item.gameNameInEnglish, "inlinedataabhi");
+                  // console.log(item?.isCompleted,"isCompleted..");
+
                   return (
                     <>
                       <View
@@ -713,7 +740,7 @@ const MyExam = ({ navigation }) => {
                             marginTop: 15,
                           }}
                         >
-                          SSC 2024 JAN Exam EPT34
+                          {item.gameNameInEnglish}
                         </Text>
                         <Text
                           style={{
@@ -780,7 +807,7 @@ const MyExam = ({ navigation }) => {
                               fontSize: 13,
                             }}
                           >
-                            15 Questions | Time 18 mins
+                            {item?.Game[0].noOfQuestion} Questions | Time 18 mins
                           </Text>
                         </View>
 
@@ -843,9 +870,9 @@ const MyExam = ({ navigation }) => {
                               borderRadius: 25,
                               width: responsiveWidth(38),
                               marginTop: 20,
-                              backgroundColor: "#6A5AE0",
+                              backgroundColor: "#6A5AE0",//{item?.Game[0].noOfQuestion}
                             }}
-                            onPress={() => navigation.navigate("LeaderboardRank", { QuestionNo: question })}
+                            onPress={() => navigation.navigate("LeaderboardRank", { QuestionNo: (item?.Game[0].noOfQuestion) })}
                           >
                             <Text
                               style={{
@@ -868,7 +895,7 @@ const MyExam = ({ navigation }) => {
                               marginTop: 20,
                               backgroundColor: "#6A5AE0",
                             }}
-                            onPress={() => navigation.navigate("MyQuestions", { QuestionNo: question })}
+                            onPress={() => navigation.navigate("MyQuestions", { QuestionNo: (item?.Game[0].noOfQuestion) })}
                           >
                             <Text
                               style={{

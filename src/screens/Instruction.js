@@ -28,21 +28,78 @@ const Instruction = ({ route, navigation }) => {
     const { times } = route.params
     const { g_id } = route.params
     const { u_id } = route.params
+    const [imgData, setImgData] = useState("")
+
 
     const [lan, setLang] = useState(0);
     const [hit, setHit] = useState("HINDI");
     const [gameid, setGameid] = useState(g_id);
     const [userid, setUserid] = useState(u_id);
-    // alert(userid)
+
+    // alert(gameid)
+    // console.log(gameid,"instruction_gameid");
+    // console.log(userid,"instruction_userid");
+
 
 
     const [lanslect, setlanslect] = useState()
     // Initial time in minutes
     const [minutes, setMinutes] = useState(times);
 
-
-
     const [seconds, setSeconds] = useState(0);
+
+    useEffect(() => {
+        // console.log('yes connected');
+        socket.on('connect', () => {
+            console.log("connect success ! sk");
+        })
+        const joinGameData = {
+            gameId: gameid,
+            userId: userid
+        }
+        socket.emit('joinGame', joinGameData)
+
+        socket.on('message', (data) => {
+            console.log("messgg serve", data);
+        })
+        socket.on('get-question', async (questionData) => {
+            try {
+                //   await setleft(questionData.q_left)
+                //   await setnoOfQuestion(questionData.noOfQuestion)
+                //   let leg = await AsyncStorage.getItem("lang")
+                //   if (leg == "ENGLISH") {
+
+                //     await setQuestion(questionData.question.questionInEnglish);
+                //     await setoption(questionData.question.optionsInEnglish)
+                //     await setGetId(questionData.question._id)
+                //     await setMygameId(questionData.question.gameId)
+                //     await setMyanswer()
+
+                //   } else {
+                //     await setQuestion(questionData.question.questionInHindi);
+                //     await setoption(questionData.question.optionsInHindi);
+                //     await setGetId(questionData.question._id)
+                //     await setMygameId(questionData.question.gameId)
+                //     await setMyanswer(questionData.question.optionsInEnglish[0].id)
+
+
+                //   }
+                // Update the component state with the received question
+                console.log('Received question from the server: jon', JSON.stringify(questionData));
+
+
+
+                navigation.navigate('MyLeaderBoard', { questionData: questionData, t: questionData.t, gameId: questionData.gameId, quid: questionData._id, no_qu: questionData.noOfQuestion, userid: userid })
+                // console.log(questionData.noOfQuestion,"llllllllll");
+
+
+                //   await setSelect("")
+            } catch (error) {
+                console.log(error);
+            }
+
+        });
+    }, [gameid, userid])
 
     useEffect(() => {
 
@@ -59,63 +116,94 @@ const Instruction = ({ route, navigation }) => {
                     setSeconds((prevSeconds) => prevSeconds - 1);
                 }
             }
-        }, 1000); // Adjusted to 1000 milliseconds (1 second)
+        }, 990); // Adjusted to 1000 milliseconds (1 second)
 
         return () => clearInterval(interval);
     }, [minutes, seconds, navigation]);
 
     const socket = useSocket();
+    // console.log(gameid,"mygameidgameidgameid");
 
-    useEffect(()=>{
-        socket.on('connect',()=>{
+    useEffect(() => {
+        // console.log('yes connected');
+        socket.on('connect', () => {
             console.log("connect success ! sk");
         })
         const joinGameData = {
-            gameId:gameid,
-            userId:userid
+            gameId: gameid,
+            userId: userid
         }
-        socket.emit('joinGame',joinGameData)
+        socket.emit('joinGame', joinGameData)
 
-        socket.on('message',(data)=>{
-            console.log("messgg serve",data);
+        socket.on('message', (data) => {
+            console.log("messgg serve", data);
         })
         socket.on('get-question', async (questionData) => {
             try {
-            //   await setleft(questionData.q_left)
-            //   await setnoOfQuestion(questionData.noOfQuestion)
-            //   let leg = await AsyncStorage.getItem("lang")
-            //   if (leg == "ENGLISH") {
-      
-            //     await setQuestion(questionData.question.questionInEnglish);
-            //     await setoption(questionData.question.optionsInEnglish)
-            //     await setGetId(questionData.question._id)
-            //     await setMygameId(questionData.question.gameId)
-            //     await setMyanswer()
-      
-            //   } else {
-            //     await setQuestion(questionData.question.questionInHindi);
-            //     await setoption(questionData.question.optionsInHindi);
-            //     await setGetId(questionData.question._id)
-            //     await setMygameId(questionData.question.gameId)
-            //     await setMyanswer(questionData.question.optionsInEnglish[0].id)
-      
-      
-            //   }
-              // Update the component state with the received question
-              console.log('Received question from the server: jon', JSON.stringify(questionData));
-             
-                 
-    
-                      navigation.navigate('MyLeaderBoard',{questionData:questionData,t:questionData.t,gameId:questionData.gameId,quid:questionData._id,no_qu:questionData.noOfQuestion})
-                  
-              
-            //   await setSelect("")
+                //   await setleft(questionData.q_left)
+                //   await setnoOfQuestion(questionData.noOfQuestion)
+                //   let leg = await AsyncStorage.getItem("lang")
+                //   if (leg == "ENGLISH") {
+
+                //     await setQuestion(questionData.question.questionInEnglish);
+                //     await setoption(questionData.question.optionsInEnglish)
+                //     await setGetId(questionData.question._id)
+                //     await setMygameId(questionData.question.gameId)
+                //     await setMyanswer()
+
+                //   } else {
+                //     await setQuestion(questionData.question.questionInHindi);
+                //     await setoption(questionData.question.optionsInHindi);
+                //     await setGetId(questionData.question._id)
+                //     await setMygameId(questionData.question.gameId)
+                //     await setMyanswer(questionData.question.optionsInEnglish[0].id)
+
+
+                //   }
+                // Update the component state with the received question
+                console.log('Received question from the server: jon', JSON.stringify(questionData));
+
+
+
+                navigation.navigate('MyLeaderBoard', { questionData: questionData, t: questionData.t, gameId: questionData.gameId, quid: questionData._id, no_qu: questionData.noOfQuestion, userid: userid })
+                // console.log(questionData.noOfQuestion,"llllllllll");
+
+
+                //   await setSelect("")
             } catch (error) {
-              console.log(error);
+                console.log(error);
             }
-      
-          });
-    },[gameid,userid])
+
+        });
+    }, [gameid, userid])
+
+
+    const playimgApi = async () => {
+        try {
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `${await AsyncStorage.getItem('token')}`);
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            fetch(`${base_url}/how-to-play`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success == true) {
+                        // console.log(result.data.img)
+                        setImgData(result.data.img)
+                    }
+                })
+                .catch(error => console.log('error', error));
+
+        } catch (error) {
+
+        }
+    }
+
 
 
 
@@ -205,6 +293,7 @@ const Instruction = ({ route, navigation }) => {
 
     useEffect(() => {
         gamelangApi();
+        playimgApi()
     }, []);
 
 
@@ -282,7 +371,9 @@ const Instruction = ({ route, navigation }) => {
                             }}
                         >
                             <Image
-                                source={require("../images/inst.png")}
+                                source={{
+                                    uri: `https://quiz.metablocktechnologies.org/uploads/${imgData}`,
+                                }}
                                 style={{
                                     borderWidth: 1,
                                     height: responsiveHeight(28),
@@ -290,6 +381,7 @@ const Instruction = ({ route, navigation }) => {
                                     marginTop: 15,
                                     width: responsiveWidth(90),
                                     alignSelf: "center",
+                                    resizeMode: 'center'
                                 }}
                             />
                         </View>
@@ -349,7 +441,7 @@ const Instruction = ({ route, navigation }) => {
                             }}
                         >
                             <Text style={{ marginRight: 5 }}>👉</Text>
-                            <Text>प्रत्येक question के लिए 20 Second दिया गया है।</Text>
+                            <Text>प्रत्येक question के लिए 25 Second दिया गया है।</Text>
                         </View>
 
                         <View
@@ -602,7 +694,7 @@ const Instruction = ({ route, navigation }) => {
                                 alignSelf: "flex-start",
                             }}
                             onPress={() => {
-                                setLang(0),setHit("HINDI"), langApi();
+                                setLang(0), setHit("HINDI"), langApi();
                             }}
                         >
                             <Text

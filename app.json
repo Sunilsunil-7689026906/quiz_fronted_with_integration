@@ -25,16 +25,20 @@
           "READ_EXTERNAL_STORAGE"
         ]
       },
-      "package": "com.sunilkumar76.Pdowin"
+      "package": "com.sunilkumar76.Pdowin",
+      "config": {
+        "apk": {
+          "buildType": "apk"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/logo.png"
     },
     "extra": {
       "eas": {
-        "projectId": "621e8ac6-40c0-434a-af70-9034facb2926"
+        "projectId": "4bdd148e-85d5-4d09-b343-90eb6da201c7"
       }
-    },
-    "owner": "ramsks"
+    }
   }
 }
